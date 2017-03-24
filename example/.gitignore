@@ -1,0 +1,11 @@
+.*.swp
+*~
+*.o
+*.d
+*.exe
+conf_*.mk
+defaults.mk
+/bin/
+/lib/
+/obj/
+
