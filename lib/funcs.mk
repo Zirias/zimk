@@ -1,37 +1,11 @@
 ZIMK__DIR :=
-ZIMK__P0DIR :=
-ZIMK__P1DIR :=
-ZIMK__P2DIR :=
-ZIMK__P3DIR :=
-ZIMK__P4DIR :=
-ZIMK__P5DIR :=
-ZIMK__P6DIR :=
-ZIMK__P7DIR :=
-ZIMK__P8DIR :=
-ZIMK__P9DIR :=
+ZIMK__PDIRS :=
 define __F_ZINC
-ZIMK__P0DIR := $$(ZIMK__P1DIR)
-ZIMK__P1DIR := $$(ZIMK__P2DIR)
-ZIMK__P2DIR := $$(ZIMK__P3DIR)
-ZIMK__P3DIR := $$(ZIMK__P4DIR)
-ZIMK__P4DIR := $$(ZIMK__P5DIR)
-ZIMK__P5DIR := $$(ZIMK__P6DIR)
-ZIMK__P6DIR := $$(ZIMK__P7DIR)
-ZIMK__P7DIR := $$(ZIMK__P8DIR)
-ZIMK__P8DIR := $$(ZIMK__P9DIR)
-ZIMK__P9DIR := $$(ZIMK__DIR)
+ZIMK__PDIRS := $$(ZIMK__DIR) $$(ZIMK__PDIRS)
 ZIMK__DIR := $$(ZIMK__DIR)$$(strip $$(subst /,$$(PSEP),$$(dir $(1))))
 include $$(ZIMK__DIR)$$(notdir $(1))
-ZIMK__DIR := $$(ZIMK__P9DIR)
-ZIMK__P9DIR := $$(ZIMK__P8DIR)
-ZIMK__P8DIR := $$(ZIMK__P7DIR)
-ZIMK__P7DIR := $$(ZIMK__P6DIR)
-ZIMK__P6DIR := $$(ZIMK__P5DIR)
-ZIMK__P5DIR := $$(ZIMK__P4DIR)
-ZIMK__P4DIR := $$(ZIMK__P3DIR)
-ZIMK__P3DIR := $$(ZIMK__P2DIR)
-ZIMK__P2DIR := $$(ZIMK__P1DIR)
-ZIMK__P1DIR := $$(ZIMK__P0DIR)
+ZIMK__DIR := $$(firstword $$(ZIMK__PDIRS))
+ZIMK__PDIRS := $$(wordlist 2, $$(words $$(ZIMK__PDIRS)), $$(ZIMK__PDIRS))
 endef
 
 define zinc
