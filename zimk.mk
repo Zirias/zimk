@@ -5,6 +5,10 @@ ifneq ($(ZIMKPATH),)
 ZIMKPATH:=$(ZIMKPATH)/
 endif
 
+ifeq ($(origin CC),default)
+undefine CC
+endif
+
 -include defaults.mk
 include $(ZIMKPATH)lib/platform.mk
 include $(ZIMKPATH)lib/silent.mk
