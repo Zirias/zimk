@@ -1,7 +1,7 @@
 ifeq ($(OS),Windows_NT)
 
 PLATFORM := win32
-POSIXSHELL :=
+undefine POSIXSHELL
 ifdef LANG
 POSIXSHELL := 1
 endif

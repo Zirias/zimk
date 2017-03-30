@@ -54,9 +54,9 @@ undefine ZIMK__CFGTAG
 $$(foreach _cv,$$(CONFVARS), \
     $$(if $$($$(_cv)),$$(eval ZIMK__CFGTAG += $$(_cv)=$$$$(strip $$$$($$(_cv)))),))
 ifdef ZIMK__CFGTAG
-ZIMK__CFGTAG := [$$(BUILDCFG): $$(ZIMK__CFGTAG)]
+ZIMK__CFGTAG := [$$(ZIMK__PRRED)$$(ZIMK__PRBOLD)$$(BUILDCFG)$$(ZIMK__PRNORM): $$(ZIMK__PRBOLD)$$(ZIMK__CFGTAG)$$(ZIMK__PRNORM)]
 else
-ZIMK__CFGTAG := [$$(BUILDCFG)]
+ZIMK__CFGTAG := [$$(ZIMK__PRRED)$$(ZIMK__PRBOLD)$$(BUILDCFG)$$(ZIMK__PRNORM)]
 endif
 ZIMK__CFGMSG :=
 ZIMK__CFGMSG +=
