@@ -8,6 +8,9 @@ endif
 ifeq ($(origin CC),default)
 undefine CC
 endif
+ifeq ($(origin AR),default)
+undefine AR
+endif
 
 -include defaults.mk
 include $(ZIMKPATH)lib/platform.mk
@@ -25,7 +28,8 @@ clean::
 	$(RMF) $(CLEAN)
 
 distclean::
-	$(RMF) conf_*.mk
+	$(RMF) .cache_*.cfg
+	$(RMF) *.cfg
 	$(RMFR) $(BINBASEDIR)
 	$(RMFR) $(LIBBASEDIR)
 	$(RMFR) $(OBJBASEDIR)

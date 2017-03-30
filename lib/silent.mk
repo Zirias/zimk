@@ -10,8 +10,8 @@ VRES:=
 VCCLD:=
 VSTRP:=
 VMD:=
+VCFG:=
 VGEN:=
-VGENT:=
 VR:=
 else
 VCC=	@echo $(EQT)   [CC]   $@$(EQT)
@@ -23,8 +23,8 @@ VRES=   @echo $(EQT)   [RES]  $@$(EQT)
 VCCLD=	@echo $(EQT)   [CCLD] $@$(EQT)
 VSTRP=  @echo $(EQT)   [STRP] $<$(EQT)
 VMD=	@echo $(EQT)   [MD]   $@$(EQT)
+VCFG=	@echo $(EQT)   [CFG]  $<$(EQT)
 VGEN=	@echo $(EQT)   [GEN]  $@$(EQT)
-VGENT=	@echo $(EQT)   [GEN]  $@: $(VTAGS)$(EQT)
 VR:=	@
 endif
 
