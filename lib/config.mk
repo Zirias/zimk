@@ -25,6 +25,7 @@ endif
 ZIMK__DOUBLECONFVARS := $(filter $(SINGLECONFVARS),$(LISTCONFVARS))
 ifdef ZIMK__DOUBLECONFVARS
 $(error variables can't be in both SINGLECONFVARS and LISTCONFVARS: $(ZIMK__DOUBLECONFVARS))
+#' make vim syntax highlight happy
 endif
 
 USERCONFIG:=$(BUILDCFG).cfg
