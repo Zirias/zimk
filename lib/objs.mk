@@ -1,8 +1,6 @@
 define OBJRULES
 
-_CUSTOM_MAKEFILES:= $$(filter-out $$(ZIMKPATH)zimk.mk $$(ZIMKPATH)lib/%.mk \
-	defaults.mk %.cfg %.d, $$(MAKEFILE_LIST))
-
+$(_T)_MAKEFILES ?= $$(ZIMK__MK)
 $(_T)_SRCDIR ?= $$(patsubst %$$(PSEP),%,$$(ZIMK__DIR))
 $(_T)_SRCDIR := $$(strip $$($(_T)_SRCDIR))
 $(_T)_OBJDIR ?= $$(OBJDIR)$$(PSEP)$$($(_T)_SRCDIR)
@@ -40,7 +38,7 @@ $(DIRRULES)
 %.o: %.c
 
 $$($(_T)_OBJDIR)$$(PSEP)%.d: $$($(_T)_SRCDIR)$$(PSEP)%.c \
-	$$(_CUSTOM_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VDEP)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ \
 		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
@@ -54,14 +52,14 @@ endif
 
 ifeq ($$(PLATFORM),win32)
 $$($(_T)_OBJDIR)$$(PSEP)%.ro: $$($(_T)_SRCDIR)$$(PSEP)%.rc \
-    $$(_CUSTOM_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+    $$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VRES)
 	$$(VR)$$(CROSS_COMPILE)windres $$< $$@
 
 endif
 
 $$($(_T)_OBJDIR)$$(PSEP)%.o: $$($(_T)_SRCDIR)$$(PSEP)%.c \
-	$$(_CUSTOM_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCC)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
 		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
@@ -70,7 +68,7 @@ $$($(_T)_OBJDIR)$$(PSEP)%.o: $$($(_T)_SRCDIR)$$(PSEP)%.c \
 		$$(INCLUDES) $$<
 
 $$($(_T)_OBJDIR)$$(PSEP)%_s.o: $$($(_T)_SRCDIR)$$(PSEP)%.c \
-	$$(_CUSTOM_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCC)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
 		$$($(_T)_$$(PLATFORM)_CFLAGS_SHARED) $$($(_T)_CFLAGS_SHARED) \
