@@ -1,4 +1,5 @@
 ifndef NCOL
+
 ifdef POSIXSHELL
 ZIMK__PRNORM := $(shell tput sgr0)
 ZIMK__PRBOLD := $(shell tput bold)
@@ -9,5 +10,22 @@ ZIMK__PRBLUE := $(shell tput setaf 4)
 ZIMK__PRMAGENTA := $(shell tput setaf 5)
 ZIMK__PRCYAN := $(shell tput setaf 6)
 ZIMK__PRWHITE := $(shell tput setaf 7)
-endif
-endif
+else
+
+ifeq ($(PLATFORM),win32)
+ifneq ($(call geq,$(OSVER_MAJ),10),)
+ZIMK__PRNORM := [0m
+ZIMK__PRBOLD := [1m
+ZIMK__PRRED := [91m
+ZIMK__PRGREEN := [92m
+ZIMK__PRYELLOW := [93m
+ZIMK__PRBLUE := [94m
+ZIMK__PRMAGENTA := [95m
+ZIMK__PRCYAN := [96m
+ZIMK__PRWHITE := [97m
+endif # Windows 10
+endif # Platform win32
+
+endif # POSIXSHELL
+
+endif # NCOL

@@ -10,6 +10,11 @@ POSIXSHELL := 1
 endif
 
 EXE := .exe
+OSVER := $(subst ],,$(lastword $(shell cmd /c ver)))
+_ZIMK__OSVER := $(subst ., ,$(OSVER))
+OSVER_MAJ := $(firstword $(_ZIMK__OSVER))
+OSVER_MIN := $(word 2, $(_ZIMK__OSVER))
+OSVER_REV := $(word 3, $(_ZIMK__OSVER))
 
 else
 
@@ -41,6 +46,8 @@ EQT := "
 #" make vim syntax highlight happy
 CMDQUIET := >/dev/null 2>&1
 
+geq = $(shell if test $(1) -ge $(2); then echo 1; fi)
+
 else
 
 SYSNAME :=
@@ -60,6 +67,8 @@ CATADD := +
 CATOUT :=
 EQT :=
 CMDQUIET := >nul 2>nul & verify >nul
+
+geq = $(shell if $(1) geq $(2) echo 1)
 
 endif
 
