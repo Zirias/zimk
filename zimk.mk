@@ -25,6 +25,10 @@ include $(ZIMKPATH)lib/bin.mk
 include $(ZIMKPATH)lib/lib.mk
 include $(ZIMKPATH)lib/funcs.mk
 
+install:: all
+
+install-strip:: strip install
+
 clean::
 	$(RMF) $(CLEAN)
 
@@ -37,7 +41,7 @@ distclean::
 
 strip:: all
 
-.PHONY: all staticlibs strip clean distclean
+.PHONY: all staticlibs strip install install-strip clean distclean
 .SUFFIXES:
 
 # vim: noet:si:ts=8:sts=8:sw=8

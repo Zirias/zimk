@@ -11,6 +11,10 @@ $(_T)_CFLAGS_SHARED ?= $$($(_T)_CFLAGS) -fPIC
 $(_T)_BUILDWITH ?= all
 $(_T)_BUILDSTATICWITH ?= staticlibs
 $(_T)_STRIPWITH ?= strip
+$(_T)_INSTALLWITH ?= install
+$(_T)_INSTALLSTATICWITH ?= installstaticlibs
+$(_T)_INSTALLDIRNAME ?= lib
+$(_T)_INSTALLBINDIRNAME ?= bin
 
 $(_T)_STATICLIB := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).a
 
@@ -31,25 +35,42 @@ endif
 OUTFILES := $$($(_T)_LIB) $$($(_T)_STATICLIB)
 $(DIRRULES)
 
-ifeq ($$(PLATFORM),win32)
-$$($(_T)_STATICLIB): $$($(_T)_LIB)
+$$($(_T)_STATICLIB): $$($(_T)_OBJS) | $$(_$(_T)_DIRS)
+	$$(VAR)
+	$$(VR)$$(CROSS_COMPILE)$$(AR) rcs $$@1 $$^
+	$$(VR)$$(RMF) $$@ $$(CMDQUIET)
+	$$(VR)$$(MV) $$@1 $$@ $$(CMDQUIET)
 
+static_$(_T)_install: $$($(_T)_STATICLIB)
+	$$(eval _ZIMK_1 := $$(DESTDIR)$$($$($(_T)_INSTALLDIRNAME)dir))
+	$$(eval _ZIMK_0 := $$(_ZIMK_1)$$(PSEP)$$(<F))
+	$$(VINST)
+	$$(VR)$$(call instfile,$$<,$$(_ZIMK_1),644)
+
+ifeq ($$(PLATFORM),win32)
 $$($(_T)_LIB): $$($(_T)_SOBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
 	$$(VCCLD)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -shared -o$$@ \
-		-Wl,--out-implib,$$($(_T)_TGTDIR)$$(PSEP)lib$(_T).a \
+		-Wl,--out-implib,$$($(_T)_TGTDIR)$$(PSEP)lib$(_T).dll.a \
 		-Wl,--output-def,$$($(_T)_TGTDIR)$$(PSEP)$(_T).def \
 		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
 		$$($(_T)_$$(PLATFORM)_LDFLAGS) $$($(_T)_LDFLAGS) $$(LDFLAGS) \
 		$$($(_T)_SOBJS) $$(_$(_T)_LINK)
 
-else
-$$($(_T)_STATICLIB): $$($(_T)_OBJS) | $$(_$(_T)_DIRS)
-	$$(VAR)
-	$$(VR)$$(CROSS_COMPILE)$$(AR) rcs $$@1 $$^
-	$$(VR)$$(RMF) $$@
-	$$(VR)$$(MV) $$@1 $$@
+$(_T)_install: $$($(_T)_LIB)
+	$$(eval _ZIMK_1 := $$(DESTDIR)$$($$($(_T)_INSTALLBINDIRNAME)dir))
+	$$(eval _ZIMK_0 := $$(_ZIMK_1)$$(PSEP)$$(<F))
+	$$(VINST)
+	$$(VR)$$(call instfile,$$<,$$(_ZIMK_1),755)
+	$$(eval _ZIMK_1 := $$(DESTDIR)$$($$($(_T)_INSTALLDIRNAME)dir))
+	$$(eval _ZIMK_0 := $$(_ZIMK_1)$$(PSEP)lib$(_T).dll.a)
+	$$(VINST)
+	$$(VR)$$(call instfile,$$($(_T)_TGTDIR)$$(PSEP)lib$(_T).dll.a,$$(_ZIMK_1),644)
+	$$(eval _ZIMK_0 := $$(_ZIMK_1)$$(PSEP)$(_T).def)
+	$$(VINST)
+	$$(VR)$$(call instfile,$$($(_T)_TGTDIR)$$(PSEP)$(_T).def,$$(_ZIMK_1),644)
 
+else
 $$($(_T)_LIB): $$(_$(_T)_LIB_MAJ)
 	$$(VR)ln -fs lib$(_T).so.$$($(_T)_V_MAJ) $$@
 
@@ -64,21 +85,39 @@ $$(_$(_T)_LIB_FULL): $$($(_T)_SOBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
 		$$($(_T)_$$(PLATFORM)_LDFLAGS) $$($(_T)_LDFLAGS) $$(LDFLAGS) \
 		$$($(_T)_SOBJS) $$(_$(_T)_LINK)
 
+$(_T)_install: $$($(_T)_LIB_FULL)
+	$$(eval _ZIMK_1 := $$(DESTDIR)$$($$($(_T)_INSTALLDIRNAME)dir))
+	$$(eval _ZIMK_0 := $$(_ZIMK_1)$$(PSEP)$$(<F))
+	$$(VINST)
+	$$(VR)$$(call instfile,$$<,$$(_ZIMK_1),755)
+	$$(VR)ln -fs lib$(_T).so.$$(_$(_T)_V) $$(_ZIMK_1)$$(PSEP)lib$(_T).so.$$(_$(_T)_V_MAJ)
+	$$(VR)ln -fs lib$(_T).so.$$(_$(_T)_V_MAJ) $$(_ZIMK_1)$$(PSEP)lib$(_T).so
+
 endif
 
 $(_T): $$($(_T)_LIB)
 
 static_$(_T): $$($(_T)_STATICLIB)
 
-.PHONY: $(_T) static_$(_T)
+.PHONY: $(_T) static_$(_T) $(_T)_install static_$(_T)_install
 
 ifneq ($$(strip $$($(_T)_BUILDWITH)),)
-$$($(_T)_BUILDWITH):: $$($(_T)_LIB)
+$$($(_T)_BUILDWITH):: $(_T)
 
 endif
 
 ifneq ($$(strip $$($(_T)_BUILDSTATICWITH)),)
-$$($(_T)_BUILDSTATICWITH):: $$($(_T)_STATICLIB)
+$$($(_T)_BUILDSTATICWITH):: static_$(_T)
+
+endif
+
+ifneq ($$(strip $$($(_T)_INSTALLWITH)),)
+$$($(_T)_INSTALLWITH):: $(_T)_install
+
+endif
+
+ifneq ($$(strip $$($(_T)_INSTALLSTATICWITH)),)
+$$($(_T)_INSTALLSTATICWITH):: static_$(_T)_install
 
 endif
 
@@ -86,14 +125,6 @@ ifneq ($$(strip $$($(_T)_STRIPWITH)),)
 $$($(_T)_STRIPWITH):: $$($(_T)_LIB)
 	$$(VSTRP)
 	$$(VR)$$(CROSS_COMPILE)$$(STRIP) --strip-unneeded $$<
-
-ifneq ($$(strip $$($(_T)_BUILDSTATICWITH)),)
-$$($(_T)_STRIPWITH):: $$($(_T)_STATICLIB)
-	$$(VSTRP)
-	$$(VR)$$(CROSS_COMPILE)$$(STRIP) --strip-unneeded $$<
-
-
-endif
 
 endif
 

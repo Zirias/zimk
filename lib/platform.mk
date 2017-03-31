@@ -46,6 +46,10 @@ EQT := "
 #" make vim syntax highlight happy
 CMDQUIET := >/dev/null 2>&1
 
+INSTALL ?= install
+INSTDIR := $(INSTALL) -d
+
+instfile = $(INSTDIR) $(2) $(CMDSEP) $(INSTALL) -m$(3) $(1) $(2)
 geq = $(shell if test $(1) -ge $(2); then echo 1; fi)
 
 else
@@ -57,7 +61,7 @@ CPF := copy /y
 RMF := del /f /q
 RMFR := -rd /s /q
 MDP := -md
-MV := ren
+MV := move
 STAMP := copy /y NUL
 XIF := if exist
 XTHEN := (
@@ -68,6 +72,9 @@ CATOUT :=
 EQT :=
 CMDQUIET := >nul 2>nul & verify >nul
 
+INSTDIR := $(MDP)
+
+instfile = $(MDP) $(dir $(2)) $(CMDQUIET) $(CMDSEP) copy $(1) $(2) $(CMDQUIET)
 geq = $(shell if $(1) geq $(2) echo 1)
 
 endif
