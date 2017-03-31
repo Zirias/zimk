@@ -131,8 +131,8 @@ BUILD_release_CFLAGS ?= -g0 -O2 -flto -ffunction-sections -fdata-sections
 BUILD_release_LDFLAGS ?= -O2 -flto -Wl,--gc-sections
 
 define ZIMK__UPDATESINGLECFGVARS
-ifeq ($$(strip $$(origin $(_cv))$(_cv)),command line)
-undefine $(_cv)
+ifeq ($$(strip $$(origin $(_cv))$$($(_cv))),command line)
+override undefine $(_cv)
 endif
 $(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(DEFAULT_$(_cv)))
 $(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(PLATFORM_$(PLATFORM)_$(_cv)))
@@ -154,8 +154,8 @@ BINDIR ?= $(BINBASEDIR)$(PSEP)$(TARGETARCH)$(PSEP)$(BUILDCFG)
 LIBDIR ?= $(LIBBASEDIR)$(PSEP)$(TARGETARCH)$(PSEP)$(BUILDCFG)
 
 define ZIMK__UPDATELISTCFGVARS
-ifeq ($$(strip $$(origin $(_cv))$(_cv)),command line)
-undefine $(_cv)
+ifeq ($$(strip $$(origin $(_cv))$$($(_cv))),command line)
+override undefine $(_cv)
 endif
 $(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(DEFAULT_$(_cv)))
 $(_cv) := $$(strip $$(BUILD_$(BUILDCFG)_$(_cv)) $$($(_cv)))
