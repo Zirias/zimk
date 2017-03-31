@@ -3,6 +3,9 @@ $(strip $(eval undefine __ZIMK__UNIQ__SEEN)$(foreach \
     _v,$1,$(if $(filter $(_v),$(__ZIMK__UNIQ__SEEN)),,$(eval \
         __ZIMK__UNIQ__SEEN += $(_v))))$(__ZIMK__UNIQ__SEEN))
 endef
+SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
+		  sysconfdir sharedstatedir localstatedir runstatedir \
+		  includedir docrootdir libdir localedir
 SINGLECONFVARS := $(call ZIMK__UNIQ,CC AR STRIP $(SINGLECONFVARS))
 LISTCONFVARS := $(call ZIMK__UNIQ,CFLAGS DEFINES INCLUDES LDFLAGS $(LISTCONFVARS))
 CONFVARS := $(SINGLECONFVARS) $(LISTCONFVARS)
@@ -129,6 +132,39 @@ BUILD_debug_DEFINES ?= -DDEBUG
 
 BUILD_release_CFLAGS ?= -g0 -O2 -flto -ffunction-sections -fdata-sections
 BUILD_release_LDFLAGS ?= -O2 -flto -Wl,--gc-sections
+
+ifdef POSIXSHELL
+prefix ?= /usr/local
+exec_prefix ?= $(prefix)
+bindir ?= $(exec_prefix)/bin
+sbindir ?= $(exec_prefix)/sbin
+libexecdir ?= $(exec_prefix)/libexec
+datarootdir ?= $(prefix)/share
+sysconfdir ?= $(prefix)/etc
+sharedstatedir ?= $(prefix)/com
+localstatedir ?= $(prefix)/var
+runstatedir ?= $(localstatedir)/run
+includedir ?= $(prefix)/include
+docrootdir ?= $(datarootdir)/doc
+libdir ?= $(exec_prefix)/lib
+localedir ?= $(datarootdir)/locale
+else
+DESTDIR ?= dist
+prefix ?= .
+exec_prefix ?= $(prefix)
+bindir ?= $(exec_prefix)
+sbindir ?= $(exec_prefix)
+libexecdir ?= $(exec_prefix)
+datarootdir ?= $(prefix)
+sysconfdir ?= $(prefix)
+sharedstatedir ?= $(prefix)
+localstatedir ?= $(prefix)
+runstatedir ?= $(localstatedir)
+includedir ?= $(prefix)
+docrootdir ?= $(datarootdir)
+libdir ?= $(exec_prefix)
+localedir ?= $(datarootdir)
+endif
 
 define ZIMK__UPDATESINGLECFGVARS
 ifeq ($$(strip $$(origin $(_cv))$$($(_cv))),command line)
