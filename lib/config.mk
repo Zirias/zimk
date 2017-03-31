@@ -12,6 +12,10 @@ MAKECMDGOALS ?= all
 
 -include global.cfg
 
+undefine ZIMK__EMPTY
+ZIMK__EMPTY :=
+ZIMK__TAB := $(ZIMK__EMPTY)	$(ZIMK__EMPTY)
+
 #default config
 DEFAULT_BUILDCFG ?= release
 BUILDCFG ?= $(DEFAULT_BUILDCFG)
@@ -32,23 +36,21 @@ USERCONFIG:=$(BUILDCFG).cfg
 ZIMK__CFGCACHE:=.cache_$(BUILDCFG).cfg
 
 define ZIMK__WRITECACHELINE
-echo $$(EQT)C_$(_cv) := $$(strip $($(_cv)))$$(EQT) >>$$(ZIMK__CFGCACHE) $(CMDSEP)
+
+$(ZIMK__TAB)$$(VR)echo $$(EQT)C_$(_cv) := $$(strip $($(_cv)))$$(EQT) >>$$(ZIMK__CFGCACHE)
 endef
 define ZIMK__WRITECACHE
 $$(ZIMK__CFGCACHE):
-	$$(VR)echo $$(EQT)# generated file, do not edit!$$(EQT) >$$(ZIMK__CFGCACHE)
-	$$(VR)$(foreach _cv,$(CONFVARS), \
-		$(if $(strip $($(_cv))),$(ZIMK__WRITECACHELINE),))
+	$$(VR)echo $$(EQT)# generated file, do not edit!$$(EQT) >$$(ZIMK__CFGCACHE)$(foreach _cv,$(CONFVARS),$(if $(strip $($(_cv))),$(ZIMK__WRITECACHELINE),))
 endef
 define ZIMK__WRITECFGLINE
-echo $$(EQT)$(_cv) ?= $$(strip $($(_cv)))$$(EQT) >>$$(USERCONFIG) $(CMDSEP)
+
+$(ZIMK__TAB)$$(VR)echo $$(EQT)$(_cv) ?= $$(strip $($(_cv)))$$(EQT) >>$$(USERCONFIG)
 endef
 define ZIMK__WRITECFG
 $(ZIMK__CFGTARGET): $$(USERCONFIG)
 	$$(VCFG)
-	$$(VR)echo $$(EQT)# generated file, do not edit!$$(EQT) >$$(USERCONFIG)
-	$$(VR)$(foreach _cv,$(CONFVARS), \
-		$(if $(strip $($(_cv))),$(ZIMK__WRITECFGLINE),))
+	$$(VR)echo $$(EQT)# generated file, do not edit!$$(EQT) >$$(USERCONFIG)$(foreach _cv,$(CONFVARS),$(if $(strip $($(_cv))),$(ZIMK__WRITECFGLINE),))
 endef
 define ZIMK__WRITECFGTAG
 undefine ZIMK__CFGTAG
