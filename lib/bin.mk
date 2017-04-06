@@ -3,6 +3,7 @@ $(OBJRULES)
 
 $(_T)_TARGET ?= $(_T)
 $(_T)_TGTDIR ?= $$(BINDIR)
+$(_T)_LIBDIR ?= $$(LIBDIR)
 $(_T)_BUILDWITH ?= all
 $(_T)_STRIPWITH ?= strip
 $(_T)_INSTALLWITH ?= install
@@ -37,12 +38,24 @@ $$($(_T)_STRIPWITH):: $$($(_T)_EXE)
 
 endif
 
+ifeq ($$(PLATFORM),win32)
+$$($(_T)_EXE): $$($(_T)_OBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
+	$$(VCCLD)
+	$$(VR)$$(CROSS_COMPILE)$$(CC) -o$$@ \
+		-Wl,--out-implib,$$($(_T)_LIBDIR)$$(PSEP)lib$(_T).dll.a \
+		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
+		$$($(_T)_$$(PLATFORM)_LDFLAGS) $$($(_T)_LDFLAGS) $$(LDFLAGS) \
+		$$($(_T)_OBJS) $$(_$(_T)_LINK)
+
+else
 $$($(_T)_EXE): $$($(_T)_OBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
 	$$(VCCLD)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -o$$@ \
 		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
 		$$($(_T)_$$(PLATFORM)_LDFLAGS) $$($(_T)_LDFLAGS) $$(LDFLAGS) \
 		$$($(_T)_OBJS) $$(_$(_T)_LINK)
+
+endif
 
 $(_T)_install: $$($(_T)_EXE)
 	$$(eval _ZIMK_1 := $$(DESTDIR)$$($$($(_T)_INSTALLDIRNAME)dir))
