@@ -12,7 +12,7 @@ ZIMK__PRCYAN := $(shell tput setaf 6)
 ZIMK__PRWHITE := $(shell tput setaf 7)
 else
 
-ifeq ($(PLATFORM),win32)
+ifeq ($(OS),Windows_NT)
 ifneq ($(call geq,$(OSVER_MAJ),10),)
 ZIMK__PRNORM := [0m
 ZIMK__PRBOLD := [1m
@@ -24,7 +24,7 @@ ZIMK__PRMAGENTA := [95m
 ZIMK__PRCYAN := [96m
 ZIMK__PRWHITE := [97m
 endif # Windows 10
-endif # Platform win32
+endif # Windows_NT
 
 endif # POSIXSHELL
 

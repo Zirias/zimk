@@ -14,8 +14,8 @@ endif
 
 -include defaults.mk
 include $(ZIMKPATH)lib/platform.mk
-include $(ZIMKPATH)lib/config.mk
 include $(ZIMKPATH)lib/pretty.mk
+include $(ZIMKPATH)lib/config.mk
 include $(ZIMKPATH)lib/silent.mk
 include $(ZIMKPATH)lib/objs.mk
 include $(ZIMKPATH)lib/dirs.mk
