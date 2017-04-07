@@ -37,6 +37,7 @@ distclean::
 	$(RMF) *.cfg
 	$(RMFR) $(BINBASEDIR)
 	$(RMFR) $(LIBBASEDIR)
+	$(RMFR) $(TESTBASEDIR)
 	$(RMFR) $(OBJBASEDIR)
 
 strip:: all
