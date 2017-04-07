@@ -178,8 +178,10 @@ $(foreach _cv,CC,$(eval $(ZIMK__UPDATESINGLECFGVARS)))
 ZIMK__DEFDEFINES:= $(shell $(CROSS_COMPILE)$(CC) -dM -E - $(CMDNOIN))
 ifeq ($(filter _WIN32,$(ZIMK__DEFDEFINES)),)
 PLATFORM:= posix
+EXE:=
 else
 PLATFORM:= win32
+EXE:=.exe
 endif
 
 TARGETARCH:= $(strip $(shell $(CROSS_COMPILE)$(CC) -dumpmachine))
