@@ -124,6 +124,7 @@ DEFAULT_STRIP ?= strip
 DEFAULT_CFLAGS ?= -std=c11 -Wall -Wextra -Wshadow -pedantic
 DEFAULT_LDFLAGS ?= -L$(LIBDIR)
 
+PLATFORM_win32_CFLAGS ?= -Wno-pedantic-ms-format
 PLATFORM_win32_LDFLAGS ?= -static-libgcc -static-libstdc++
 PLATFORM_win32_DEFINES ?= -DWIN32
 
