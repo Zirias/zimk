@@ -1,6 +1,5 @@
 ifeq ($(OS),Windows_NT)
 
-PLATFORM := win32
 undefine POSIXSHELL
 ifdef LANG
 POSIXSHELL := 1
@@ -9,7 +8,6 @@ ifdef BASH
 POSIXSHELL := 1
 endif
 
-EXE := .exe
 OSVER := $(subst ],,$(lastword $(shell cmd /c ver)))
 _ZIMK__OSVER := $(subst ., ,$(OSVER))
 OSVER_MAJ := $(firstword $(_ZIMK__OSVER))
@@ -18,10 +16,7 @@ OSVER_REV := $(word 3, $(_ZIMK__OSVER))
 
 else
 
-PLATFORM := posix
 POSIXSHELL := 1
-
-EXE :=
 
 endif
 
@@ -45,6 +40,7 @@ CATOUT := >
 EQT := "
 #" make vim syntax highlight happy
 CMDQUIET := >/dev/null 2>&1
+CMDNOIN := </dev/null
 
 INSTALL ?= install
 INSTDIR := $(INSTALL) -d
@@ -71,6 +67,7 @@ CATADD := +
 CATOUT :=
 EQT :=
 CMDQUIET := >nul 2>nul & verify >nul
+CMDNOIN := <nul
 
 INSTDIR := $(MDP)
 

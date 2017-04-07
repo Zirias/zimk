@@ -126,7 +126,6 @@ DEFAULT_LDFLAGS ?= -L$(LIBDIR)
 
 PLATFORM_win32_CFLAGS ?= -Wno-pedantic-ms-format
 PLATFORM_win32_LDFLAGS ?= -static-libgcc -static-libstdc++
-PLATFORM_win32_DEFINES ?= -DWIN32
 
 BUILD_debug_CFLAGS ?= -g3 -O0
 BUILD_debug_DEFINES ?= -DDEBUG
@@ -175,22 +174,30 @@ $(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(DEFAULT_$(_cv)))
 $(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(PLATFORM_$(PLATFORM)_$(_cv)))
 $(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(BUILD_$(BUILDCFG)_$(_cv)))
 endef
-$(foreach _cv,$(SINGLECONFVARS),$(eval $(ZIMK__UPDATESINGLECFGVARS)))
-
-OBJBASEDIR ?= obj
-BINBASEDIR ?= bin
-LIBBASEDIR ?= lib
-TESTBASEDIR ?= test
+$(foreach _cv,CC,$(eval $(ZIMK__UPDATESINGLECFGVARS)))
+ZIMK__DEFDEFINES:= $(shell $(CROSS_COMPILE)$(CC) -dM -E - $(CMDNOIN))
+ifeq ($(filter _WIN32,$(ZIMK__DEFDEFINES)),)
+PLATFORM:= posix
+else
+PLATFORM:= win32
+endif
 
 TARGETARCH:= $(strip $(shell $(CROSS_COMPILE)$(CC) -dumpmachine))
 ifeq ($(TARGETARCH),)
 TARGETARCH:= unknown
 endif
 
+OBJBASEDIR ?= obj
+BINBASEDIR ?= bin
+LIBBASEDIR ?= lib
+TESTBASEDIR ?= test
+
 OBJDIR ?= $(OBJBASEDIR)$(PSEP)$(TARGETARCH)$(PSEP)$(BUILDCFG)
 BINDIR ?= $(BINBASEDIR)$(PSEP)$(TARGETARCH)$(PSEP)$(BUILDCFG)
 LIBDIR ?= $(LIBBASEDIR)$(PSEP)$(TARGETARCH)$(PSEP)$(BUILDCFG)
 TESTDIR ?= $(TESTBASEDIR)$(PSEP)$(TARGETARCH)$(PSEP)$(BUILDCFG)
+
+$(foreach _cv,$(SINGLECONFVARS),$(eval $(ZIMK__UPDATESINGLECFGVARS)))
 
 define ZIMK__UPDATELISTCFGVARS
 ifeq ($$(strip $$(origin $(_cv))$$($(_cv))),command line)
