@@ -58,7 +58,19 @@ $$($(_T)_OBJDIR)$$(PSEP)%.ro: $$($(_T)_SRCDIR)$$(PSEP)%.rc \
 
 endif
 
-$$($(_T)_OBJDIR)$$(PSEP)%.o: $$($(_T)_SRCDIR)$$(PSEP)%.c \
+ifeq ($$(strip $$($(_T)_PREPROC)),)
+$(_T)_SRCPAT := $$($(_T)_SRCDIR)$$(PSEP)%.c
+else
+$(_T)_SRCPAT := $$($(_T)_OBJDIR)$$(PSEP)%_pre.c
+CLEAN += $$($(_T)_OBJS:.o=_pre.c)
+
+$$($(_T)_SRCPAT): $$($(_T)_SRCDIR)$$(PSEP)%.c
+	$$(VGEN)
+	$$(VR)$$($$($(_T)_PREPROC)) $$< >$$@
+
+endif
+
+$$($(_T)_OBJDIR)$$(PSEP)%.o: $$($(_T)_SRCPAT) \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCC)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
@@ -67,7 +79,7 @@ $$($(_T)_OBJDIR)$$(PSEP)%.o: $$($(_T)_SRCDIR)$$(PSEP)%.c \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$<
 
-$$($(_T)_OBJDIR)$$(PSEP)%_s.o: $$($(_T)_SRCDIR)$$(PSEP)%.c \
+$$($(_T)_OBJDIR)$$(PSEP)%_s.o: $$($(_T)_SRCPAT) \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCC)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
