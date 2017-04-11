@@ -1,5 +1,3 @@
-SYSNAME := $(shell uname 2>/dev/null)
-
 ifeq ($(OS),Windows_NT)
 
 undefine POSIXSHELL
@@ -49,10 +47,11 @@ INSTDIR := $(INSTALL) -d
 instfile = $(INSTDIR) $(2) $(CMDSEP) $(INSTALL) -m$(3) $(1) $(2)
 geq = $(shell if test $(1) -ge $(2); then echo 1; fi)
 
+SYSNAME := $(shell uname 2>/dev/null)
+
 else
 
 SHELL := CMD.EXE
-SYSNAME :=
 CMDSEP := &
 PSEP := \\
 CPF := copy /y
@@ -75,6 +74,8 @@ INSTDIR := $(MDP)
 
 instfile = $(MDP) $(dir $(2)) $(CMDQUIET) $(CMDSEP) copy $(1) $(2) $(CMDQUIET)
 geq = $(shell if $(1) geq $(2) echo 1)
+
+SYSNAME := $(shell uname 2>nul & verify >nul)
 
 endif
 
