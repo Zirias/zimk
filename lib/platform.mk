@@ -1,3 +1,5 @@
+SYSNAME := $(shell uname 2>/dev/null)
+
 ifeq ($(OS),Windows_NT)
 
 undefine POSIXSHELL
@@ -22,7 +24,6 @@ endif
 
 ifdef POSIXSHELL
 
-SYSNAME := $(shell uname 2>/dev/null)
 CMDSEP := ;
 PSEP := /
 CPF := cp -f
@@ -50,6 +51,7 @@ geq = $(shell if test $(1) -ge $(2); then echo 1; fi)
 
 else
 
+SHELL := CMD.EXE
 SYSNAME :=
 CMDSEP := &
 PSEP := \\
