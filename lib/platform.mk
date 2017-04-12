@@ -1,10 +1,7 @@
 ifeq ($(OS),Windows_NT)
 
 undefine POSIXSHELL
-ifdef LANG
-POSIXSHELL := 1
-endif
-ifdef BASH
+ifneq ($(strip $(filter %sh,$(basename $(realpath $(SHELL))))),)
 POSIXSHELL := 1
 endif
 
@@ -51,7 +48,6 @@ SYSNAME := $(shell uname 2>/dev/null)
 
 else
 
-SHELL := CMD.EXE
 CMDSEP := &
 PSEP := \\
 CPF := copy /y

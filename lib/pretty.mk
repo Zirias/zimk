@@ -1,6 +1,6 @@
 ifndef NCOL
 
-ifdef POSIXSHELL
+ifdef TERM
 ZIMK__PRNORM := $(shell tput sgr0)
 ZIMK__PRBOLD := $(shell tput bold)
 ZIMK__PRRED := $(shell tput setaf 1)
