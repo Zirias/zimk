@@ -26,6 +26,6 @@ ZIMK__PRWHITE := [97m
 endif # Windows 10
 endif # Windows_NT
 
-endif # POSIXSHELL
+endif # TERM
 
 endif # NCOL
