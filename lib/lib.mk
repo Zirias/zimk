@@ -93,7 +93,6 @@ $$($(_T)_LIB): $$($(_T)_SOBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -shared -o$$@ \
 		-Wl,--out-implib,$$($(_T)_TGTDIR)$$(PSEP)lib$(_T).dll.a \
 		-Wl,--output-def,$$($(_T)_TGTDIR)$$(PSEP)$(_T).def \
-		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
 		$$($(_T)_$$(PLATFORM)_LDFLAGS) $$($(_T)_LDFLAGS) $$(LDFLAGS) \
 		$$($(_T)_SOBJS) $$(_$(_T)_LINK)
 
@@ -127,7 +126,6 @@ $$(_$(_T)_LIB_FULL): $$($(_T)_SOBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
 	$$(VCCLD)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -shared -o$$@ \
 		-Wl,-soname,lib$(_T).so.$$($(_T)_V_MAJ) \
-		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
 		$$($(_T)_$$(PLATFORM)_LDFLAGS) $$($(_T)_LDFLAGS) $$(LDFLAGS) \
 		$$($(_T)_SOBJS) $$(_$(_T)_LINK)
 

@@ -130,8 +130,8 @@ PLATFORM_win32_LDFLAGS ?= -static-libgcc -static-libstdc++
 BUILD_debug_CFLAGS ?= -g3 -O0
 BUILD_debug_DEFINES ?= -DDEBUG
 
-BUILD_release_CFLAGS ?= -g0 -O2 -flto -ffunction-sections -fdata-sections
-BUILD_release_LDFLAGS ?= -O2 -flto -Wl,--gc-sections
+BUILD_release_CFLAGS ?= -g0 -O2 -ffunction-sections -fdata-sections
+BUILD_release_LDFLAGS ?= -O2 -Wl,--gc-sections
 
 ifdef POSIXSHELL
 prefix ?= /usr/local
