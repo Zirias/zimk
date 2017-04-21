@@ -6,7 +6,7 @@ endef
 SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 		  sysconfdir sharedstatedir localstatedir runstatedir \
 		  includedir docrootdir libdir localedir
-SINGLECONFVARS := $(call ZIMK__UNIQ,CC AR STRIP $(SINGLECONFVARS))
+SINGLECONFVARS := $(call ZIMK__UNIQ,CC CPP AR STRIP $(SINGLECONFVARS))
 LISTCONFVARS := $(call ZIMK__UNIQ,CFLAGS DEFINES INCLUDES LDFLAGS $(LISTCONFVARS))
 CONFVARS := $(SINGLECONFVARS) $(LISTCONFVARS)
 BUILDCFGS := $(call ZIMK__UNIQ,release debug $(BUILDCFGS))
@@ -118,6 +118,7 @@ endif
 endif
 
 DEFAULT_CC ?= cc
+DEFAULT_CPP ?= cpp
 DEFAULT_AR ?= ar
 DEFAULT_STRIP ?= strip
 

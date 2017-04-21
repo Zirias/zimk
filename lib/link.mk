@@ -1,7 +1,7 @@
 define LINKFLAGS
 
-undefine _$(T)_LIBS
-undefine _$(T)_STATICLIBS
+undefine _$(_T)_LIBS
+undefine _$(_T)_STATICLIBS
 
 ifneq ($$(strip $$($(_T)_LIBS)),)
 _$(_T)_LIBS += $$($(_T)_LIBS)

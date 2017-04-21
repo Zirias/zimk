@@ -8,6 +8,9 @@ endif
 ifeq ($(origin CC),default)
 undefine CC
 endif
+ifeq ($(origin CPP),default)
+undefine CPP
+endif
 ifeq ($(origin AR),default)
 undefine AR
 endif
