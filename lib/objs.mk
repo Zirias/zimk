@@ -111,6 +111,8 @@ $$($(_T)_OBJDIR)$$(PSEP)%.o: $$($(_T)_SRCDIR)$$(PSEP)%.c \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCC)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
+		$$($(_T)_$$(PLATFORM)_CFLAGS_STATIC) $$($(_T)_CFLAGS_STATIC) \
+		$$(CFLAGS_STATIC) \
 		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
@@ -121,7 +123,8 @@ $$($(_T)_OBJDIR)$$(PSEP)%_s.o: $$($(_T)_SRCDIR)$$(PSEP)%.c \
 	$$(VCC)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
 		$$($(_T)_$$(PLATFORM)_CFLAGS_SHARED) $$($(_T)_CFLAGS_SHARED) \
-		$$(CFLAGS) \
+		$$(CFLAGS_SHARED) \
+		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$<
@@ -130,6 +133,8 @@ $$($(_T)_OBJDIR)$$(PSEP)%.o: $$($(_T)_SRCDIR)$$(PSEP)%.S \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCC)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
+		$$($(_T)_$$(PLATFORM)_CFLAGS_STATIC) $$($(_T)_CFLAGS_STATIC) \
+		$$(CFLAGS_STATIC) \
 		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
@@ -140,7 +145,8 @@ $$($(_T)_OBJDIR)$$(PSEP)%_s.o: $$($(_T)_SRCDIR)$$(PSEP)%.S \
 	$$(VCC)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
 		$$($(_T)_$$(PLATFORM)_CFLAGS_SHARED) $$($(_T)_CFLAGS_SHARED) \
-		$$(CFLAGS) \
+		$$(CFLAGS_SHARED) \
+		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$<
@@ -150,6 +156,8 @@ $$($(_T)_OBJDIR)$$(PSEP)%_pre.o: $$($(_T)_OBJDIR)$$(PSEP)%_pre.c \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCC)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
+		$$($(_T)_$$(PLATFORM)_CFLAGS_STATIC) $$($(_T)_CFLAGS_STATIC) \
+		$$(CFLAGS_STATIC) \
 		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
@@ -160,7 +168,8 @@ $$($(_T)_OBJDIR)$$(PSEP)%_pre_s.o: $$($(_T)_OBJDIR)$$(PSEP)%_pre.c \
 	$$(VCC)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
 		$$($(_T)_$$(PLATFORM)_CFLAGS_SHARED) $$($(_T)_CFLAGS_SHARED) \
-		$$(CFLAGS) \
+		$$(CFLAGS_SHARED) \
+		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$<
