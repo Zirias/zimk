@@ -65,10 +65,10 @@ ifeq ($$($(_T)_LIBTYPE),library)
 _$(_T)_V := $$($(_T)_V_MAJ).$$($(_T)_V_MIN).$$($(_T)_V_REV)
 _$(_T)_LIB_FULL := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).so.$$(_$(_T)_V)
 _$(_T)_LIB_MAJ := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).so.$$($(_T)_V_MAJ)
-$(_T)_LIB := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).so
 else
 _$(_T)_LIB_FULL := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).so
 endif
+$(_T)_LIB := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).so
 
 endif
 
@@ -116,9 +116,6 @@ $$($(_T)_LIB): $$(_$(_T)_LIB_MAJ)
 
 $$(_$(_T)_LIB_MAJ): $$(_$(_T)_LIB_FULL)
 	$$(VR)ln -fs lib$(_T).so.$$(_$(_T)_V) $$@
-
-else
-$$($(_T)_LIB): $$(_$(_T)_LIB_FULL)
 
 endif
 
