@@ -12,6 +12,15 @@ $(_T)_OBJS := $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
 $(_T)_SOBJS := $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
 	$$(addsuffix _s.o,$$($(_T)_MODULES)))
 
+ifneq ($$(strip $$($(_T)_CXXMODULES)),)
+$(_T)_SOURCES += $$(addprefix $$($(_T)_SRCDIR)$$(PSEP), \
+	$$(addsuffix .cpp,$$($(_T)_CXXMODULES)))
+$(_T)_OBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
+	$$(addsuffix .o,$$($(_T)_CXXMODULES)))
+$(_T)_SOBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
+	$$(addsuffix _s.o,$$($(_T)_CXXMODULES)))
+endif
+
 ifneq ($$(strip $$($(_T)_ASMMODULES)),)
 $(_T)_SOURCES += $$(addprefix $$($(_T)_SRCDIR)$$(PSEP), \
 	$$(addsuffix .S,$$($(_T)_ASMMODULES)))
@@ -28,6 +37,24 @@ $(_T)_OBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
 	$$(addsuffix _$$(PLATFORM).o,$$($(_T)_PLATFORMMODULES)))
 $(_T)_SOBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
 	$$(addsuffix _$$(PLATFORM)_s.o,$$($(_T)_PLATFORMMODULES)))
+endif
+
+ifneq ($$(strip $$($(_T)_PLATFORMCXXMODULES)),)
+$(_T)_SOURCES += $$(addprefix $$($(_T)_SRCDIR)$$(PSEP), \
+	$$(addsuffix _$$(PLATFORM).cpp,$$($(_T)_PLATFORMCXXMODULES)))
+$(_T)_OBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
+	$$(addsuffix _$$(PLATFORM).o,$$($(_T)_PLATFORMCXXMODULES)))
+$(_T)_SOBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
+	$$(addsuffix _$$(PLATFORM)_s.o,$$($(_T)_PLATFORMCXXMODULES)))
+endif
+
+ifneq ($$(strip $$($(_T)_PLATFORMASMMODULES)),)
+$(_T)_SOURCES += $$(addprefix $$($(_T)_SRCDIR)$$(PSEP), \
+	$$(addsuffix _$$(PLATFORM).S,$$($(_T)_PLATFORMASMMODULES)))
+$(_T)_OBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
+	$$(addsuffix _$$(PLATFORM).o,$$($(_T)_PLATFORMASMMODULES)))
+$(_T)_SOBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
+	$$(addsuffix _$$(PLATFORM)_s.o,$$($(_T)_PLATFORMASMMODULES)))
 endif
 
 ifeq ($$(PLATFORM),win32)
@@ -51,9 +78,15 @@ $(_T)_SOBJS += $$($(_T)_SOBJS:_s.o=_pre_s.o)
 endif
 
 $(_T)_SRCPAT := $$($(_T)_OBJDIR)$$(PSEP)%_pre.c
-CLEAN += $$($(_T)_OBJS:.o=_pre.c)
+CLEAN += $$($(_T)_OBJS:.o=_pre.c) $$($(_T)_OBJS:.o=_pre.c)
 
 $$($(_T)_OBJDIR)$$(PSEP)%_pre.c: $$($(_T)_SRCDIR)$$(PSEP)%.c \
+	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) \
+	| $$(_$(_T)_DIRS) $$($(_T)_DEPS)
+	$$(VGEN)
+	$$(VR)$$($$($(_T)_PREPROC)) $$< >$$@
+
+$$($(_T)_OBJDIR)$$(PSEP)%_pre.cpp: $$($(_T)_SRCDIR)$$(PSEP)%.cpp \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) \
 	| $$(_$(_T)_DIRS) $$($(_T)_DEPS)
 	$$(VGEN)
@@ -73,6 +106,15 @@ $$($(_T)_OBJDIR)$$(PSEP)%.d: $$($(_T)_SRCDIR)$$(PSEP)%.c \
 	$$(VDEP)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ \
 		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
+		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
+		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
+		$$(INCLUDES) $$<
+
+$$($(_T)_OBJDIR)$$(PSEP)%.d: $$($(_T)_SRCDIR)$$(PSEP)%.cpp \
+	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+	$$(VDEP)
+	$$(VR)$$(CROSS_COMPILE)$$(CXX) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ \
+		$$($(_T)_$$(PLATFORM)_CXXFLAGS) $$($(_T)_CXXFLAGS) $$(CXXFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$<
@@ -129,9 +171,31 @@ $$($(_T)_OBJDIR)$$(PSEP)%_s.o: $$($(_T)_SRCDIR)$$(PSEP)%.c \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$<
 
+$$($(_T)_OBJDIR)$$(PSEP)%.o: $$($(_T)_SRCDIR)$$(PSEP)%.cpp \
+	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+	$$(VCXX)
+	$$(VR)$$(CROSS_COMPILE)$$(CXX) -c -o$$@ \
+		$$($(_T)_$$(PLATFORM)_CXXFLAGS_STATIC) $$($(_T)_CXXFLAGS_STATIC) \
+		$$(CXXFLAGS_STATIC) \
+		$$($(_T)_$$(PLATFORM)_CXXFLAGS) $$($(_T)_CXXFLAGS) $$(CXXFLAGS) \
+		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
+		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
+		$$(INCLUDES) $$<
+
+$$($(_T)_OBJDIR)$$(PSEP)%_s.o: $$($(_T)_SRCDIR)$$(PSEP)%.cpp \
+	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+	$$(VCXX)
+	$$(VR)$$(CROSS_COMPILE)$$(CXX) -c -o$$@ \
+		$$($(_T)_$$(PLATFORM)_CXXFLAGS_SHARED) $$($(_T)_CXXFLAGS_SHARED) \
+		$$(CXXFLAGS_SHARED) \
+		$$($(_T)_$$(PLATFORM)_CXXFLAGS) $$($(_T)_CXXFLAGS) $$(CXXFLAGS) \
+		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
+		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
+		$$(INCLUDES) $$<
+
 $$($(_T)_OBJDIR)$$(PSEP)%.o: $$($(_T)_SRCDIR)$$(PSEP)%.S \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
-	$$(VCC)
+	$$(VCAS)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
 		$$($(_T)_$$(PLATFORM)_CFLAGS_STATIC) $$($(_T)_CFLAGS_STATIC) \
 		$$(CFLAGS_STATIC) \
@@ -142,7 +206,7 @@ $$($(_T)_OBJDIR)$$(PSEP)%.o: $$($(_T)_SRCDIR)$$(PSEP)%.S \
 
 $$($(_T)_OBJDIR)$$(PSEP)%_s.o: $$($(_T)_SRCDIR)$$(PSEP)%.S \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
-	$$(VCC)
+	$$(VCAS)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
 		$$($(_T)_$$(PLATFORM)_CFLAGS_SHARED) $$($(_T)_CFLAGS_SHARED) \
 		$$(CFLAGS_SHARED) \
@@ -170,6 +234,28 @@ $$($(_T)_OBJDIR)$$(PSEP)%_pre_s.o: $$($(_T)_OBJDIR)$$(PSEP)%_pre.c \
 		$$($(_T)_$$(PLATFORM)_CFLAGS_SHARED) $$($(_T)_CFLAGS_SHARED) \
 		$$(CFLAGS_SHARED) \
 		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
+		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
+		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
+		$$(INCLUDES) $$<
+
+$$($(_T)_OBJDIR)$$(PSEP)%_pre.o: $$($(_T)_OBJDIR)$$(PSEP)%_pre.cpp \
+	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+	$$(VCXX)
+	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
+		$$($(_T)_$$(PLATFORM)_CXXFLAGS_STATIC) $$($(_T)_CXXFLAGS_STATIC) \
+		$$(CXXFLAGS_STATIC) \
+		$$($(_T)_$$(PLATFORM)_CXXFLAGS) $$($(_T)_CXXFLAGS) $$(CXXFLAGS) \
+		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
+		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
+		$$(INCLUDES) $$<
+
+$$($(_T)_OBJDIR)$$(PSEP)%_pre_s.o: $$($(_T)_OBJDIR)$$(PSEP)%_pre.cpp \
+	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+	$$(VCXX)
+	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
+		$$($(_T)_$$(PLATFORM)_CXXFLAGS_SHARED) $$($(_T)_CXXFLAGS_SHARED) \
+		$$(CXXFLAGS_SHARED) \
+		$$($(_T)_$$(PLATFORM)_CXXFLAGS) $$($(_T)_CXXFLAGS) $$(CXXFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$<

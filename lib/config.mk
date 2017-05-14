@@ -6,11 +6,13 @@ endef
 SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 		  sysconfdir sharedstatedir localstatedir runstatedir \
 		  includedir docrootdir libdir localedir
-SINGLECONFVARS := $(call ZIMK__UNIQ,CC CPP AR STRIP $(SINGLECONFVARS))
-LISTCONFVARS := $(call ZIMK__UNIQ,CFLAGS DEFINES INCLUDES LDFLAGS $(LISTCONFVARS))
+SINGLECONFVARS := $(call ZIMK__UNIQ,CC CXX CPP AR STRIP $(SINGLECONFVARS))
+LISTCONFVARS := $(call ZIMK__UNIQ,CFLAGS CXXFLAGS DEFINES INCLUDES LDFLAGS \
+	$(LISTCONFVARS))
 CONFVARS := $(SINGLECONFVARS) $(LISTCONFVARS)
 BUILDCFGS := $(call ZIMK__UNIQ,release debug $(BUILDCFGS))
-NOBUILDTARGETS := $(sort clean distclean config changeconfig _build_config _build_changeconfig showconfig $(NOBUILDTARGETS))
+NOBUILDTARGETS := $(sort clean distclean config changeconfig showconfig \
+	_build_config _build_changeconfig $(NOBUILDTARGETS))
 MAKECMDGOALS ?= all
 
 -include global.cfg
@@ -118,20 +120,25 @@ endif
 endif
 
 DEFAULT_CC ?= cc
+DEFAULT_CXX ?= c++
 DEFAULT_CPP ?= cpp
 DEFAULT_AR ?= ar
 DEFAULT_STRIP ?= strip
 
 DEFAULT_CFLAGS ?= -std=c11 -Wall -Wextra -Wshadow -pedantic
+DEFAULT_CXXFLAGS ?= -std=c++11 -Wall -Wextra -Wshadow -pedantic
 DEFAULT_LDFLAGS ?= -L$(LIBDIR)
 
 PLATFORM_win32_CFLAGS ?= -Wno-pedantic-ms-format
+PLATFORM_win32_CXXFLAGS ?= -Wno-pedantic-ms-format
 PLATFORM_win32_LDFLAGS ?= -static-libgcc -static-libstdc++
 
 BUILD_debug_CFLAGS ?= -g3 -O0
+BUILD_debug_CXXFLAGS ?= -g3 -O0
 BUILD_debug_DEFINES ?= -DDEBUG
 
 BUILD_release_CFLAGS ?= -g0 -O2 -ffunction-sections -fdata-sections
+BUILD_release_CXXFLAGS ?= -g0 -O2 -ffunction-sections -fdata-sections
 BUILD_release_LDFLAGS ?= -O2 -Wl,--gc-sections
 
 ifdef POSIXSHELL

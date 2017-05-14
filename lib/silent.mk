@@ -3,6 +3,7 @@ V?= 0
 ifeq ($(V),1)
 VCC:=
 VAS:=
+VCXX:=
 VDEP:=
 VLD:=
 VAR:=
@@ -17,6 +18,7 @@ VR:=
 else
 VCC=	@echo $(EQT)   $(ZIMK__PRBOLD)$(ZIMK__PRCYAN)[CC]$(ZIMK__PRNORM)   $@$(EQT)
 VAS=	@echo $(EQT)   $(ZIMK__PRBOLD)$(ZIMK__PRCYAN)[AS]$(ZIMK__PRNORM)   $@$(EQT)
+VCXX=	@echo $(EQT)   $(ZIMK__PRBOLD)$(ZIMK__PRCYAN)[CXX]$(ZIMK__PRNORM)  $@$(EQT)
 VDEP=	@echo $(EQT)   $(ZIMK__PRBOLD)[DEP]$(ZIMK__PRNORM)  $@$(EQT)
 VLD=	@echo $(EQT)   $(ZIMK__PRBOLD)[LD]$(ZIMK__PRNORM)   $@$(EQT)
 VAR=	@echo $(EQT)   $(ZIMK__PRBOLD)$(ZIMK__PRGREEN)[AR]   $@$(ZIMK__PRNORM)$(EQT)

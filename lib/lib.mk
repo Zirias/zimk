@@ -14,7 +14,8 @@ $(_T)_TARGET ?= $(_T)
 $(_T)_V_MAJ ?= 1
 $(_T)_V_MIN ?= 0
 $(_T)_V_REV ?= 0
-$(_T)_CFLAGS_SHARED ?= -fPIC
+$(_T)_posix_CFLAGS_SHARED ?= -fPIC
+$(_T)_posix_CXXFLAGS_SHARED ?= -fPIC
 $(_T)_INSTALLDIRNAME ?= lib
 $(_T)_INSTALLBINDIRNAME ?= bin
 
