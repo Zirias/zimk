@@ -6,7 +6,7 @@ endef
 SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 		  sysconfdir sharedstatedir localstatedir runstatedir \
 		  includedir docrootdir libdir localedir
-SINGLECONFVARS := $(call ZIMK__UNIQ,CC CXX CPP AR STRIP $(SINGLECONFVARS))
+SINGLECONFVARS := $(call ZIMK__UNIQ,CC CXX CPP AR STRIP MOC $(SINGLECONFVARS))
 LISTCONFVARS := $(call ZIMK__UNIQ,CFLAGS CXXFLAGS DEFINES INCLUDES LDFLAGS \
 	$(LISTCONFVARS))
 CONFVARS := $(SINGLECONFVARS) $(LISTCONFVARS)
@@ -124,6 +124,7 @@ DEFAULT_CXX ?= c++
 DEFAULT_CPP ?= cpp
 DEFAULT_AR ?= ar
 DEFAULT_STRIP ?= strip
+DEFAULT_MOC ?= moc
 
 DEFAULT_CFLAGS ?= -std=c11 -Wall -Wextra -Wshadow -pedantic
 DEFAULT_CXXFLAGS ?= -std=c++11 -Wall -Wextra -Wshadow -pedantic

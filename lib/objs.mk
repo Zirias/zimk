@@ -1,3 +1,8 @@
+PREPROC_MOC_suffix := moc
+PREPROC_MOC_intype := h
+PREPROC_MOC_outtype := cpp
+PREPROC_MOC_preproc := $(MOC)
+
 define OBJRULES
 
 $(_T)_MAKEFILES ?= $$(ZIMK__MK)
@@ -69,28 +74,37 @@ endif
 endif
 
 ifneq ($$(strip $$($(_T)_PREPROC)),)
-ifeq ($$(strip $$($(_T)_PREPROC_ADD)),)
-$(_T)_OBJS := $$($(_T)_OBJS:.o=_pre.o)
-$(_T)_SOBJS := $$($(_T)_SOBJS:_s.o=_pre_s.o)
-else
-$(_T)_OBJS += $$($(_T)_OBJS:.o=_pre.o)
-$(_T)_SOBJS += $$($(_T)_SOBJS:_s.o=_pre_s.o)
-endif
+$(_T)_PPSRCDIR ?= $$($(_T)_SRCDIR)
 
-$(_T)_SRCPAT := $$($(_T)_OBJDIR)$$(PSEP)%_pre.c
-CLEAN += $$($(_T)_OBJS:.o=_pre.c) $$($(_T)_OBJS:.o=_pre.c)
+$(_T)_OBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
+	$$(addsuffix _$$(PREPROC_$$($(_T)_PREPROC)_suffix).o, \
+	$$($(_T)_PREPROCMODULES)))
+$(_T)_SOBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
+	$$(addsuffix _$$(PREPROC_$$($(_T)_PREPROC)_suffix)_s.o, \
+	$$($(_T)_PREPROCMODULES)))
+$(_T)_OBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
+	$$(addsuffix _$$(PLATFORM)_$$(PREPROC_$$($(_T)_PREPROC)_suffix).o, \
+	$$($(_T)_PLATFORMPREPROCMODULES)))
+$(_T)_SOBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
+	$$(addsuffix _$$(PLATFORM)_$$(PREPROC_$$($(_T)_PREPROC)_suffix)_s.o, \
+	$$($(_T)_PLATFORMPREPROCMODULES)))
 
-$$($(_T)_OBJDIR)$$(PSEP)%_pre.c: $$($(_T)_SRCDIR)$$(PSEP)%.c \
+$(_T)_PPSOURCES := $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
+	$$(addsuffix _$$(PREPROC_$$($(_T)_PREPROC)_suffix).c, \
+	$$($(_T)_PREPROCMODULES))) \
+	$$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
+	$$(addsuffix _$$(PLATFORM)_$$(PREPROC_$$($(_T)_PREPROC)_suffix).c, \
+	$$($(_T)_PLATFORMPREPROCMODULES)))
+
+CLEAN += $$($(_T)_PPSOURCES)
+
+$$($(_T)_OBJDIR)$$(PSEP)%_$$(PREPROC_$$($(_T)_PREPROC)_suffix).$$(PREPROC_$$($(_T)_PREPROC)_outtype): \
+		$$($(_T)_PPSRCDIR)$$(PSEP)%.$$(PREPROC_$$($(_T)_PREPROC)_intype) \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) \
 	| $$(_$(_T)_DIRS) $$($(_T)_DEPS)
 	$$(VGEN)
-	$$(VR)$$($$($(_T)_PREPROC)) $$< >$$@
-
-$$($(_T)_OBJDIR)$$(PSEP)%_pre.cpp: $$($(_T)_SRCDIR)$$(PSEP)%.cpp \
-	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) \
-	| $$(_$(_T)_DIRS) $$($(_T)_DEPS)
-	$$(VGEN)
-	$$(VR)$$($$($(_T)_PREPROC)) $$< >$$@
+	$$(VR)$$(PREPROC_$$($(_T)_PREPROC)_preproc) \
+		$$($(_T)_PREPROCFLAGS) $$< >$$@
 
 endif
 
@@ -216,7 +230,8 @@ $$($(_T)_OBJDIR)$$(PSEP)%_s.o: $$($(_T)_SRCDIR)$$(PSEP)%.S \
 		$$(INCLUDES) $$<
 
 ifneq ($$(strip $$($(_T)_PREPROC)),)
-$$($(_T)_OBJDIR)$$(PSEP)%_pre.o: $$($(_T)_OBJDIR)$$(PSEP)%_pre.c \
+$$($(_T)_OBJDIR)$$(PSEP)%_$$(PREPROC_$$($(_T)_PREPROC)_suffix).o: \
+		$$($(_T)_OBJDIR)$$(PSEP)%_$$(PREPROC_$$($(_T)_PREPROC)_suffix).c \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCC)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
@@ -227,7 +242,8 @@ $$($(_T)_OBJDIR)$$(PSEP)%_pre.o: $$($(_T)_OBJDIR)$$(PSEP)%_pre.c \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$<
 
-$$($(_T)_OBJDIR)$$(PSEP)%_pre_s.o: $$($(_T)_OBJDIR)$$(PSEP)%_pre.c \
+$$($(_T)_OBJDIR)$$(PSEP)%_$$(PREPROC_$$($(_T)_PREPROC)_suffix)_s.o: \
+		$$($(_T)_OBJDIR)$$(PSEP)%_$$(PREPROC_$$($(_T)_PREPROC)_suffix).c \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCC)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
@@ -238,7 +254,8 @@ $$($(_T)_OBJDIR)$$(PSEP)%_pre_s.o: $$($(_T)_OBJDIR)$$(PSEP)%_pre.c \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$<
 
-$$($(_T)_OBJDIR)$$(PSEP)%_pre.o: $$($(_T)_OBJDIR)$$(PSEP)%_pre.cpp \
+$$($(_T)_OBJDIR)$$(PSEP)%_$$(PREPROC_$$($(_T)_PREPROC)_suffix).o: \
+		$$($(_T)_OBJDIR)$$(PSEP)%_$$(PREPROC_$$($(_T)_PREPROC)_suffix).cpp \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCXX)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
@@ -249,13 +266,38 @@ $$($(_T)_OBJDIR)$$(PSEP)%_pre.o: $$($(_T)_OBJDIR)$$(PSEP)%_pre.cpp \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$<
 
-$$($(_T)_OBJDIR)$$(PSEP)%_pre_s.o: $$($(_T)_OBJDIR)$$(PSEP)%_pre.cpp \
+$$($(_T)_OBJDIR)$$(PSEP)%_$$(PREPROC_$$($(_T)_PREPROC)_suffix)_s.o: \
+		$$($(_T)_OBJDIR)$$(PSEP)%_$$(PREPROC_$$($(_T)_PREPROC)_suffix).cpp \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCXX)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
 		$$($(_T)_$$(PLATFORM)_CXXFLAGS_SHARED) $$($(_T)_CXXFLAGS_SHARED) \
 		$$(CXXFLAGS_SHARED) \
 		$$($(_T)_$$(PLATFORM)_CXXFLAGS) $$($(_T)_CXXFLAGS) $$(CXXFLAGS) \
+		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
+		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
+		$$(INCLUDES) $$<
+
+$$($(_T)_OBJDIR)$$(PSEP)%_$$(PREPROC_$$($(_T)_PREPROC)_suffix).o: \
+		$$($(_T)_OBJDIR)$$(PSEP)%_$$(PREPROC_$$($(_T)_PREPROC)_suffix).S \
+	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+	$$(VCC)
+	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
+		$$($(_T)_$$(PLATFORM)_CFLAGS_STATIC) $$($(_T)_CFLAGS_STATIC) \
+		$$(CFLAGS_STATIC) \
+		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
+		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
+		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
+		$$(INCLUDES) $$<
+
+$$($(_T)_OBJDIR)$$(PSEP)%_$$(PREPROC_$$($(_T)_PREPROC)_suffix)_s.o: \
+		$$($(_T)_OBJDIR)$$(PSEP)%_$$(PREPROC_$$($(_T)_PREPROC)_suffix).S \
+	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+	$$(VCC)
+	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
+		$$($(_T)_$$(PLATFORM)_CFLAGS_SHARED) $$($(_T)_CFLAGS_SHARED) \
+		$$(CFLAGS_SHARED) \
+		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$<

@@ -49,6 +49,14 @@ $(_T)_INSTALLSTATICWITH :=
 $(_T)_STRIPWITH :=
 endif
 
+ifeq ($$($(_T)_CXXMODULES),)
+$(_T)_LDC := $$(CC)
+$(_T)_VL = $$(VCCLD)
+else
+$(_T)_LDC := $$(CXX)
+$(_T)_VL = $$(VCXLD)
+endif
+
 $(_T)_STATICLIB := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).a
 
 $(BUILDDEPS)
@@ -90,8 +98,8 @@ static_$(_T)_install: $$($(_T)_STATICLIB)
 
 ifeq ($$(PLATFORM),win32)
 $$($(_T)_LIB): $$($(_T)_SOBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
-	$$(VCCLD)
-	$$(VR)$$(CROSS_COMPILE)$$(CC) -shared -o$$@ \
+	$$($(_T)_VL)
+	$$(VR)$$(CROSS_COMPILE)$$($(_T)_LDC) -shared -o$$@ \
 		-Wl,--out-implib,$$($(_T)_TGTDIR)$$(PSEP)lib$(_T).dll.a \
 		-Wl,--output-def,$$($(_T)_TGTDIR)$$(PSEP)$(_T).def \
 		$$($(_T)_$$(PLATFORM)_LDFLAGS) $$($(_T)_LDFLAGS) $$(LDFLAGS) \
@@ -121,8 +129,8 @@ $$(_$(_T)_LIB_MAJ): $$(_$(_T)_LIB_FULL)
 endif
 
 $$(_$(_T)_LIB_FULL): $$($(_T)_SOBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
-	$$(VCCLD)
-	$$(VR)$$(CROSS_COMPILE)$$(CC) -shared -o$$@ \
+	$$($(_T)_VL)
+	$$(VR)$$(CROSS_COMPILE)$$($(_T)_LDC) -shared -o$$@ \
 		-Wl,-soname,lib$(_T).so.$$($(_T)_V_MAJ) \
 		$$($(_T)_$$(PLATFORM)_LDFLAGS) $$($(_T)_LDFLAGS) $$(LDFLAGS) \
 		$$($(_T)_SOBJS) $$(_$(_T)_LINK)
