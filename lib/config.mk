@@ -127,7 +127,7 @@ DEFAULT_STRIP ?= strip
 DEFAULT_MOC ?= moc
 
 DEFAULT_CFLAGS ?= -std=c11 -Wall -Wextra -Wshadow -pedantic
-DEFAULT_CXXFLAGS ?= -std=c++11 -Wall -Wextra -Wshadow -pedantic
+DEFAULT_CXXFLAGS ?= -std=c++11 -Wall -Wextra -pedantic
 DEFAULT_LDFLAGS ?= -L$(LIBDIR)
 
 PLATFORM_win32_CFLAGS ?= -Wno-pedantic-ms-format
