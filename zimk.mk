@@ -31,6 +31,14 @@ include $(ZIMKPATH)lib/bin.mk
 include $(ZIMKPATH)lib/lib.mk
 include $(ZIMKPATH)lib/funcs.mk
 
+ifneq ($(shell git --version $(CMDNOERR)),)
+$(ZIMKPATH)zimk.mk:
+	$(VGIT)
+	$(VR)-git submodule update zimk $(CMDQUIET)
+
+.PHONY: $(ZIMKPATH)zimk.mk
+endif
+
 install:: all
 
 install-strip:: strip install

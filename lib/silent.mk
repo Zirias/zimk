@@ -15,6 +15,7 @@ VINST:=
 VMD:=
 VCFG:=
 VGEN:=
+VGIT:=
 VR:=
 else
 VCC=	@echo $(EQT)   $(ZIMK__PRBOLD)$(ZIMK__PRCYAN)[CC]$(ZIMK__PRNORM)   $@$(EQT)
@@ -31,6 +32,7 @@ VINST=	@echo $(EQT)   $(ZIMK__PRBOLD)$(ZIMK__PRMAGENTA)[INST] $(_ZIMK_0)$(ZIMK__
 VMD=	@echo $(EQT)   $(ZIMK__PRBOLD)[MD]$(ZIMK__PRNORM)   $@$(EQT)
 VCFG=	@echo $(EQT)   $(ZIMK__PRBOLD)[CFG]$(ZIMK__PRNORM)  $<$(EQT)
 VGEN=	@echo $(EQT)   $(ZIMK__PRBOLD)[GEN]$(ZIMK__PRNORM)  $@$(EQT)
+VGIT=	@echo $(EQT)   $(ZIMK__PRBOLD)[GIT]$(ZIMK__PRNORM)  $@$(EQT)
 VR:=	@
 endif
 

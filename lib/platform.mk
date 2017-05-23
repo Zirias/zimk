@@ -36,6 +36,7 @@ CATOUT := >
 EQT := "
 #" make vim syntax highlight happy
 CMDQUIET := >/dev/null 2>&1
+CODNOERR := 2>/dev/null
 CMDNOIN := </dev/null
 
 INSTALL ?= install
@@ -64,6 +65,7 @@ CATADD := +
 CATOUT :=
 EQT :=
 CMDQUIET := >nul 2>nul & verify >nul
+CMDNOERR := 2>nul & verify >nul
 CMDNOIN := <nul
 
 INSTDIR := $(MDP)
