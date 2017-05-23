@@ -9,6 +9,10 @@ $(_T)_MAKEFILES ?= $$(ZIMK__MK)
 $(_T)_SRCDIR ?= $$(patsubst %$$(PSEP),%,$$(ZIMK__DIR))
 $(_T)_SRCDIR := $$(strip $$($(_T)_SRCDIR))
 $(_T)_OBJDIR ?= $$(OBJDIR)$$(PSEP)$$($(_T)_SRCDIR)
+$(_T)_OBJDIR := $$(patsubst %$$(PSEP),%,$$($(_T)_OBJDIR))
+ifeq ($$($(_T)_SRCDIR),)
+$(_T)_SRCDIR := .$$(PSEP)
+endif
 
 $(_T)_SOURCES := $$(addprefix $$($(_T)_SRCDIR)$$(PSEP), \
 	$$(addsuffix .c,$$($(_T)_MODULES)))
