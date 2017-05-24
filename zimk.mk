@@ -34,7 +34,7 @@ include $(ZIMKPATH)lib/funcs.mk
 ifndef MAKE_RESTARTS
 ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)
 ifneq ($(shell git --version $(CMDNOERR)),)
-ZIMKSUBMODULECFG:=$(file <$(ZIMKPATH).git)
+ZIMKSUBMODULECFG:=$(shell $(READ) $(ZIMKPATH).git $(CMDNOERR))
 ifeq ($(words $(ZIMKSUBMODULECFG)),2)
 ZIMKSUBMODULEGITDIR:=$(realpath $(ZIMKPATH)$(lastword $(ZIMKSUBMODULECFG)))
 ifneq ($(ZIMKSUBMODULEGITDIR),)

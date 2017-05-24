@@ -33,6 +33,7 @@ XFI := ; fi
 CATIN := cat
 CATADD :=
 CATOUT := >
+READ := cat
 EQT := "
 #" make vim syntax highlight happy
 CMDQUIET := >/dev/null 2>&1
@@ -65,6 +66,7 @@ XFI := )
 CATIN := copy /b
 CATADD := +
 CATOUT :=
+READ := type
 EQT :=
 CMDQUIET := >nul 2>nul & verify >nul
 CMDNOERR := 2>nul & verify >nul
