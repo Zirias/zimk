@@ -45,6 +45,8 @@ INSTDIR := $(INSTALL) -d
 instfile = $(INSTDIR) $(2) $(CMDSEP) $(INSTALL) -m$(3) $(1) $(2)
 geq = $(shell if test $(1) -ge $(2); then echo 1; fi)
 
+touch = touch $(1)
+
 SYSNAME := $(shell uname 2>/dev/null)
 
 else
@@ -72,6 +74,8 @@ INSTDIR := $(MDP)
 
 instfile = $(MDP) $(dir $(2)) $(CMDQUIET) $(CMDSEP) copy $(1) $(2) $(CMDQUIET)
 geq = $(shell if $(1) geq $(2) echo 1)
+
+touch = copy /b $(1) +,,
 
 SYSNAME := $(shell uname 2>nul & verify >nul)
 

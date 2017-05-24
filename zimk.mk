@@ -41,6 +41,7 @@ ifneq ($(ZIMKSUBMODULEGITDIR),)
 $(ZIMKPATH)zimk.mk: $(ZIMKSUBMODULEGITDIR)/HEAD
 	$(VGIT)
 	$(VR)git submodule update $(ZIMKPATH)
+	$(VR)$(call touch,$@)
 endif
 endif
 endif
