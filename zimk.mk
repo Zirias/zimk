@@ -32,12 +32,14 @@ include $(ZIMKPATH)lib/lib.mk
 include $(ZIMKPATH)lib/funcs.mk
 
 ifndef MAKE_RESTARTS
+ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)
 ifneq ($(shell git --version $(CMDNOERR)),)
 $(ZIMKPATH)zimk.mk:
 	$(VGIT)
 	$(VR)-git submodule update zimk $(CMDQUIET)
 
 .PHONY: $(ZIMKPATH)zimk.mk
+endif
 endif
 endif
 
