@@ -38,7 +38,7 @@ ZIMKSUBMODULECFG:=$(file <$(ZIMKPATH).git)
 ifeq ($(words $(ZIMKSUBMODULECFG)),2)
 ZIMKSUBMODULEGITDIR:=$(realpath $(ZIMKPATH)$(lastword $(ZIMKSUBMODULECFG)))
 ifneq ($(ZIMKSUBMODULEGITDIR),)
-$(ZIMKPATH)zimk.mk: $(ZIMKSUBMODULEGITDIR)/HEAD
+$(ZIMKPATH)zimk.mk: $(ZIMKSUBMODULEGITDIR)/FETCH_HEAD
 	$(VGIT)
 	$(VR)git submodule update $(ZIMKPATH)
 	$(VR)$(call touch,$@)
