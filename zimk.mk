@@ -34,11 +34,15 @@ include $(ZIMKPATH)lib/funcs.mk
 ifndef MAKE_RESTARTS
 ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)
 ifneq ($(shell git --version $(CMDNOERR)),)
-$(ZIMKPATH)zimk.mk:
+ZIMKSUBMODULECFG:=$(file <$(ZIMKPATH).git)
+ifeq ($(words $(ZIMKSUBMODULECFG)),2)
+ZIMKSUBMODULEGITDIR:=$(realpath $(ZIMKPATH)$(lastword $(ZIMKSUBMODULECFG)))
+ifneq ($(ZIMKSUBMODULEGITDIR),)
+$(ZIMKPATH)zimk.mk: $(ZIMKSUBMODULEGITDIR)/HEAD
 	$(VGIT)
-	$(VR)-git submodule update zimk $(CMDQUIET)
-
-.PHONY: $(ZIMKPATH)zimk.mk
+	$(VR)git submodule update $(ZIMKPATH)
+endif
+endif
 endif
 endif
 endif
