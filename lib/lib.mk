@@ -18,6 +18,8 @@ $(_T)_posix_CFLAGS_SHARED ?= -fPIC
 $(_T)_posix_CXXFLAGS_SHARED ?= -fPIC
 $(_T)_INSTALLDIRNAME ?= lib
 $(_T)_INSTALLBINDIRNAME ?= bin
+$(_T)_HEADERDIR ?= $$($(_T)_SRCDIR)
+$(_T)_HEADERTGTDIR ?= $$(includedir)$$(PSEP)$(_T)
 
 ifeq ($$($(_T)_LIBTYPE),library)
 $(_T)_TGTDIR ?= $$(LIBDIR)
@@ -149,8 +151,6 @@ $(_T): $$($(_T)_LIB)
 
 static_$(_T): $$($(_T)_STATICLIB)
 
-.PHONY: $(_T) static_$(_T) $(_T)_install static_$(_T)_install
-
 ifneq ($$(strip $$($(_T)_BUILDWITH)),)
 $$($(_T)_BUILDWITH):: $(_T)
 
@@ -177,6 +177,35 @@ $$($(_T)_STRIPWITH):: $$($(_T)_LIB)
 	$$(VR)$$(CROSS_COMPILE)$$(STRIP) --strip-unneeded $$<
 
 endif
+
+ifneq ($$(strip $$($(_T)_HEADERS_INSTALL)),)
+_$(_T)_HEADERS_INSTALL := $$(addsuffix .h,$$(subst \
+	/,$$(PSEP),$$($(_T)_HEADERS_INSTALL)))
+_$(_T)_HEADERS_DSTPATH := $$(DESTDIR)$$(subst \
+	/,$$(PSEP),$$($(_T)_HEADERTGTDIR))
+_$(_T)_HEADERS_SRCPATH := $$(subst /,$$(PSEP),$$($(_T)_HEADERDIR))
+
+ifndef ZIMK__HEADER_INST_RECIPE_LINE
+define ZIMK__HEADER_INST_RECIPE_LINE
+
+$$(ZIMK__TAB)$$$$(eval _ZIMK_1 := $$$$(_$$(_T)_HEADERS_DSTPATH))
+$$(ZIMK__TAB)$$$$(eval _ZIMK_0 := $$$$(_ZIMK_1)$$$$(PSEP)$$(_H))
+$$(ZIMK__TAB)$$$$(VINST)
+$$(ZIMK__TAB)$$$$(VR)$$$$(call instfile,$$$$(_$$(_T)_HEADERS_SRCPATH)$$$$(PSEP)$$(_H),$$$$(dir $$$$(_ZIMK_1)$$$$(PSEP)$$(_H)),644)
+endef
+endif
+
+$$(eval $$(_T)_install_headers: $$(addprefix \
+	$$(_$$(_T)_HEADERS_SRCPATH)$$(PSEP), \
+	$$(_$$(_T)_HEADERS_INSTALL))$$(foreach \
+	_H,$$(_$$(_T)_HEADERS_INSTALL),$$(ZIMK__HEADER_INST_RECIPE_LINE)))
+
+$$($(_T)_INSTALLWITH):: $(_T)_install_headers
+
+endif
+
+.PHONY: $(_T) static_$(_T) $(_T)_install static_$(_T)_install \
+	$(_T)_install_headers
 
 endef
 
