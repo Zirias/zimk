@@ -20,11 +20,11 @@ _$(_T)_LIBS += $$($(_T)_$$(PLATFORM)_LIBS)
 endif
 
 ifneq ($$(strip $$(_$(_T)_STATICLIBS)),)
-_$(_T)_LINK+=-Wl,-Bstatic $$(addprefix -l,$$(_$(_T)_STATICLIBS))
+_$(_T)_LINK+=-Wl,-Bstatic $$(addprefix -l,$$(_$(_T)_STATICLIBS)) -Wl,-Bdynamic
 endif
 
 ifneq ($$(strip $$(_$(_T)_LIBS)),)
-_$(_T)_LINK+=-Wl,-Bdynamic $$(addprefix -l,$$(_$(_T)_LIBS))
+_$(_T)_LINK+=$$(addprefix -l,$$(_$(_T)_LIBS))
 endif
 
 endef
