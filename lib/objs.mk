@@ -39,6 +39,13 @@ $(_T)_SOBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
 	$$(addsuffix _s.o,$$($(_T)_ASMMODULES)))
 endif
 
+ifneq ($$(strip $$($(_T)_RESFILES)),)
+$(_T)_OBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
+	$$(addsuffix .o,$$($(_T)_RESFILES)))
+$(_T)_SOBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
+	$$(addsuffix _s.o,$$($(_T)_RESFILES)))
+endif
+
 ifneq ($$(strip $$($(_T)_PLATFORMMODULES)),)
 $(_T)_SOURCES += $$(addprefix $$($(_T)_SRCDIR)$$(PSEP), \
 	$$(addsuffix _$$(PLATFORM).c,$$($(_T)_PLATFORMMODULES)))
@@ -64,6 +71,13 @@ $(_T)_OBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
 	$$(addsuffix _$$(PLATFORM).o,$$($(_T)_PLATFORMASMMODULES)))
 $(_T)_SOBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
 	$$(addsuffix _$$(PLATFORM)_s.o,$$($(_T)_PLATFORMASMMODULES)))
+endif
+
+ifneq ($$(strip $$($(_T)_PLATFORMRESFILES)),)
+$(_T)_OBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
+	$$(addsuffix _$$(PLATFORM).o,$$($(_T)_PLATFORMRESFILES)))
+$(_T)_SOBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
+	$$(addsuffix _$$(PLATFORM)_s.o,$$($(_T)_PLATFORMRESFILES)))
 endif
 
 ifeq ($$(PLATFORM),win32)
@@ -232,6 +246,16 @@ $$($(_T)_OBJDIR)$$(PSEP)%_s.o: $$($(_T)_SRCDIR)$$(PSEP)%.S \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$<
+
+$$($(_T)_OBJDIR)$$(PSEP)%.o: $$($(_T)_SRCDIR)$$(PSEP)% \
+	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+	$$(VGEN)
+	$$(VR)$$(OBJCOPY) -Ibinary -O$(TARGETBFD) -B$(TARGETBARCH) $$< $$@
+
+$$($(_T)_OBJDIR)$$(PSEP)%_s.o: $$($(_T)_SRCDIR)$$(PSEP)% \
+	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+	$$(VGEN)
+	$$(VR)$$(OBJCOPY) -Ibinary -O$(TARGETBFD) -B$(TARGETBARCH) $$< $$@
 
 ifneq ($$(strip $$($(_T)_PREPROC)),)
 $$($(_T)_OBJDIR)$$(PSEP)%_$$(PREPROC_$$($(_T)_PREPROC)_suffix).o: \

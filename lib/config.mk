@@ -6,7 +6,8 @@ endef
 SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 		  sysconfdir sharedstatedir localstatedir runstatedir \
 		  includedir docrootdir libdir localedir
-SINGLECONFVARS := $(call ZIMK__UNIQ,CC CXX CPP AR STRIP MOC $(SINGLECONFVARS))
+SINGLECONFVARS := $(call ZIMK__UNIQ,CC CXX CPP AR STRIP OBJCOPY MOC \
+	$(SINGLECONFVARS))
 LISTCONFVARS := $(call ZIMK__UNIQ,CFLAGS CXXFLAGS DEFINES INCLUDES LDFLAGS \
 	$(LISTCONFVARS))
 CONFVARS := $(SINGLECONFVARS) $(LISTCONFVARS)
@@ -124,6 +125,7 @@ DEFAULT_CXX ?= c++
 DEFAULT_CPP ?= cpp
 DEFAULT_AR ?= ar
 DEFAULT_STRIP ?= strip
+DEFAULT_OBJCOPY ?= objcopy
 DEFAULT_MOC ?= moc
 
 DEFAULT_CFLAGS ?= -std=c11 -Wall -Wextra -Wshadow -pedantic
@@ -196,6 +198,16 @@ endif
 TARGETARCH:= $(strip $(shell $(CROSS_COMPILE)$(CC) -dumpmachine))
 ifeq ($(TARGETARCH),)
 TARGETARCH:= unknown
+endif
+
+ifdef POSIXSHELL
+TARGETBFD:= $(strip $(shell objcopy --info | head -n 2 | tail -n 1))
+TARGETBARCH:= $(strip $(shell objcopy --info | head -n 4 | tail -n 1))
+else
+TARGETBFD:= $(strip $(subst 2:,, \
+		$(shell objcopy --info | findstr /n "." | findstr "^2:")))
+TARGETBARCH:= $(strip $(subst 4:,, \
+		$(shell objcopy --info | findstr /n "." | findstr "^4:")))
 endif
 
 OBJBASEDIR ?= obj
