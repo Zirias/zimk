@@ -201,8 +201,8 @@ TARGETARCH:= unknown
 endif
 
 ifdef POSIXSHELL
-TARGETBFD:= $(strip $(shell objcopy --info | head -n 2 | tail -n 1))
-TARGETBARCH:= $(strip $(shell objcopy --info | head -n 4 | tail -n 1))
+TARGETBFD:= $(strip $(shell objcopy --info 2>/dev/null | head -n 2 | tail -n 1))
+TARGETBARCH:= $(strip $(shell objcopy --info 2>/dev/null | head -n 4 | tail -n 1))
 else
 TARGETBFD:= $(strip $(subst 2:,, \
 		$(shell objcopy --info | findstr /n "." | findstr "^2:")))
