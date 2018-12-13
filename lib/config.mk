@@ -6,7 +6,7 @@ endef
 SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 		  sysconfdir sharedstatedir localstatedir runstatedir \
 		  includedir docrootdir libdir localedir
-SINGLECONFVARS := $(call ZIMK__UNIQ,CC CXX CPP AR STRIP OBJCOPY MOC \
+SINGLECONFVARS := $(call ZIMK__UNIQ,CC CXX CPP AR STRIP OBJCOPY MOC PORTABLE\
 	$(SINGLECONFVARS))
 LISTCONFVARS := $(call ZIMK__UNIQ,CFLAGS CXXFLAGS DEFINES INCLUDES LDFLAGS \
 	$(LISTCONFVARS))
@@ -144,7 +144,29 @@ BUILD_release_CFLAGS ?= -g0 -O2 -ffunction-sections -fdata-sections
 BUILD_release_CXXFLAGS ?= -g0 -O2 -ffunction-sections -fdata-sections
 BUILD_release_LDFLAGS ?= -O2 -Wl,--gc-sections
 
-ifdef POSIXSHELL
+define ZIMK__UPDATESINGLECFGVARS
+ifeq ($$(strip $$(origin $(_cv))$$($(_cv))),command line)
+override undefine $(_cv)
+endif
+$(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(DEFAULT_$(_cv)))
+$(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(PLATFORM_$(PLATFORM)_$(_cv)))
+$(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(BUILD_$(BUILDCFG)_$(_cv)))
+endef
+$(foreach _cv,CC,$(eval $(ZIMK__UPDATESINGLECFGVARS)))
+ZIMK__DEFDEFINES:= $(shell $(CROSS_COMPILE)$(CC) -dM -E - $(CMDNOIN))
+ifeq ($(filter _WIN32,$(ZIMK__DEFDEFINES)),)
+PLATFORM:= posix
+EXE:=
+else
+PLATFORM:= win32
+EXE:=.exe
+endif
+
+ifeq ($(PLATFORM),win32)
+PORTABLE ?= yes
+endif
+
+ifeq ($(filter-out 0 false FALSE no NO,$(PORTABLE)),)
 prefix ?= /usr/local
 exec_prefix ?= $(prefix)
 bindir ?= $(exec_prefix)/bin
@@ -175,24 +197,6 @@ includedir ?= $(prefix)
 docrootdir ?= $(datarootdir)
 libdir ?= $(exec_prefix)
 localedir ?= $(datarootdir)
-endif
-
-define ZIMK__UPDATESINGLECFGVARS
-ifeq ($$(strip $$(origin $(_cv))$$($(_cv))),command line)
-override undefine $(_cv)
-endif
-$(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(DEFAULT_$(_cv)))
-$(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(PLATFORM_$(PLATFORM)_$(_cv)))
-$(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(BUILD_$(BUILDCFG)_$(_cv)))
-endef
-$(foreach _cv,CC,$(eval $(ZIMK__UPDATESINGLECFGVARS)))
-ZIMK__DEFDEFINES:= $(shell $(CROSS_COMPILE)$(CC) -dM -E - $(CMDNOIN))
-ifeq ($(filter _WIN32,$(ZIMK__DEFDEFINES)),)
-PLATFORM:= posix
-EXE:=
-else
-PLATFORM:= win32
-EXE:=.exe
 endif
 
 TARGETARCH:= $(strip $(shell $(CROSS_COMPILE)$(CC) -dumpmachine))
