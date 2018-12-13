@@ -112,6 +112,7 @@ $(_T)_install: $$($(_T)_LIB)
 	$$(eval _ZIMK_0 := $$(_ZIMK_1)$$(PSEP)$$(<F))
 	$$(VINST)
 	$$(VR)$$(call instfile,$$<,$$(_ZIMK_1),755)
+ifeq ($$($(T)_LIBTYPE),library)
 	$$(eval _ZIMK_1 := $$(DESTDIR)$$($$($(_T)_INSTALLDIRNAME)dir))
 	$$(eval _ZIMK_0 := $$(_ZIMK_1)$$(PSEP)lib$(_T).dll.a)
 	$$(VINST)
@@ -119,6 +120,7 @@ $(_T)_install: $$($(_T)_LIB)
 	$$(eval _ZIMK_0 := $$(_ZIMK_1)$$(PSEP)$(_T).def)
 	$$(VINST)
 	$$(VR)$$(call instfile,$$($(_T)_TGTDIR)$$(PSEP)$(_T).def,$$(_ZIMK_1),644)
+endif
 
 else
 ifeq ($$($(_T)_LIBTYPE),library)
