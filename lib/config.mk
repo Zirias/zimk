@@ -183,7 +183,6 @@ libdir ?= $(exec_prefix)/lib
 localedir ?= $(datarootdir)/locale
 else
 DESTDIR ?= dist
-prefix ?= $(PSEP).
 exec_prefix ?= $(prefix)
 bindir ?= $(exec_prefix)
 sbindir ?= $(exec_prefix)
