@@ -145,8 +145,10 @@ $(_T)_install: $$(_$(_T)_LIB_FULL)
 	$$(eval _ZIMK_0 := $$(_ZIMK_1)$$(PSEP)$$(<F))
 	$$(VINST)
 	$$(VR)$$(call instfile,$$<,$$(_ZIMK_1),755)
+ifeq ($$($(T)_LIBTYPE),library)
 	$$(VR)ln -fs lib$(_T).so.$$(_$(_T)_V) $$(_ZIMK_1)$$(PSEP)lib$(_T).so.$$($(_T)_V_MAJ)
 	$$(VR)ln -fs lib$(_T).so.$$($(_T)_V_MAJ) $$(_ZIMK_1)$$(PSEP)lib$(_T).so
+endif
 
 endif
 
