@@ -19,7 +19,7 @@ $(_T): $$($(_T)_EXE)
 .PHONY: $(_T) $(_T)_install
 
 OUTFILES := $$($(_T)_EXE)
-ifeq ($$(PLATFORM),win32)
+ifeq ($$(BFMT_PLATFORM),win32)
 $(_T)_IMPLIB := $$($(_T)_LIBDIR)$$(PSEP)lib$(_T).dll.a
 OUTFILES += $$($(_T)_IMPLIB)
 endif
@@ -42,7 +42,7 @@ $$($(_T)_STRIPWITH):: $$($(_T)_EXE)
 
 endif
 
-ifeq ($$(PLATFORM),win32)
+ifeq ($$(BFMT_PLATFORM),win32)
 $$($(_T)_EXE): $$($(_T)_OBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
 	$$(VCCLD)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -o$$@ \

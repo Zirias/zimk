@@ -162,6 +162,12 @@ PLATFORM:= win32
 EXE:=.exe
 endif
 
+ifeq ($(filter __CYGWIN__,$(ZIMK__DEFDEFINES)),)
+BFMT_PLATFORM:= $(PLATFORM)
+else
+BFMT_PLATFORM:= win32
+endif
+
 ifeq ($(PLATFORM),win32)
 PORTABLE ?= yes
 endif
@@ -236,7 +242,7 @@ endef
 $(foreach _cv,$(LISTCONFVARS),$(eval $(ZIMK__UPDATELISTCFGVARS)))
 
 ifneq ($(filter showconfig,$(MAKECMDGOALS)),)
-$(foreach _cv,BUILDCFG PLATFORM TARGETARCH $(CONFVARS),$(info $(_cv) = $($(_cv))))
+$(foreach _cv,BUILDCFG PLATFORM TARGETARCH BFMT_PLATFORM $(CONFVARS),$(info $(_cv) = $($(_cv))))
 endif
 
 CLEAN += $(ZIMK__CFGCACHE)

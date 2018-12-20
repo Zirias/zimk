@@ -64,11 +64,19 @@ $(_T)_STATICLIB := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).a
 $(BUILDDEPS)
 $(LINKFLAGS)
 
+ifeq ($$(BFMT_PLATFORM),win32)
 ifeq ($$(PLATFORM),win32)
 ifeq ($$($(_T)_LIBTYPE),library)
 $(_T)_LIB := $$($(_T)_BINDIR)$$(PSEP)$(_T)-$$($(_T)_V_MAJ).dll
 else
 $(_T)_LIB := $$($(_T)_BINDIR)$$(PSEP)$(_T).dll
+endif
+else
+ifeq ($$($(_T)_LIBTYPE),library)
+$(_T)_LIB := $$($(_T)_TGTDIR)$$(PSEP)$(_T)-$$($(_T)_V_MAJ).dll
+else
+$(_T)_LIB := $$($(_T)_TGTDIR)$$(PSEP)$(_T).dll
+endif
 endif
 
 else
@@ -99,7 +107,7 @@ static_$(_T)_install: $$($(_T)_STATICLIB)
 	$$(VINST)
 	$$(VR)$$(call instfile,$$<,$$(_ZIMK_1),644)
 
-ifeq ($$(PLATFORM),win32)
+ifeq ($$(BFMT_PLATFORM),win32)
 $$($(_T)_LIB): $$($(_T)_SOBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
 	$$($(_T)_VL)
 	$$(VR)$$(CROSS_COMPILE)$$($(_T)_LDC) -shared -o$$@ \
@@ -109,7 +117,11 @@ $$($(_T)_LIB): $$($(_T)_SOBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
 		$$($(_T)_SOBJS) $$(_$(_T)_LINK)
 
 $(_T)_install: $$($(_T)_LIB)
+ifeq ($$($(T)_LIBTYPE),library)
 	$$(eval _ZIMK_1 := $$(DESTDIR)$$($$($(_T)_INSTALLBINDIRNAME)dir))
+else
+	$$(eval _ZIMK_1 := $$(DESTDIR)$$($$($(_T)_INSTALLDIRNAME)dir))
+endif
 	$$(eval _ZIMK_0 := $$(_ZIMK_1)$$(PSEP)$$(<F))
 	$$(VINST)
 	$$(VR)$$(call instfile,$$<,$$(_ZIMK_1),755)
