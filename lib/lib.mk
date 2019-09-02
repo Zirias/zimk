@@ -24,11 +24,13 @@ $(_T)_HEADERTGTDIR ?= $$(includedir)$$(PSEP)$(_T)
 ifeq ($$($(_T)_LIBTYPE),library)
 $(_T)_TGTDIR ?= $$(LIBDIR)
 $(_T)_BINDIR ?= $$(BINDIR)
+$(_T)_DESCRIPTION ?= The $(_T) library
 $(_T)_BUILDWITH ?= all
 $(_T)_BUILDSTATICWITH ?= staticlibs
 $(_T)_INSTALLWITH ?= install
 $(_T)_INSTALLSTATICWITH ?= installstaticlibs
 $(_T)_STRIPWITH ?= strip
+$(_T)_PKGCONFIG ?= $$(pkgconfigdir)$$(PSEP)$(_T).pc
 endif
 
 ifeq ($$($(_T)_LIBTYPE),plugin)
@@ -39,6 +41,7 @@ $(_T)_BUILDSTATICWITH :=
 $(_T)_INSTALLWITH ?= install
 $(_T)_INSTALLSTATICWITH :=
 $(_T)_STRIPWITH ?= strip
+$(_T)_PKGCONFIG :=
 endif
 
 ifeq ($$($(_T)_LIBTYPE),test)
@@ -49,6 +52,7 @@ $(_T)_BUILDSTATICWITH :=
 $(_T)_INSTALLWITH :=
 $(_T)_INSTALLSTATICWITH :=
 $(_T)_STRIPWITH :=
+$(_T)_PKGCONFIG :=
 endif
 
 ifeq ($$($(_T)_CXXMODULES),)
@@ -157,7 +161,7 @@ $(_T)_install: $$(_$(_T)_LIB_FULL)
 	$$(eval _ZIMK_0 := $$(_ZIMK_1)$$(PSEP)$$(<F))
 	$$(VINST)
 	$$(VR)$$(call instfile,$$<,$$(_ZIMK_1),755)
-ifeq ($$($(T)_LIBTYPE),library)
+ifeq ($$($(_T)_LIBTYPE),library)
 	$$(VR)ln -fs lib$(_T).so.$$(_$(_T)_V) $$(_ZIMK_1)$$(PSEP)lib$(_T).so.$$($(_T)_V_MAJ)
 	$$(VR)ln -fs lib$(_T).so.$$($(_T)_V_MAJ) $$(_ZIMK_1)$$(PSEP)lib$(_T).so
 endif
@@ -221,8 +225,32 @@ $$($(_T)_INSTALLWITH):: $(_T)_install_headers
 
 endif
 
+ifneq ($$(strip $$($(_T)_PKGCONFIG)),)
+$(_T)_install_pkgconfig:
+	$$(eval _ZIMK_0 := $$(DESTDIR)$$($(_T)_PKGCONFIG))
+	$$(VINST)
+	$$(VR)$$(INSTDIR) $$(dir $$(_ZIMK_0))
+	$$(VR)echo $$(EQT)libdir=$$($$($(_T)_INSTALLDIRNAME)dir)$$(EQT) \
+		>$$(DESTDIR)$$($(_T)_PKGCONFIG)
+	$$(VR)echo $$(EQT)includedir=$$($(_T)_HEADERTGTDIR)$$(EQT) \
+		>>$$(DESTDIR)$$($(_T)_PKGCONFIG)
+	$$(VR)echo >>$$(DESTDIR)$$($(_T)_PKGCONFIG)
+	$$(VR)echo $$(EQT)Name: $(_T)$$(EQT) >>$$(DESTDIR)$$($(_T)_PKGCONFIG)
+	$$(VR)echo $$(EQT)Description: $$($(_T)_DESCRIPTION)$$(EQT) \
+		>>$$(DESTDIR)$$($(_T)_PKGCONFIG)
+	$$(VR)echo $$(EQT)Version: $$(_$(_T)_V)$$(EQT) \
+		>>$$(DESTDIR)$$($(_T)_PKGCONFIG)
+	$$(VR)echo $$(EQT)Cflags: -I\$$$${includedir}$$(EQT) \
+		>>$$(DESTDIR)$$($(_T)_PKGCONFIG)
+	$$(VR)echo $$(EQT)Libs: -L\$$$${libdir} -l$(_T)$$(EQT) \
+		>>$$(DESTDIR)$$($(_T)_PKGCONFIG)
+
+$$($(_T)_INSTALLWITH):: $(_T)_install_pkgconfig
+
+endif
+
 .PHONY: $(_T) static_$(_T) $(_T)_install static_$(_T)_install \
-	$(_T)_install_headers
+	$(_T)_install_headers $(_T)_install_pkgconfig
 
 endef
 

@@ -5,7 +5,7 @@ $(strip $(eval undefine __ZIMK__UNIQ__SEEN)$(foreach \
 endef
 SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 		  sysconfdir sharedstatedir localstatedir runstatedir \
-		  includedir docrootdir libdir localedir
+		  includedir docrootdir libdir localedir pkgconfigdir
 SINGLECONFVARS := $(call ZIMK__UNIQ,CC CXX CPP AR STRIP OBJCOPY MOC PORTABLE\
 	$(SINGLECONFVARS))
 LISTCONFVARS := $(call ZIMK__UNIQ,CFLAGS CXXFLAGS DEFINES INCLUDES LDFLAGS \
@@ -187,6 +187,7 @@ includedir ?= $(prefix)/include
 docrootdir ?= $(datarootdir)/doc
 libdir ?= $(exec_prefix)/lib
 localedir ?= $(datarootdir)/locale
+pkgconfigdir ?= $(prefix)/lib/pkgconfig
 else
 DESTDIR ?= dist
 exec_prefix ?= $(prefix)
@@ -202,6 +203,7 @@ includedir ?= $(prefix)
 docrootdir ?= $(datarootdir)
 libdir ?= $(exec_prefix)
 localedir ?= $(datarootdir)
+pkgconfigdir ?= $(prefix)
 endif
 
 TARGETARCH:= $(strip $(shell $(CROSS_COMPILE)$(CC) -dumpmachine))
