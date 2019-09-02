@@ -19,7 +19,8 @@ $(_T)_posix_CXXFLAGS_SHARED ?= -fPIC
 $(_T)_INSTALLDIRNAME ?= lib
 $(_T)_INSTALLBINDIRNAME ?= bin
 $(_T)_HEADERDIR ?= $$($(_T)_SRCDIR)
-$(_T)_HEADERTGTDIR ?= $$(includedir)$$(PSEP)$(_T)
+$(_T)_HEADERTGTBASEDIR ?= $$(includedir)
+$(_T)_HEADERTGTDIR ?= $$($(_T)_HEADERTGTBASEDIR)$$(PSEP)$(_T)
 
 ifeq ($$($(_T)_LIBTYPE),library)
 $(_T)_TGTDIR ?= $$(LIBDIR)
@@ -232,7 +233,7 @@ $(_T)_install_pkgconfig:
 	$$(VR)$$(INSTDIR) $$(dir $$(_ZIMK_0))
 	$$(VR)echo $$(EQT)libdir=$$($$($(_T)_INSTALLDIRNAME)dir)$$(EQT) \
 		>$$(DESTDIR)$$($(_T)_PKGCONFIG)
-	$$(VR)echo $$(EQT)includedir=$$($(_T)_HEADERTGTDIR)$$(EQT) \
+	$$(VR)echo $$(EQT)includedir=$$($(_T)_HEADERTGTBASEDIR)$$(EQT) \
 		>>$$(DESTDIR)$$($(_T)_PKGCONFIG)
 	$$(VR)echo >>$$(DESTDIR)$$($(_T)_PKGCONFIG)
 	$$(VR)echo $$(EQT)Name: $(_T)$$(EQT) >>$$(DESTDIR)$$($(_T)_PKGCONFIG)
