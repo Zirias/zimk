@@ -14,6 +14,21 @@ ifeq ($$($(_T)_SRCDIR),)
 $(_T)_SRCDIR := .$$(PSEP)
 endif
 
+ifneq ($$(strip $$($(_T)_PKGDEPS)),)
+ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)
+$(_T)_PKGSTATUS := $$(shell $$(PKGCONFIG) --exists '$$($(_T)_PKGDEPS)';\
+	echo $$$$?)
+ifneq ($$($(_T)_PKGSTATUS),0)
+$$(error $$(shell $$(PKGCONFIG) --print-errors --exists '$$($(_T)_PKGDEPS)')\
+Required packages for $$(_T) not found)
+endif
+$(_T)_PKGCFLAGS := $$(shell $$(PKGCONFIG) --cflags '$$($(_T)_PKGDEPS)')
+$(_T)_CFLAGS += $$($(_T)_PKGCFLAGS)
+$(_T)_CXXFLAGS += $$($(_T)_PKGCFLAGS)
+$(_T)_LDFLAGS += $$(shell $$(PKGCONFIG) --libs '$$($(_T)_PKGDEPS)')
+endif
+endif
+
 $(_T)_SOURCES := $$(addprefix $$($(_T)_SRCDIR)$$(PSEP), \
 	$$(addsuffix .c,$$($(_T)_MODULES)))
 $(_T)_OBJS := $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
