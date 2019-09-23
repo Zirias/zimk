@@ -25,7 +25,7 @@ endif
 $(_T)_PKGCFLAGS := $$(shell $$(PKGCONFIG) --cflags '$$($(_T)_PKGDEPS)')
 $(_T)_CFLAGS += $$($(_T)_PKGCFLAGS)
 $(_T)_CXXFLAGS += $$($(_T)_PKGCFLAGS)
-$(_T)_LDFLAGS += $$(shell $$(PKGCONFIG) --libs '$$($(_T)_PKGDEPS)')
+$(_T)_PKGLINKFLAGS += $$(shell $$(PKGCONFIG) --libs '$$($(_T)_PKGDEPS)')
 endif
 endif
 

@@ -35,4 +35,8 @@ ifneq ($$(strip $$(_$(_T)_LIBS)),)
 _$(_T)_LINK+=$$(addprefix -l,$$(_$(_T)_LIBS))
 endif
 
+ifneq ($$(strip $$($(_T)_PKGLINKFLAGS)),)
+_$(_T)_LINK+=$$($(_T)_PKGLINKFLAGS)
+endif
+
 endef
