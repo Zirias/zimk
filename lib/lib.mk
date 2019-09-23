@@ -122,7 +122,7 @@ $$($(_T)_LIB): $$($(_T)_SOBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
 		$$($(_T)_SOBJS) $$(_$(_T)_LINK)
 
 $(_T)_install: $$($(_T)_LIB)
-ifeq ($$($(T)_LIBTYPE),library)
+ifeq ($$($(_T)_LIBTYPE),library)
 	$$(eval _ZIMK_1 := $$(DESTDIR)$$($$($(_T)_INSTALLBINDIRNAME)dir))
 else
 	$$(eval _ZIMK_1 := $$(DESTDIR)$$($$($(_T)_INSTALLDIRNAME)dir))
@@ -130,7 +130,7 @@ endif
 	$$(eval _ZIMK_0 := $$(_ZIMK_1)$$(PSEP)$$(<F))
 	$$(VINST)
 	$$(VR)$$(call instfile,$$<,$$(_ZIMK_1),755)
-ifeq ($$($(T)_LIBTYPE),library)
+ifeq ($$($(_T)_LIBTYPE),library)
 	$$(eval _ZIMK_1 := $$(DESTDIR)$$($$($(_T)_INSTALLDIRNAME)dir))
 	$$(eval _ZIMK_0 := $$(_ZIMK_1)$$(PSEP)lib$(_T).dll.a)
 	$$(VINST)
