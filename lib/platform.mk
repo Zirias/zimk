@@ -1,11 +1,14 @@
 ifeq ($(OS),Windows_NT)
 
 undefine POSIXSHELL
+undefine _ZIMK_NOMANGLE
 ifneq ($(strip $(filter %sh,$(basename $(realpath $(SHELL))))),)
 POSIXSHELL := 1
+_ZIMK_NOMANGLE := MSYS_NO_PATHCONV=1 CYGWIN_DISABLE_ARGUMENT_MANGLING=1 \
+	MSYS2_ARG_CONV_EXCL="*"
 endif
 
-OSVER := $(subst ],,$(lastword $(shell cmd /c ver)))
+OSVER := $(subst ],,$(lastword $(shell $(_ZIMK_NOMANGLE) cmd /c ver)))
 _ZIMK__OSVER := $(subst ., ,$(OSVER))
 OSVER_MAJ := $(firstword $(_ZIMK__OSVER))
 OSVER_MIN := $(word 2, $(_ZIMK__OSVER))
