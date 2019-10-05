@@ -146,6 +146,13 @@ $$($(_T)_OBJDIR)$$(PSEP)%_$$(PREPROC_$$($(_T)_PREPROC)_suffix).$$(PREPROC_$$($(_
 
 endif
 
+ifneq ($$(strip $$($(_T)_QRC)),)
+$(_T)_OBJS += $$($(_T)_OBJDIR)$$(PSEP)$$(firstword $$($(_T)_QRC)).o
+$(_T)_SOBJS += $$($(_T)_OBJDIR)$$(PSEP)$$(firstword $$($(_T)_QRC))_s.o
+$(_T)_QRCSOURCE := $$($(_T)_OBJDIR)$$(PSEP)$$(firstword $$($(_T)_QRC)).cpp
+CLEAN += $$($(_T)_QRCSOURCE)
+endif
+
 CLEAN += $$($(_T)_OBJS:.o=.d) $$($(_T)_OBJS)
 
 OUTFILES := $$($(_T)_OBJS)
@@ -346,6 +353,39 @@ $$($(_T)_OBJDIR)$$(PSEP)%_$$(PREPROC_$$($(_T)_PREPROC)_suffix)_s.o: \
 		$$($(_T)_$$(PLATFORM)_CFLAGS_SHARED) $$($(_T)_CFLAGS_SHARED) \
 		$$(CFLAGS_SHARED) \
 		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
+		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
+		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
+		$$(INCLUDES) $$<
+
+endif
+
+ifneq ($$(strip $$($(_T)_QRC)),)
+$$($(_T)_OBJDIR)$$(PSEP)$$(firstword $$($(_T)_QRC)).cpp: \
+		$$($(_T)_SRCDIR)$$(PSEP)$$(firstword $$($(_T)_QRC)).qrc \
+		| $$(_$(_T)_DIRS)
+	$$(VGEN)
+	$$(VR)$$(RCC) -o $$@ $$<
+
+$$($(_T)_OBJDIR)$$(PSEP)$$(firstword $$($(_T)_QRC)).o: \
+		$$($(_T)_OBJDIR)$$(PSEP)$$(firstword $$($(_T)_QRC)).cpp \
+		$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+	$$(VCXX)
+	$$(VR)$$(CROSS_COMPILE)$$(CXX) -c -o$$@ \
+		$$($(_T)_$$(PLATFORM)_CXXFLAGS_STATIC) $$($(_T)_CXXFLAGS_STATIC) \
+		$$(CXXFLAGS_STATIC) \
+		$$($(_T)_$$(PLATFORM)_CXXFLAGS) $$($(_T)_CXXFLAGS) $$(CXXFLAGS) \
+		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
+		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
+		$$(INCLUDES) $$<
+
+$$($(_T)_OBJDIR)$$(PSEP)$$(firstword $$($(_T)_QRC))_s.o: \
+		$$($(_T)_OBJDIR)$$(PSEP)$$(firstword $$($(_T)_QRC)).cpp \
+		$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+	$$(VCXX)
+	$$(VR)$$(CROSS_COMPILE)$$(CXX) -c -o$$@ \
+		$$($(_T)_$$(PLATFORM)_CXXFLAGS_SHARED) $$($(_T)_CXXFLAGS_SHARED) \
+		$$(CXXFLAGS_SHARED) \
+		$$($(_T)_$$(PLATFORM)_CXXFLAGS) $$($(_T)_CXXFLAGS) $$(CXXFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$<

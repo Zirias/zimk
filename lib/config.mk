@@ -6,8 +6,8 @@ endef
 SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 		  sysconfdir sharedstatedir localstatedir runstatedir \
 		  includedir docrootdir libdir localedir pkgconfigdir
-SINGLECONFVARS := $(call ZIMK__UNIQ,CC CXX CPP AR STRIP OBJCOPY MOC PKGCONFIG \
-	PORTABLE $(SINGLECONFVARS))
+SINGLECONFVARS := $(call ZIMK__UNIQ,CC CXX CPP AR STRIP OBJCOPY MOC RCC \
+	PKGCONFIG PORTABLE $(SINGLECONFVARS))
 LISTCONFVARS := $(call ZIMK__UNIQ,CFLAGS CXXFLAGS DEFINES INCLUDES LDFLAGS \
 	$(LISTCONFVARS))
 CONFVARS := $(SINGLECONFVARS) $(LISTCONFVARS)
@@ -128,6 +128,7 @@ DEFAULT_STRIP ?= strip
 DEFAULT_OBJCOPY ?= objcopy
 DEFAULT_PKGCONFIG ?= pkg-config
 DEFAULT_MOC ?= moc
+DEFAULT_RCC ?= rcc
 
 DEFAULT_CFLAGS ?= -std=c11 -Wall -Wextra -Wshadow -pedantic
 DEFAULT_CXXFLAGS ?= -std=c++11 -Wall -Wextra -pedantic
