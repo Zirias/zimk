@@ -45,7 +45,7 @@ endif
 ifeq ($$(BFMT_PLATFORM),win32)
 $$($(_T)_EXE): $$($(_T)_OBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
 	$$(VCCLD)
-	$$(VR)$$(CROSS_COMPILE)$$(CC) -o$$@ \
+	$$(VR)$$(CROSS_COMPILE)$$($$($(_T)_LINKERFRONT)) -o$$@ \
 		-Wl,--out-implib,$$($(_T)_IMPLIB) \
 		$$($(_T)_$$(PLATFORM)_LDFLAGS) $$($(_T)_LDFLAGS) $$(LDFLAGS) \
 		$$($(_T)_OBJS) $$(_$(_T)_LINK)
@@ -53,7 +53,7 @@ $$($(_T)_EXE): $$($(_T)_OBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
 else
 $$($(_T)_EXE): $$($(_T)_OBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
 	$$(VCCLD)
-	$$(VR)$$(CROSS_COMPILE)$$(CC) -o$$@ \
+	$$(VR)$$(CROSS_COMPILE)$$($$($(_T)_LINKERFRONT)) -o$$@ \
 		$$($(_T)_$$(PLATFORM)_LDFLAGS) $$($(_T)_LDFLAGS) $$(LDFLAGS) \
 		$$($(_T)_OBJS) $$(_$(_T)_LINK)
 
