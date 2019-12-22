@@ -364,7 +364,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$$(firstword $$($(_T)_QRC)).cpp: \
 		$$($(_T)_SRCDIR)$$(PSEP)$$(firstword $$($(_T)_QRC)).qrc \
 		| $$(_$(_T)_DIRS)
 	$$(VGEN)
-	$$(VR)$$(RCC) -o $$@ $$<
+	$$(VR)$$(RCC) -o $$@ --name $$(notdir $$(basename $$@)) $$<
 
 $$($(_T)_OBJDIR)$$(PSEP)$$(firstword $$($(_T)_QRC)).o: \
 		$$($(_T)_OBJDIR)$$(PSEP)$$(firstword $$($(_T)_QRC)).cpp \
