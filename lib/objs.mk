@@ -147,9 +147,12 @@ $$($(_T)_OBJDIR)$$(PSEP)%_$$(PREPROC_$$($(_T)_PREPROC)_suffix).$$(PREPROC_$$($(_
 endif
 
 ifneq ($$(strip $$($(_T)_QRC)),)
-$(_T)_OBJS += $$($(_T)_OBJDIR)$$(PSEP)$$(firstword $$($(_T)_QRC)).o
-$(_T)_SOBJS += $$($(_T)_OBJDIR)$$(PSEP)$$(firstword $$($(_T)_QRC))_s.o
-$(_T)_QRCSOURCE := $$($(_T)_OBJDIR)$$(PSEP)$$(firstword $$($(_T)_QRC)).cpp
+$(_T)_OBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
+	$$(addsuffix _qrc.o,$$($(_T)_QRC)))
+$(_T)_SOBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
+	$$(addsuffix _qrc_s.o,$$($(_T)_QRC)))
+$(_T)_QRCSOURCE := $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
+	$$(addsuffix _qrc.cpp,$$($(_T)_QRC)))
 CLEAN += $$($(_T)_QRCSOURCE)
 endif
 
@@ -360,14 +363,14 @@ $$($(_T)_OBJDIR)$$(PSEP)%_$$(PREPROC_$$($(_T)_PREPROC)_suffix)_s.o: \
 endif
 
 ifneq ($$(strip $$($(_T)_QRC)),)
-$$($(_T)_OBJDIR)$$(PSEP)$$(firstword $$($(_T)_QRC)).cpp: \
-		$$($(_T)_SRCDIR)$$(PSEP)$$(firstword $$($(_T)_QRC)).qrc \
+$$($(_T)_OBJDIR)$$(PSEP)%_qrc.cpp: \
+		$$($(_T)_SRCDIR)$$(PSEP)%.qrc \
 		| $$(_$(_T)_DIRS)
 	$$(VGEN)
 	$$(VR)$$(RCC) -o $$@ --name $$(notdir $$(basename $$@)) $$<
 
-$$($(_T)_OBJDIR)$$(PSEP)$$(firstword $$($(_T)_QRC)).o: \
-		$$($(_T)_OBJDIR)$$(PSEP)$$(firstword $$($(_T)_QRC)).cpp \
+$$($(_T)_OBJDIR)$$(PSEP)%_qrc.o: \
+		$$($(_T)_OBJDIR)$$(PSEP)%_qrc.cpp \
 		$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCXX)
 	$$(VR)$$(CROSS_COMPILE)$$(CXX) -c -o$$@ \
@@ -378,8 +381,8 @@ $$($(_T)_OBJDIR)$$(PSEP)$$(firstword $$($(_T)_QRC)).o: \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$<
 
-$$($(_T)_OBJDIR)$$(PSEP)$$(firstword $$($(_T)_QRC))_s.o: \
-		$$($(_T)_OBJDIR)$$(PSEP)$$(firstword $$($(_T)_QRC)).cpp \
+$$($(_T)_OBJDIR)$$(PSEP)%_qrc_s.o: \
+		$$($(_T)_OBJDIR)$$(PSEP)%_qrc.cpp \
 		$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCXX)
 	$$(VR)$$(CROSS_COMPILE)$$(CXX) -c -o$$@ \
