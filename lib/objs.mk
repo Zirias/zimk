@@ -18,6 +18,8 @@ $(_T)_LINKERFRONT ?= CXX
 else
 $(_T)_LINKERFRONT ?= CC
 endif
+$(_T)_DOCDIR ?= $$(docrootdir)$$(PSEP)$(_T)
+$(_T)_INSTALLDOCSWITH ?= install
 
 ifneq ($$(strip $$($(_T)_PKGDEPS)),)
 ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)
@@ -392,6 +394,28 @@ $$($(_T)_OBJDIR)$$(PSEP)%_qrc_s.o: \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$<
+
+endif
+
+ifneq ($$(strip $$($(_T)_DOCS)),)
+_$(_T)_DOCS_INSTALL := $$(subst /,$$(PSEP),$$($(_T)_DOCS))
+
+ifndef ZIMK__DOCS_INST_RECIPE_LINE
+define ZIMK__DOCS_INST_RECIPE_LINE
+
+$$(ZIMK__TAB)$$$$(eval _ZIMK_1 := $$$$(DESTDIR)$$$$($$(_T)_DOCDIR))
+$$(ZIMK__TAB)$$$$(eval _ZIMK_0 := $$$$(_ZIMK_1)$$$$(PSEP)$$(_D))
+$$(ZIMK__TAB)$$$$(VINST)
+$$(ZIMK__TAB)$$$$(VR)$$$$(call instfile,$$(_D),$$$$(dir $$$$(_ZIMK_1)$$$$(PSEP)$$(_D)),664)
+endef
+endif
+
+$$(eval $$(_T)_install_docs: $$(_$$(_T)_DOCS_INSTALL)$$(foreach \
+	_D,$$(_$$(_T)_DOCS_INSTALL),$$(ZIMK__DOCS_INST_RECIPE_LINE)))
+
+$$($(_T)_INSTALLDOCSWITH):: $(_T)_install_docs
+
+.PHONY: $(_T)_install_docs
 
 endif
 endef
