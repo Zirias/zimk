@@ -169,9 +169,9 @@ endif
 
 endif
 
-$(_T): $$($(_T)_LIB)
+$$($(_T)_TARGET):: $$($(_T)_LIB)
 
-static_$(_T): $$($(_T)_STATICLIB)
+static_$$($(_T)_TARGET):: $$($(_T)_STATICLIB)
 
 ifneq ($$(strip $$($(_T)_BUILDWITH)),)
 $$($(_T)_BUILDWITH):: $(_T)
@@ -251,7 +251,8 @@ $$($(_T)_INSTALLWITH):: $(_T)_install_pkgconfig
 endif
 
 .PHONY: $(_T) static_$(_T) $(_T)_install static_$(_T)_install \
-	$(_T)_install_headers $(_T)_install_pkgconfig
+	$(_T)_install_headers $(_T)_install_pkgconfig \
+	$$($(_T)_TARGET) static_$$($(_T)_TARGET)
 
 endef
 
