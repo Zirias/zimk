@@ -2,6 +2,9 @@ define BINRULES
 $(OBJRULES)
 
 $(_T)_TARGET ?= $(_T)
+$(_T)_ICON ?= $(_T)
+$(_T)_ICONSRCDIR ?= $$($(_T)_SRCDIR)$$(PSEP)icons
+$(_T)_ICONTYPES ?= png
 $(_T)_TGTDIR ?= $$(BINDIR)
 $(_T)_LIBDIR ?= $$(LIBDIR)
 $(_T)_BUILDWITH ?= all
@@ -15,8 +18,6 @@ $(LINKFLAGS)
 $(_T)_EXE := $$($(_T)_TGTDIR)$$(PSEP)$$($(_T)_TARGET)$$(EXE)
 
 $(_T): $$($(_T)_EXE)
-
-.PHONY: $(_T) $(_T)_install
 
 OUTFILES := $$($(_T)_EXE)
 ifeq ($$(BFMT_PLATFORM),win32)
@@ -33,6 +34,35 @@ endif
 ifneq ($$(strip $$($(_T)_INSTALLWITH)),)
 $$($(_T)_INSTALLWITH):: $(_T)_install
 
+ifneq ($$(PLATFORM),win32)
+ifneq ($$(strip $$($(_T)_DESKTOPFILE)),)
+$$($(_T)_INSTALLWITH):: $(_T)_installdesktop
+
+endif
+ifneq ($$(strip $$($(_T)_ICONSIZES)),)
+_$(_T)_ICONS_INSTALL := $$(addprefix $$($(_T)_ICON).,$$($(_T)_ICONTYPES))
+
+ifndef ZIMK__ICON_INST_RECIPE_LINE
+define ZIMK__ICON_INST_RECIPE_LINE
+
+$$(ZIMK__TAB)$$$$(eval _ZIMK_1 := $$$$(DESTDIR)$$$$(icondir)$$$$(PSEP)$$(_S)$$$$(PSEP)$$$$(iconsubdir))
+$$(ZIMK__TAB)$$$$(eval _ZIMK_0 := $$$$(_ZIMK_1)$$$$(PSEP)$$(_I))
+$$(ZIMK__TAB)$$$$(VINST)
+$$(ZIMK__TAB)$$$$(VR)$$$$(call instfile,$$$$($$(_T)_ICONSRCDIR)$$$$(PSEP)$$(_S)$$$$(PSEP)$$(_I),$$$$(dir $$$$(_ZIMK_1)$$$$(PSEP)$$(_I)),664)
+endef
+endif
+
+$$(eval $$(_T)_installicons: $$(foreach \
+	_S,$$($$(_T)_ICONSIZES),$$(addprefix \
+	$$($$(_T)_ICONSRCDIR)$$(PSEP)$$(_S)$$(PSEP),\
+	$$(_$$(_T)_ICONS_INSTALL)))$$(foreach \
+	_S,$$($$(_T)_ICONSIZES),$$(foreach \
+	_I,$$(_$$(_T)_ICONS_INSTALL),$$(ZIMK__ICON_INST_RECIPE_LINE))))
+
+$$($(_T)_INSTALLWITH):: $(_T)_installicons
+
+endif
+endif
 endif
 
 ifneq ($$(strip $$($(_T)_STRIPWITH)),)
@@ -64,6 +94,14 @@ $(_T)_install: $$($(_T)_EXE)
 	$$(eval _ZIMK_0 := $$(_ZIMK_1)$$(PSEP)$$(<F))
 	$$(VINST)
 	$$(VR)$$(call instfile,$$<,$$(_ZIMK_1),755)
+
+$(_T)_installdesktop: $$($(_T)_SRCDIR)$$(PSEP)$$($(_T)_DESKTOPFILE).desktop
+	$$(eval _ZIMK_1 := $$(DESTDIR)$$(desktopdir))
+	$$(eval _ZIMK_0 := $$(_ZIMK_1)$$(PSEP)$$(<F))
+	$$(VINST)
+	$$(VR)$$(call instfile,$$<,$$(_ZIMK_1),644)
+
+.PHONY: $(_T) $(_T)_install $(_T)_installdesktop $(_T)_installicons
 
 endef
 
