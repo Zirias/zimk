@@ -69,6 +69,8 @@ $(_T)_STATICLIB := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).a
 $(BUILDDEPS)
 $(LINKFLAGS)
 
+_$(_T)_V := $$($(_T)_V_MAJ).$$($(_T)_V_MIN).$$($(_T)_V_REV)
+
 ifeq ($$(BFMT_PLATFORM),win32)
 ifeq ($$(PLATFORM),win32)
 ifeq ($$($(_T)_LIBTYPE),library)
@@ -86,7 +88,6 @@ endif
 
 else
 ifeq ($$($(_T)_LIBTYPE),library)
-_$(_T)_V := $$($(_T)_V_MAJ).$$($(_T)_V_MIN).$$($(_T)_V_REV)
 _$(_T)_LIB_FULL := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).so.$$(_$(_T)_V)
 _$(_T)_LIB_MAJ := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).so.$$($(_T)_V_MAJ)
 $(_T)_LIB := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).so
