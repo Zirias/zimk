@@ -6,7 +6,7 @@ endef
 SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 		  sysconfdir sharedstatedir localstatedir runstatedir \
 		  includedir docrootdir libdir localedir pkgconfigdir \
-		  icondir iconsubdir desktopdir
+		  icondir iconsubdir desktopdir mimedir sharedmimeinfodir
 SINGLECONFVARS := $(call ZIMK__UNIQ,CC CXX CPP AR STRIP OBJCOPY MOC RCC \
 	PKGCONFIG PORTABLE $(SINGLECONFVARS))
 LISTCONFVARS := $(call ZIMK__UNIQ,CFLAGS CXXFLAGS DEFINES INCLUDES LDFLAGS \
@@ -194,6 +194,8 @@ pkgconfigdir ?= $(prefix)/lib/pkgconfig
 icondir ?= $(datarootdir)/icons/hicolor
 iconsubdir ?= apps
 desktopdir ?= $(datarootdir)/applications
+mimedir ?= $(datarootdir)/mime
+sharedmimeinfodir ?= $(mimedir)/packages
 else
 DESTDIR ?= dist
 exec_prefix ?= $(prefix)
@@ -212,6 +214,8 @@ localedir ?= $(datarootdir)
 pkgconfigdir ?= $(prefix)
 icondir ?= $(datarootdir)/icons
 desktopdir ?= $(datarootdir)
+mimedir ?= $(datarootdir)/mime
+sharedmimeinfodir ?= $(mimedir)
 endif
 
 TARGETARCH:= $(strip $(shell $(CROSS_COMPILE)$(CC) -dumpmachine))

@@ -7,6 +7,7 @@ $(_T)_ICONSRCDIR ?= $$($(_T)_SRCDIR)$$(PSEP)icons
 $(_T)_ICONTYPES ?= png
 $(_T)_TGTDIR ?= $$(BINDIR)
 $(_T)_LIBDIR ?= $$(LIBDIR)
+$(_T)_MIMEDIR ?= $$($(_T)_SRCDIR)$$(PSEP)mime
 $(_T)_BUILDWITH ?= all
 $(_T)_STRIPWITH ?= strip
 $(_T)_INSTALLWITH ?= install
@@ -62,6 +63,10 @@ $$(eval $$(_T)_installicons: $$(foreach \
 $$($(_T)_INSTALLWITH):: $(_T)_installicons
 
 endif
+ifneq ($$(strip $$($(_T)_SHAREDMIMEINFO)),)
+$$($(_T)_INSTALLWITH):: $(_T)_installsharedmimeinfo
+
+endif
 endif
 endif
 
@@ -101,7 +106,20 @@ $(_T)_installdesktop: $$($(_T)_SRCDIR)$$(PSEP)$$($(_T)_DESKTOPFILE).desktop
 	$$(VINST)
 	$$(VR)$$(call instfile,$$<,$$(_ZIMK_1),644)
 
-.PHONY: $(_T) $(_T)_install $(_T)_installdesktop $(_T)_installicons
+$(_T)_installsharedmimeinfo: \
+	$$($(_T)_MIMEDIR)$$(PSEP)$$($(_T)_SHAREDMIMEINFO).xml
+	$$(eval _ZIMK_1 := $$(DESTDIR)$$(sharedmimeinfodir))
+	$$(eval _ZIMK_0 := $$(_ZIMK_1)$$(PSEP)$$(<F))
+	$$(VINST)
+	$$(VR)$$(call instfile,$$<,$$(_ZIMK_1),644)
+ifeq ($$(strip $$(DESTDIR)),)
+ifeq ($$(filter-out 0 false FALSE no NO,$$(PORTABLE)),)
+	-update-mime-database $$(mimedir)
+endif
+endif
+
+.PHONY: $(_T) $(_T)_install $(_T)_installdesktop $(_T)_installicons \
+	$(_T)_installsharedmimeinfo
 
 endef
 
