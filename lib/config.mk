@@ -6,7 +6,8 @@ endef
 SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 		  sysconfdir sharedstatedir localstatedir runstatedir \
 		  includedir docrootdir libdir localedir pkgconfigdir \
-		  icondir iconsubdir desktopdir mimedir sharedmimeinfodir
+		  icondir iconsubdir mimeiconsubdir desktopdir mimedir \
+		  sharedmimeinfodir
 SINGLECONFVARS := $(call ZIMK__UNIQ,CC CXX CPP AR STRIP OBJCOPY MOC RCC \
 	PKGCONFIG PORTABLE $(SINGLECONFVARS))
 LISTCONFVARS := $(call ZIMK__UNIQ,CFLAGS CXXFLAGS DEFINES INCLUDES LDFLAGS \
@@ -193,6 +194,7 @@ localedir ?= $(datarootdir)/locale
 pkgconfigdir ?= $(prefix)/lib/pkgconfig
 icondir ?= $(datarootdir)/icons/hicolor
 iconsubdir ?= apps
+mimeiconsubdir ?= mimetypes
 desktopdir ?= $(datarootdir)/applications
 mimedir ?= $(datarootdir)/mime
 sharedmimeinfodir ?= $(mimedir)/packages

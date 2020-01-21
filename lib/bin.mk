@@ -5,6 +5,8 @@ $(_T)_TARGET ?= $(_T)
 $(_T)_ICON ?= $(_T)
 $(_T)_ICONSRCDIR ?= $$($(_T)_SRCDIR)$$(PSEP)icons
 $(_T)_ICONTYPES ?= png
+$(_T)_MIMEICONSIZES ?= $$($(_T)_ICONSIZES)
+$(_T)_MIMEICONTYPES ?= $$($(_T)_ICONTYPES)
 $(_T)_TGTDIR ?= $$(BINDIR)
 $(_T)_LIBDIR ?= $$(LIBDIR)
 $(_T)_MIMEDIR ?= $$($(_T)_SRCDIR)$$(PSEP)mime
@@ -63,6 +65,30 @@ $$(eval $$(_T)_installicons: $$(foreach \
 $$($(_T)_INSTALLWITH):: $(_T)_installicons
 
 endif
+ifneq ($$(strip $$($(_T)_MIMEICONS)),)
+_$(_T)_MIMEICONS_INSTALL := $$(foreach _MI,$$($$(_T)_MIMEICONS),\
+	$$(addprefix $$(_MI).,$$($(_T)_MIMEICONTYPES)))
+
+ifndef ZIMK__MIMEICON_INST_RECIPE_LINE
+define ZIMK__MIMEICON_INST_RECIPE_LINE
+
+$$(ZIMK__TAB)$$$$(eval _ZIMK_1 := $$$$(DESTDIR)$$$$(icondir)$$$$(PSEP)$$(_S)$$$$(PSEP)$$$$(mimeiconsubdir))
+$$(ZIMK__TAB)$$$$(eval _ZIMK_0 := $$$$(_ZIMK_1)$$$$(PSEP)$$(_I))
+$$(ZIMK__TAB)$$$$(VINST)
+$$(ZIMK__TAB)$$$$(VR)$$$$(call instfile,$$$$($$(_T)_ICONSRCDIR)$$$$(PSEP)$$(_S)$$$$(PSEP)$$(_I),$$$$(dir $$$$(_ZIMK_1)$$$$(PSEP)$$(_I)),664)
+endef
+endif
+
+$$(eval $$(_T)_installmimeicons: $$(foreach \
+	_S,$$($$(_T)_MIMEICONSIZES),$$(addprefix \
+	$$($$(_T)_ICONSRCDIR)$$(PSEP)$$(_S)$$(PSEP),\
+	$$(_$$(_T)_MIMEICONS_INSTALL)))$$(foreach \
+	_S,$$($$(_T)_MIMEICONSIZES),$$(foreach \
+	_I,$$(_$$(_T)_MIMEICONS_INSTALL),$$(ZIMK__MIMEICON_INST_RECIPE_LINE))))
+
+$$($(_T)_INSTALLWITH):: $(_T)_installmimeicons
+
+endif
 ifneq ($$(strip $$($(_T)_SHAREDMIMEINFO)),)
 $$($(_T)_INSTALLWITH):: $(_T)_installsharedmimeinfo
 
@@ -119,7 +145,7 @@ endif
 endif
 
 .PHONY: $(_T) $(_T)_install $(_T)_installdesktop $(_T)_installicons \
-	$(_T)_installsharedmimeinfo
+	$(_T)_installmimeicons $(_T)_installsharedmimeinfo
 
 endef
 
