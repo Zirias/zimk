@@ -9,7 +9,7 @@ SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 		  icondir iconsubdir mimeiconsubdir desktopdir mimedir \
 		  sharedmimeinfodir
 SINGLECONFVARS := $(call ZIMK__UNIQ,CC CXX CPP AR STRIP OBJCOPY MOC RCC \
-	PKGCONFIG PORTABLE $(SINGLECONFVARS))
+	PKGCONFIG PORTABLE STATIC $(SINGLECONFVARS))
 LISTCONFVARS := $(call ZIMK__UNIQ,CFLAGS CXXFLAGS DEFINES INCLUDES LDFLAGS \
 	$(LISTCONFVARS))
 CONFVARS := $(SINGLECONFVARS) $(LISTCONFVARS)
