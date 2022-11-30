@@ -19,6 +19,7 @@ undefine AR
 endif
 
 -include defaults.mk
+include $(ZIMKPATH)lib/funcs.mk
 include $(ZIMKPATH)lib/platform.mk
 include $(ZIMKPATH)lib/pretty.mk
 include $(ZIMKPATH)lib/config.mk
@@ -29,7 +30,6 @@ include $(ZIMKPATH)lib/deps.mk
 include $(ZIMKPATH)lib/link.mk
 include $(ZIMKPATH)lib/bin.mk
 include $(ZIMKPATH)lib/lib.mk
-include $(ZIMKPATH)lib/funcs.mk
 
 ifndef MAKE_RESTARTS
 ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)

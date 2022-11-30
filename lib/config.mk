@@ -9,7 +9,7 @@ SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 		  icondir iconsubdir mimeiconsubdir desktopdir mimedir \
 		  sharedmimeinfodir
 SINGLECONFVARS := $(call ZIMK__UNIQ,CC CXX CPP AR STRIP OBJCOPY MOC RCC \
-	PKGCONFIG PORTABLE STATIC $(SINGLECONFVARS))
+	PKGCONFIG PORTABLE STATIC $(SINGLECONFVARS) $(BOOLCONFVARS))
 LISTCONFVARS := $(call ZIMK__UNIQ,CFLAGS CXXFLAGS DEFINES INCLUDES LDFLAGS \
 	$(LISTCONFVARS))
 CONFVARS := $(SINGLECONFVARS) $(LISTCONFVARS)
@@ -24,6 +24,13 @@ undefine ZIMK__EMPTY
 ZIMK__EMPTY :=
 ZIMK__TAB := $(ZIMK__EMPTY)	$(ZIMK__EMPTY)
 
+define ZIMK__NORMALIZEBOOLCONFVARS
+ZIMK__TMP_$(_cv) := $$($(_cv))
+override undefine $(_cv)
+$(_cv) := $$(call tobool,$$(ZIMK__TMP_$(_cv)))
+endef
+$(foreach _cv,$(BOOLCONFVARS),$(eval $(ZIMK__NORMALIZEBOOLCONFVARS)))
+
 #default config
 DEFAULT_BUILDCFG ?= release
 BUILDCFG ?= $(DEFAULT_BUILDCFG)
@@ -37,7 +44,6 @@ endif
 ZIMK__DOUBLECONFVARS := $(filter $(SINGLECONFVARS),$(LISTCONFVARS))
 ifdef ZIMK__DOUBLECONFVARS
 $(error variables can't be in both SINGLECONFVARS and LISTCONFVARS: $(ZIMK__DOUBLECONFVARS))
-#' make vim syntax highlight happy
 endif
 
 USERCONFIG:=$(BUILDCFG).cfg
