@@ -25,9 +25,11 @@ ZIMK__EMPTY :=
 ZIMK__TAB := $(ZIMK__EMPTY)	$(ZIMK__EMPTY)
 
 define ZIMK__NORMALIZEBOOLCONFVARS
+ifdef $(_cv)
 ZIMK__TMP_$(_cv) := $$($(_cv))
 override undefine $(_cv)
 $(_cv) := $$(call tobool,$$(ZIMK__TMP_$(_cv)))
+endif
 endef
 $(foreach _cv,$(BOOLCONFVARS),$(eval $(ZIMK__NORMALIZEBOOLCONFVARS)))
 
