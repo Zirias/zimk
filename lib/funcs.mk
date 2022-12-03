@@ -50,5 +50,16 @@ tolower = $(subst A,a,$(subst B,b,$(subst C,c,$(subst D,d,$(subst E,e,$(subst \
 	  U,u,$(subst V,v,$(subst W,w,$(subst X,x,$(subst Y,y,$(subst \
 	  Z,z,$1))))))))))))))))))))))))))
 
-tobool = $(if $(filter-out 0 no false off,$(call tolower,$1)),1,0)
+define __F_TOBOOL
+_ZIMK__V := $$(call tolower,$$(strip $(1)))
+_ZIMK__VE := bool flag "$(1)" not in [0,no,false,off,1,yes,true,on]
+_ZIMK__VR := $$(if $$(filter-out $$(firstword $$(_ZIMK__V)),$$(_ZIMK__V)), \
+	$$(error $$(_ZIMK__VE)),$$(if \
+	$$(filter-out 0 no false off,$$(_ZIMK__V)),$$(if \
+	$$(filter-out 1 yes true on,$$(_ZIMK__V)),$$(error \
+	$$(_ZIMK__VE)),1),0))
+endef
 
+define tobool
+$(eval $(__F_TOBOOL))$(strip $(_ZIMK__VR))
+endef
