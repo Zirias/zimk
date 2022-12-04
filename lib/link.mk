@@ -27,7 +27,7 @@ ifneq ($$(strip $$($(_T)_$$(BFMT_PLATFORM)_LIBS)),)
 _$(_T)_LIBS += $$($(_T)_$$(BFMT_PLATFORM)_LIBS)
 endif
 
-ifdef STATIC
+ifeq ($(STATIC),1)
 $(_T)_STATIC:=1
 endif
 

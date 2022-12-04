@@ -8,8 +8,9 @@ SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 		  includedir docrootdir libdir localedir pkgconfigdir \
 		  icondir iconsubdir mimeiconsubdir desktopdir mimedir \
 		  sharedmimeinfodir
+BOOLCONFVARS := $(call ZIMK__UNIQ,PORTABLE STATIC $(BOOLCONFVARS))
 SINGLECONFVARS := $(call ZIMK__UNIQ,CC CXX CPP AR STRIP OBJCOPY MOC RCC \
-	PKGCONFIG PORTABLE STATIC $(SINGLECONFVARS) $(BOOLCONFVARS))
+	PKGCONFIG $(SINGLECONFVARS) $(BOOLCONFVARS))
 LISTCONFVARS := $(call ZIMK__UNIQ,CFLAGS CXXFLAGS DEFINES INCLUDES LDFLAGS \
 	$(LISTCONFVARS))
 CONFVARS := $(SINGLECONFVARS) $(LISTCONFVARS)
@@ -97,17 +98,6 @@ $(eval $(ZIMK__WRITECFG))
 ZIMK__CFGTARGET := _build_changeconfig
 $(eval $(ZIMK__WRITECFG))
 
-# save / compare config cache
-ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)
-$(eval $(ZIMK__WRITECACHE))
-
--include $(ZIMK__CFGCACHE)
-
-ifneq ($(foreach _cv,$(CONFVARS),$(_cv):$(strip $(C_$(_cv)))),$(foreach _cv,$(CONFVARS),$(_cv):$(strip $($(_cv)))))
-.PHONY: $(ZIMK__CFGCACHE)
-endif
-endif
-
 config: global.cfg _build_config
 	$(VCFG)
 	$(VR)echo $(EQT)# generated file, do not edit!$(EQT) >$<
@@ -121,12 +111,6 @@ changeconfig: global.cfg _build_changeconfig
 global.cfg: ;
 
 $(USERCONFIG): ;
-
-ifndef MAKE_RESTARTS
-ifneq ($(filter-out $(filter-out changeconfig,$(NOBUILDTARGETS)),$(MAKECMDGOALS)),)
-$(eval $(ZIMK__WRITECFGTAG))
-endif
-endif
 
 DEFAULT_CC ?= cc
 DEFAULT_CXX ?= c++
@@ -154,16 +138,8 @@ BUILD_release_CFLAGS ?= -g0 -O2 -ffunction-sections -fdata-sections
 BUILD_release_CXXFLAGS ?= -g0 -O2 -ffunction-sections -fdata-sections
 BUILD_release_LDFLAGS ?= -O2 -Wl,--gc-sections
 
-define ZIMK__UPDATESINGLECFGVARS
-ifeq ($$(strip $$(origin $(_cv))$$($(_cv))),command line)
-override undefine $(_cv)
-endif
-$(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(DEFAULT_$(_cv)))
-$(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(PLATFORM_$(PLATFORM)_$(_cv)))
-$(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(BUILD_$(BUILDCFG)_$(_cv)))
-endef
-$(foreach _cv,CC,$(eval $(ZIMK__UPDATESINGLECFGVARS)))
-ZIMK__DEFDEFINES:= $(shell $(CROSS_COMPILE)$(CC) -dM -E - $(CMDNOIN))
+_ZIMK__TESTCC:=$(or $(CC),$(DEFAULT_CC),$(BUILD_$(BUILDCFG)_CC))
+ZIMK__DEFDEFINES:= $(shell $(CROSS_COMPILE)$(_ZIMK__TESTCC) -dM -E - $(CMDNOIN))
 ifeq ($(filter _WIN32,$(ZIMK__DEFDEFINES)),)
 PLATFORM:= posix
 EXE:=
@@ -179,10 +155,34 @@ BFMT_PLATFORM:= win32
 endif
 
 ifeq ($(PLATFORM),win32)
-PORTABLE ?= yes
+BOOLCONFVARS_DEFAULT ?= PORTABLE
 endif
 
-ifeq ($(filter-out 0 false FALSE no NO,$(PORTABLE)),)
+define ZIMK__UPDATEBOOLCONFVARS
+ifndef $(_cv)
+$(_cv) := $$(if $$(filter $(_cv),$$(BOOLCONFVARS_DEFAULT)),1,0)
+endif
+endef
+$(foreach _cv,$(BOOLCONFVARS),$(eval $(ZIMK__UPDATEBOOLCONFVARS)))
+
+# save / compare config cache
+ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)
+$(eval $(ZIMK__WRITECACHE))
+
+-include $(ZIMK__CFGCACHE)
+
+ifneq ($(foreach _cv,$(CONFVARS),$(_cv):$(strip $(C_$(_cv)))),$(foreach _cv,$(CONFVARS),$(_cv):$(strip $($(_cv)))))
+.PHONY: $(ZIMK__CFGCACHE)
+endif
+endif
+
+ifndef MAKE_RESTARTS
+ifneq ($(filter-out $(filter-out changeconfig,$(NOBUILDTARGETS)),$(MAKECMDGOALS)),)
+$(eval $(ZIMK__WRITECFGTAG))
+endif
+endif
+
+ifeq ($(PORTABLE),1)
 prefix ?= /usr/local
 exec_prefix ?= $(prefix)
 bindir ?= $(exec_prefix)/bin
@@ -226,7 +226,7 @@ mimedir ?= $(datarootdir)/mime
 sharedmimeinfodir ?= $(mimedir)
 endif
 
-TARGETARCH:= $(strip $(shell $(CROSS_COMPILE)$(CC) -dumpmachine))
+TARGETARCH:= $(strip $(shell $(CROSS_COMPILE)$(_ZIMK__TESTCC) -dumpmachine))
 ifeq ($(TARGETARCH),)
 TARGETARCH:= unknown
 endif
@@ -251,6 +251,14 @@ BINDIR ?= $(BINBASEDIR)$(PSEP)$(TARGETARCH)$(PSEP)$(BUILDCFG)
 LIBDIR ?= $(LIBBASEDIR)$(PSEP)$(TARGETARCH)$(PSEP)$(BUILDCFG)
 TESTDIR ?= $(TESTBASEDIR)$(PSEP)$(TARGETARCH)$(PSEP)$(BUILDCFG)
 
+define ZIMK__UPDATESINGLECFGVARS
+ifeq ($$(strip $$(origin $(_cv))$$($(_cv))),command line)
+override undefine $(_cv)
+endif
+$(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(DEFAULT_$(_cv)))
+$(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(PLATFORM_$(PLATFORM)_$(_cv)))
+$(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(BUILD_$(BUILDCFG)_$(_cv)))
+endef
 $(foreach _cv,$(SINGLECONFVARS),$(eval $(ZIMK__UPDATESINGLECFGVARS)))
 
 define ZIMK__UPDATELISTCFGVARS
