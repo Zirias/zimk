@@ -155,12 +155,13 @@ BFMT_PLATFORM:= win32
 endif
 
 ifeq ($(PLATFORM),win32)
-BOOLCONFVARS_DEFAULT ?= PORTABLE
+BOOLCONFVARS_DEFAULT_ON += PORTABLE
 endif
 
 define ZIMK__UPDATEBOOLCONFVARS
 ifndef $(_cv)
-$(_cv) := $$(if $$(filter $(_cv),$$(BOOLCONFVARS_DEFAULT)),1,0)
+$(_cv) := $$(if $$(filter $(_cv),$$(filter-out \
+	$$(BOOLCONFVARS_DEFAULT_OFF),$$(BOOLCONFVARS_DEFAULT_ON))),1,0)
 endif
 endef
 $(foreach _cv,$(BOOLCONFVARS),$(eval $(ZIMK__UPDATEBOOLCONFVARS)))
@@ -183,6 +184,26 @@ endif
 endif
 
 ifeq ($(PORTABLE),1)
+DESTDIR ?= dist
+exec_prefix ?= $(prefix)
+bindir ?= $(exec_prefix)
+sbindir ?= $(exec_prefix)
+libexecdir ?= $(exec_prefix)
+datarootdir ?= $(prefix)
+sysconfdir ?= $(prefix)
+sharedstatedir ?= $(prefix)
+localstatedir ?= $(prefix)
+runstatedir ?= $(localstatedir)
+includedir ?= $(prefix)
+docrootdir ?= $(datarootdir)
+libdir ?= $(exec_prefix)
+localedir ?= $(datarootdir)
+pkgconfigdir ?= $(prefix)
+icondir ?= $(datarootdir)/icons
+desktopdir ?= $(datarootdir)
+mimedir ?= $(datarootdir)/mime
+sharedmimeinfodir ?= $(mimedir)
+else
 prefix ?= /usr/local
 exec_prefix ?= $(prefix)
 bindir ?= $(exec_prefix)/bin
@@ -204,26 +225,6 @@ mimeiconsubdir ?= mimetypes
 desktopdir ?= $(datarootdir)/applications
 mimedir ?= $(datarootdir)/mime
 sharedmimeinfodir ?= $(mimedir)/packages
-else
-DESTDIR ?= dist
-exec_prefix ?= $(prefix)
-bindir ?= $(exec_prefix)
-sbindir ?= $(exec_prefix)
-libexecdir ?= $(exec_prefix)
-datarootdir ?= $(prefix)
-sysconfdir ?= $(prefix)
-sharedstatedir ?= $(prefix)
-localstatedir ?= $(prefix)
-runstatedir ?= $(localstatedir)
-includedir ?= $(prefix)
-docrootdir ?= $(datarootdir)
-libdir ?= $(exec_prefix)
-localedir ?= $(datarootdir)
-pkgconfigdir ?= $(prefix)
-icondir ?= $(datarootdir)/icons
-desktopdir ?= $(datarootdir)
-mimedir ?= $(datarootdir)/mime
-sharedmimeinfodir ?= $(mimedir)
 endif
 
 TARGETARCH:= $(strip $(shell $(CROSS_COMPILE)$(_ZIMK__TESTCC) -dumpmachine))
