@@ -8,7 +8,9 @@ SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 		  includedir docrootdir libdir localedir pkgconfigdir \
 		  icondir iconsubdir mimeiconsubdir desktopdir mimedir \
 		  sharedmimeinfodir
-BOOLCONFVARS := $(call ZIMK__UNIQ,PORTABLE STATIC $(BOOLCONFVARS))
+BOOLCONFVARS := $(call ZIMK__UNIQ,PORTABLE STATIC SHAREDLIBS STATICLIBS \
+		$(BOOLCONFVARS))
+BOOLCONFVARS_DEFAULT_ON += SHAREDLIBS
 SINGLECONFVARS := $(call ZIMK__UNIQ,CC CXX CPP AR STRIP OBJCOPY MOC RCC \
 	PKGCONFIG $(SINGLECONFVARS) $(BOOLCONFVARS))
 LISTCONFVARS := $(call ZIMK__UNIQ,CFLAGS CXXFLAGS DEFINES INCLUDES LDFLAGS \

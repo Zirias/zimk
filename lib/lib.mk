@@ -26,11 +26,25 @@ ifeq ($$($(_T)_LIBTYPE),library)
 $(_T)_TGTDIR ?= $$(LIBDIR)
 $(_T)_BINDIR ?= $$(BINDIR)
 $(_T)_DESCRIPTION ?= The $(_T) library
-$(_T)_BUILDWITH ?= all
-$(_T)_BUILDSTATICWITH ?= staticlibs
-$(_T)_INSTALLWITH ?= install
-$(_T)_INSTALLSTATICWITH ?= installstaticlibs
+$(_T)_STRIPSHAREDWITH ?= stripsharedlibs
+$(_T)_STRIPSTATICWITH ?= stripstaticlibs
 $(_T)_STRIPWITH ?= strip
+ifeq ($$(SHAREDLIBS),1)
+$(_T)_BUILDWITH ?= sharedlibs all
+$(_T)_INSTALLWITH ?= installsharedlibs install
+_$(_T)_STRIPTGTS += stripshared
+else
+$(_T)_BUILDWITH ?= sharedlibs
+$(_T)_INSTALLWITH ?= installsharedlibs
+endif
+ifeq ($$(STATICLIBS),1)
+$(_T)_BUILDSTATICWITH ?= staticlibs all
+$(_T)_INSTALLSTATICWITH ?= installstaticlibs install
+_$(_T)_STRIPTGTS += stripstatic
+else
+$(_T)_BUILDSTATICWITH ?= staticlibs
+$(_T)_INSTALLSTATICWITH ?= installstaticlibs
+endif
 $(_T)_PKGCONFIG ?= $$(pkgconfigdir)$$(PSEP)$(_T).pc
 endif
 
@@ -41,7 +55,10 @@ $(_T)_BUILDWITH ?= all
 $(_T)_BUILDSTATICWITH :=
 $(_T)_INSTALLWITH ?= install
 $(_T)_INSTALLSTATICWITH :=
+$(_T)_STRIPSHAREDWITH ?= stripsharedlibs
+$(_T)_STRIPSTATICWITH :=
 $(_T)_STRIPWITH ?= strip
+_$(_T)_STRIPTGTS += stripshared
 $(_T)_PKGCONFIG :=
 endif
 
@@ -52,6 +69,8 @@ $(_T)_BUILDWITH ?= tests
 $(_T)_BUILDSTATICWITH :=
 $(_T)_INSTALLWITH :=
 $(_T)_INSTALLSTATICWITH :=
+$(_T)_STRIPSHAREDWITH :=
+$(_T)_STRIPSTATICWITH :=
 $(_T)_STRIPWITH :=
 $(_T)_PKGCONFIG :=
 endif
@@ -194,10 +213,26 @@ $$($(_T)_INSTALLSTATICWITH):: static_$(_T)_install
 
 endif
 
-ifneq ($$(strip $$($(_T)_STRIPWITH)),)
-$$($(_T)_STRIPWITH):: $$($(_T)_LIB)
+$$($(_T)_TARGET)_stripshared:: $$($(_T)_LIB)
 	$$(VSTRP)
 	$$(VR)$$(CROSS_COMPILE)$$(STRIP) --strip-unneeded $$<
+
+ifneq ($$(strip $$($(_T)_STRIPSHAREDWITH)),)
+$$($(_T)_STRIPSHAREDWITH):: $$($(_T)_TARGET)_stripshared
+
+endif
+
+$$($(_T)_TARGET)_stripstatic:: $$($(_T)_STATICLIB)
+	$$(VSTRP)
+	$$(VR)$$(CROSS_COMPILE)$$(STRIP) --strip-unneeded $$<
+
+ifneq ($$(strip $$($(_T)_STRIPSTATICWITH)),)
+$$($(_T)_STRIPSTATICWITH):: $$($(_T)_TARGET)_stripstatic
+
+endif
+
+ifneq ($$(strip $$($(_T)_STRIPWITH)),)
+$$($(_T)_STRIPWITH):: $$(addprefix $$($(_T)_TARGET)_,$$(_$(_T)_STRIPTGTS))
 
 endif
 
@@ -253,7 +288,8 @@ endif
 
 .PHONY: $(_T) static_$(_T) $(_T)_install static_$(_T)_install \
 	$(_T)_install_headers $(_T)_install_pkgconfig \
-	$$($(_T)_TARGET) static_$$($(_T)_TARGET)
+	$$($(_T)_TARGET) static_$$($(_T)_TARGET) \
+	$$($(_T)_TARGET)_stripshared $$($(_T)_TARGET)_stripstatic
 
 endef
 

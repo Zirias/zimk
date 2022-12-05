@@ -65,7 +65,9 @@ distclean::
 
 strip:: all
 
-.PHONY: all staticlibs strip install install-strip clean distclean
+.PHONY: all sharedlibs staticlibs stripsharedlibs stripstaticlibs strip \
+	install installsharedlibs installstaticlibs install-strip \
+	clean distclean
 .SUFFIXES:
 
 # vim: noet:si:ts=8:sts=8:sw=8
