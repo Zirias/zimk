@@ -185,6 +185,10 @@ $(eval $(ZIMK__WRITECFGTAG))
 endif
 endif
 
+ifneq ($(PREFIX),)
+prefix ?= $(PREFIX)
+endif
+
 ifeq ($(PORTABLE),1)
 DESTDIR ?= dist
 exec_prefix ?= $(prefix)
