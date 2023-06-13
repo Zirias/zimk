@@ -65,9 +65,22 @@ distclean::
 
 strip:: all
 
+ifdef POSIXSHELL
+DISTVERSIONPREFIX?=v
+dist:
+	@$(SHELL) $(ZIMKPATH)scripts/mkdist.sh $(DISTVERSIONPREFIX) $(PKGNAME)
+
+else
+dist:
+
+ifneq ($(filter dist,$(MAKECMDGOALS)),)
+$(error The dist target is only supported with POSIX shells)
+endif
+endif
+
 .PHONY: all sharedlibs staticlibs stripsharedlibs stripstaticlibs strip \
 	install installsharedlibs installstaticlibs install-strip \
-	clean distclean
+	clean distclean dist
 .SUFFIXES:
 
 # vim: noet:si:ts=8:sts=8:sw=8

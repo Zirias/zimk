@@ -17,7 +17,7 @@ LISTCONFVARS := $(call ZIMK__UNIQ,CFLAGS CXXFLAGS DEFINES INCLUDES LDFLAGS \
 	$(LISTCONFVARS))
 CONFVARS := $(SINGLECONFVARS) $(LISTCONFVARS)
 BUILDCFGS := $(call ZIMK__UNIQ,release debug $(BUILDCFGS))
-NOBUILDTARGETS := $(sort clean distclean config changeconfig showconfig \
+NOBUILDTARGETS := $(sort clean distclean dist config changeconfig showconfig \
 	_build_config _build_changeconfig $(NOBUILDTARGETS))
 MAKECMDGOALS ?= all
 
