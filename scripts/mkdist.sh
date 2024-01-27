@@ -21,7 +21,7 @@ tag=$(git describe --abbrev=0)
 VERSIONPREFIX=${1:-v}
 DISTVERSION=${tag#${VERSIONPREFIX}}
 
-if [ "$version" != "$version_git" ]; then
+if [ "$tag" != "$version_git" ]; then
 	if ! tool="$(type sed 2>/dev/null)" || test -z "$tool"; then
 		echo >&2 Error: mkdist.sh requires sed.
 		exit 1
@@ -30,15 +30,11 @@ if [ "$version" != "$version_git" ]; then
 		echo >&2 Error: mkdist.sh requires date.
 		exit 1
 	fi
-	if [ -z "$(echo $version | sed -ne '/\..*\./p')" ]; then
+	if [ -z "$(echo $DISTVERSION | sed -ne '/\..*\./p')" ]; then
 		DISTVERSION="${DISTVERSION}.0"
 	fi
 	branch=$(git rev-parse --abbrev-ref HEAD)
-	tagbranch=$(git log -1 --format='%D' ${tag} \
-		| sed -e 's:.*\(, \([^/]*\)\(, .*\)*\):\2:')
-	if [ "$branch" != "$tagbranch" ]; then
-		DISTVERSION="${DISTVERSION}.${branch}"
-	fi
+	DISTVERSION="${DISTVERSION}.${branch}"
 	DISTVERSION="${DISTVERSION}.$(date +%Y%m%d)"
 fi
 
@@ -58,7 +54,7 @@ if ! git clone . --recurse-submodules "${DISTNAME}"; then
 	echo >&2 mkdist.sh: Error cloning "${DISTNAME}"
 	exit 1
 fi
-tar --exclude-vcs -cJf "${DISTNAME}.tar.xz" "${DISTNAME}"
+tar --exclude-vcs --exclude ".github/*" -cJf "${DISTNAME}.tar.xz" "${DISTNAME}"
 rm -fr "${DISTNAME}"
 echo Created distfile: ${reporoot}/${DISTNAME}.tar.xz
 
