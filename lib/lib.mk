@@ -11,9 +11,6 @@ $$(error Unkown library type `$$($(_T)_LIBTYPE)' for `$(_T)'. \
 endif
 
 $(_T)_TARGET ?= $(_T)
-$(_T)_V_MAJ ?= 1
-$(_T)_V_MIN ?= 0
-$(_T)_V_REV ?= 0
 $(_T)_posix_CFLAGS_SHARED ?= -fPIC
 $(_T)_posix_CXXFLAGS_SHARED ?= -fPIC
 $(_T)_INSTALLDIRNAME ?= lib
@@ -88,8 +85,6 @@ $(_T)_STATICLIB := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).a
 $(BUILDDEPS)
 $(LINKFLAGS)
 
-_$(_T)_V := $$($(_T)_V_MAJ).$$($(_T)_V_MIN).$$($(_T)_V_REV)
-
 ifeq ($$(BFMT_PLATFORM),win32)
 ifeq ($$(PLATFORM),win32)
 ifeq ($$($(_T)_LIBTYPE),library)
@@ -107,7 +102,7 @@ endif
 
 else
 ifeq ($$($(_T)_LIBTYPE),library)
-_$(_T)_LIB_FULL := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).so.$$(_$(_T)_V)
+_$(_T)_LIB_FULL := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).so.$$($(_T)_VERSION)
 _$(_T)_LIB_MAJ := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).so.$$($(_T)_V_MAJ)
 $(_T)_LIB := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).so
 else
@@ -166,7 +161,7 @@ $$($(_T)_LIB): $$(_$(_T)_LIB_MAJ)
 	$$(VR)ln -fs lib$(_T).so.$$($(_T)_V_MAJ) $$@
 
 $$(_$(_T)_LIB_MAJ): $$(_$(_T)_LIB_FULL)
-	$$(VR)ln -fs lib$(_T).so.$$(_$(_T)_V) $$@
+	$$(VR)ln -fs lib$(_T).so.$$($(_T)_VERSION) $$@
 
 endif
 
@@ -183,7 +178,7 @@ $(_T)_install: $$(_$(_T)_LIB_FULL)
 	$$(VINST)
 	$$(VR)$$(call instfile,$$<,$$(_ZIMK_1),755)
 ifeq ($$($(_T)_LIBTYPE),library)
-	$$(VR)ln -fs lib$(_T).so.$$(_$(_T)_V) $$(_ZIMK_1)$$(PSEP)lib$(_T).so.$$($(_T)_V_MAJ)
+	$$(VR)ln -fs lib$(_T).so.$$($(_T)_VERSION) $$(_ZIMK_1)$$(PSEP)lib$(_T).so.$$($(_T)_V_MAJ)
 	$$(VR)ln -fs lib$(_T).so.$$($(_T)_V_MAJ) $$(_ZIMK_1)$$(PSEP)lib$(_T).so
 endif
 
@@ -275,7 +270,7 @@ $(_T)_install_pkgconfig:
 	$$(VR)echo $$(EQT)Name: $(_T)$$(EQT) >>$$(DESTDIR)$$($(_T)_PKGCONFIG)
 	$$(VR)echo $$(EQT)Description: $$($(_T)_DESCRIPTION)$$(EQT) \
 		>>$$(DESTDIR)$$($(_T)_PKGCONFIG)
-	$$(VR)echo $$(EQT)Version: $$(_$(_T)_V)$$(EQT) \
+	$$(VR)echo $$(EQT)Version: $$($(_T)_VERSION)$$(EQT) \
 		>>$$(DESTDIR)$$($(_T)_PKGCONFIG)
 	$$(VR)echo $$(EQT)Cflags: -I\$$$${includedir}$$(EQT) \
 		>>$$(DESTDIR)$$($(_T)_PKGCONFIG)

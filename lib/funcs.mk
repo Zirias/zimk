@@ -63,3 +63,8 @@ endef
 define tobool
 $(eval $(__F_TOBOOL))$(strip $(_ZIMK__VR))
 endef
+
+version_nums = $(subst ., ,$1) 0 0 0
+version_maj = $(word 1,$(call version_nums,$1))
+version_min = $(word 2,$(call version_nums,$1))
+version_rev = $(word 3,$(call version_nums,$1))

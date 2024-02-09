@@ -16,6 +16,16 @@ endef
 
 define OBJRULES
 
+ifeq ($$($(_T)_VERSION),)
+$(_T)_V_MAJ ?= 1
+$(_T)_V_MIN ?= 0
+$(_T)_V_REV ?= 0
+$(_T)_VERSION := $$($(_T)_V_MAJ).$$($(_T)_V_MIN).$$($(_T)_V_REV)
+else
+$(_T)_V_MAJ := $$(call version_maj,$$($(_T)_VERSION))
+$(_T)_V_MIN := $$(call version_min,$$($(_T)_VERSION))
+$(_T)_V_REV := $$(call version_rev,$$($(_T)_VERSION))
+endif
 $(_T)_MAKEFILES ?= $$(ZIMK__MK)
 $(_T)_SRCDIR ?= $$(patsubst %$$(PSEP),%,$$(ZIMK__DIR))
 $(_T)_SRCDIR := $$(strip $$($(_T)_SRCDIR))
@@ -437,6 +447,8 @@ endif
 
 ifneq ($$(strip $$($(_T)_SUB_FILES)),)
 CLEAN += $$(addprefix $$($(_T)_SRCDIR)$$(PSEP),$$($(_T)_SUB_FILES))
+$(_T)_SUB_LIST += VERSION=$$($(_T)_VERSION) V_MAJ=$$($(_T)_V_MAJ) \
+	V_MIN=$$($(_T)_V_MIN) V_REV=$$($(_T)_V_REV)
 $$(eval $$(foreach f,$$($(_T)_SUB_FILES),\
 	$$(call SUBRULE,$$($(_T)_SRCDIR)$$(PSEP)$$(f))))
 else
