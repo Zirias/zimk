@@ -8,7 +8,7 @@
 #
 INFILE=$(firstword $(MAKECMDGOALS))
 TEXT=$(file < $(INFILE))
-subvars=$(foreach p,$(SUB_LIST),$(subst =, ,$p))
+subvars=$(foreach p,$(SUB_LIST),$(firstword $(subst =, ,$p)))
 $(foreach p,$(SUB_LIST),$(eval __sub__$(subst %%, ,$p)))
 $(foreach p,$(subvars),$(eval TEXT:=$$(subst %%$p%%,$$(__sub__$p),$$(TEXT))))
 $(info $(TEXT))
