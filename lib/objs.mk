@@ -447,6 +447,7 @@ endif
 
 ifneq ($$(strip $$($(_T)_SUB_FILES)),)
 CLEAN += $$(addprefix $$($(_T)_SRCDIR)$$(PSEP),$$($(_T)_SUB_FILES))
+DISTCLEAN += $$(addprefix $$($(_T)_SRCDIR)$$(PSEP),$$($(_T)_SUB_FILES))
 $(_T)_SUB_LIST += VERSION=$$($(_T)_VERSION) V_MAJ=$$($(_T)_V_MAJ) \
 	V_MIN=$$($(_T)_V_MIN) V_REV=$$($(_T)_V_REV)
 $$(eval $$(foreach f,$$($(_T)_SUB_FILES),\

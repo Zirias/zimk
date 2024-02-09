@@ -56,8 +56,7 @@ clean::
 	$(RMF) $(CLEAN)
 
 distclean::
-	$(RMF) .cache_*.cfg
-	$(RMF) *.cfg
+	$(RMF) $(DISTCLEAN) .cache_*.cfg *.cfg
 	$(RMFR) $(BINBASEDIR)
 	$(RMFR) $(LIBBASEDIR)
 	$(RMFR) $(TESTBASEDIR)
