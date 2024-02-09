@@ -3,6 +3,17 @@ PREPROC_MOC_intype := h
 PREPROC_MOC_outtype := cpp
 PREPROC_MOC_preproc := $(MOC)
 
+define SUBRULE
+
+$1: $1.in $$($$(_T)_MAKEFILES) $$(ZIMK__CFGCACHE)
+	$$(VSUB)
+	$$(VR)$$(MAKE) -sf $$(ZIMKPATH)scripts/sub.mk \
+		SUB_LIST="$$($$(_T)_SUB_LIST)" $$< >$$@
+
+$$(_T)_sub: $1
+
+endef
+
 define OBJRULES
 
 $(_T)_MAKEFILES ?= $$(ZIMK__MK)
@@ -182,7 +193,7 @@ $(DIRRULES)
 
 %.o: %.c
 
-$$($(_T)_OBJDIR)$$(PSEP)%.d: $$($(_T)_SRCDIR)$$(PSEP)%.c \
+$$($(_T)_OBJDIR)$$(PSEP)%.d: $$($(_T)_SRCDIR)$$(PSEP)%.c $(_T)_sub \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VDEP)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ \
@@ -191,7 +202,7 @@ $$($(_T)_OBJDIR)$$(PSEP)%.d: $$($(_T)_SRCDIR)$$(PSEP)%.c \
 		$$(INCLUDES) $$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) \
 		$$(CFLAGS) $$<
 
-$$($(_T)_OBJDIR)$$(PSEP)%.d: $$($(_T)_SRCDIR)$$(PSEP)%.cpp \
+$$($(_T)_OBJDIR)$$(PSEP)%.d: $$($(_T)_SRCDIR)$$(PSEP)%.cpp $(_T)_sub \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VDEP)
 	$$(VR)$$(CROSS_COMPILE)$$(CXX) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ \
@@ -200,7 +211,7 @@ $$($(_T)_OBJDIR)$$(PSEP)%.d: $$($(_T)_SRCDIR)$$(PSEP)%.cpp \
 		$$(INCLUDES) $$($(_T)_$$(PLATFORM)_CXXFLAGS) \
 		$$($(_T)_CXXFLAGS) $$(CXXFLAGS) $$<
 
-$$($(_T)_OBJDIR)$$(PSEP)%.d: $$($(_T)_SRCDIR)$$(PSEP)%.S \
+$$($(_T)_OBJDIR)$$(PSEP)%.d: $$($(_T)_SRCDIR)$$(PSEP)%.S $(_T)_sub \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VDEP)
 	$$(VR)$$(CROSS_COMPILE)$$(CC) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ \
@@ -209,7 +220,7 @@ $$($(_T)_OBJDIR)$$(PSEP)%.d: $$($(_T)_SRCDIR)$$(PSEP)%.S \
 		$$(INCLUDES) $$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) \
 		$$(CFLAGS) $$<
 
-$$($(_T)_OBJDIR)$$(PSEP)%.d: $$($(_T)_SRCDIR)$$(PSEP)%.rc \
+$$($(_T)_OBJDIR)$$(PSEP)%.d: $$($(_T)_SRCDIR)$$(PSEP)%.rc $(_T)_sub \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VDEP)
 	$$(VR)$$(CROSS_COMPILE)$$(CPP) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ \
@@ -422,6 +433,14 @@ $$($(_T)_OBJDIR)$$(PSEP)%_qrc_s.o: \
 		$$($(_T)_$$(PLATFORM)_CXXFLAGS) $$($(_T)_CXXFLAGS) \
 		$$(CXXFLAGS) $$<
 
+endif
+
+ifneq ($$(strip $$($(_T)_SUB_FILES)),)
+CLEAN += $$(addprefix $$($(_T)_SRCDIR)$$(PSEP),$$($(_T)_SUB_FILES))
+$$(eval $$(foreach f,$$($(_T)_SUB_FILES),\
+	$$(call SUBRULE,$$($(_T)_SRCDIR)$$(PSEP)$$(f))))
+else
+$(_T)_sub: ;
 endif
 
 ifneq ($$(strip $$($(_T)_DOCS)),)
