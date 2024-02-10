@@ -115,7 +115,7 @@ endif
 OUTFILES := $$($(_T)_LIB) $$($(_T)_STATICLIB)
 $(DIRRULES)
 
-$$($(_T)_STATICLIB): $$($(_T)_OBJS) | $$(_$(_T)_DIRS)
+$$($(_T)_STATICLIB): $$($(_T)_OBJS) $$($(_T)_ROBJS) | $$(_$(_T)_DIRS)
 	$$(VAR)
 	$$(VR)$$(CROSS_COMPILE)$$(AR) rcs $$@1 $$^
 	$$(VR)$$(RMF) $$@ $$(CMDQUIET)
@@ -128,13 +128,14 @@ static_$(_T)_install: $$($(_T)_STATICLIB)
 	$$(VR)$$(call instfile,$$<,$$(_ZIMK_1),644)
 
 ifeq ($$(BFMT_PLATFORM),win32)
-$$($(_T)_LIB): $$($(_T)_SOBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
+$$($(_T)_LIB): $$($(_T)_SOBJS) $$($(_T)_ROBJS) $$(_$(_T)_DEPS) \
+	| $$(_$(_T)_DIRS)
 	$$($(_T)_VL)
 	$$(VR)$$(CROSS_COMPILE)$$($(_T)_LDC) -shared -o$$@ \
 		-Wl,--out-implib,$$($(_T)_TGTDIR)$$(PSEP)lib$(_T).dll.a \
 		-Wl,--output-def,$$($(_T)_TGTDIR)$$(PSEP)$(_T).def \
 		$$($(_T)_$$(PLATFORM)_LDFLAGS) $$($(_T)_LDFLAGS) $$(LDFLAGS) \
-		$$($(_T)_SOBJS) $$(_$(_T)_LINK)
+		$$($(_T)_SOBJS) $$($(_T)_ROBJS) $$(_$(_T)_LINK)
 
 $(_T)_install: $$($(_T)_LIB)
 ifeq ($$($(_T)_LIBTYPE),library)
@@ -165,12 +166,13 @@ $$(_$(_T)_LIB_MAJ): $$(_$(_T)_LIB_FULL)
 
 endif
 
-$$(_$(_T)_LIB_FULL): $$($(_T)_SOBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
+$$(_$(_T)_LIB_FULL): $$($(_T)_SOBJS) $$($(_T)_ROBJS) $$(_$(_T)_DEPS) \
+	| $$(_$(_T)_DIRS)
 	$$($(_T)_VL)
 	$$(VR)$$(CROSS_COMPILE)$$($(_T)_LDC) -shared -o$$@ \
 		-Wl,-soname,lib$(_T).so.$$($(_T)_V_MAJ) \
 		$$($(_T)_$$(PLATFORM)_LDFLAGS) $$($(_T)_LDFLAGS) $$(LDFLAGS) \
-		$$($(_T)_SOBJS) $$(_$(_T)_LINK)
+		$$($(_T)_SOBJS) $$($(_T)_ROBJS) $$(_$(_T)_LINK)
 
 $(_T)_install: $$(_$(_T)_LIB_FULL)
 	$$(eval _ZIMK_1 := $$(DESTDIR)$$($$($(_T)_INSTALLDIRNAME)dir))
