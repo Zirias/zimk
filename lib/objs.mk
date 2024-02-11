@@ -7,7 +7,7 @@ define ZIMK__SUBRULE
 
 $1: $1.in $$($$(_T)_MAKEFILES) $$(ZIMK__CFGCACHE)
 	$$(VSUB)
-	$$(VR)$$(MAKE) -sf $$(ZIMKPATH)scripts/sub.mk \
+	$$(VR)$$(MAKE) --no-print-directory -f $$(ZIMKPATH)scripts/sub.mk \
 		SUB_LIST="$$($$(_T)_SUB_LIST)" $$< >$$@
 
 $$(_T)_sub: $1

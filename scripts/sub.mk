@@ -1,6 +1,7 @@
 # substitute a list of variables
 #
-# Usage: $(MAKE) -sf sub.mk SUB_LIST="SUB1=repl1 SUB2=repl2" infile
+# Usage: $(MAKE) --no-print-directory -f sub.mk \
+#                SUB_LIST="SUB1=repl1 SUB2=repl2" infile
 #
 # replaces all occurrances of %%SUB1%% with repl1 and %%SUB2%% with repl2 in
 # infile and writes the result to stdout. A %% inside a replacement string
