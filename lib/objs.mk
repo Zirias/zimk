@@ -5,12 +5,12 @@ PREPROC_MOC_preproc := $(MOC)
 
 define ZIMK__SUBRULE
 
-$1: $1.in $$($$(_T)_MAKEFILES) $$(ZIMK__CFGCACHE)
+$1: $1.in $$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE)
 	$$(VSUB)
 	$$(VR)$$(MAKE) --no-print-directory -f $$(ZIMKPATH)scripts/sub.mk \
-		SUB_LIST="$$($$(_T)_SUB_LIST)" $$< >$$@
+		SUB_LIST="$$($(_T)_SUB_LIST)" $$< >$$@
 
-$$(_T)_sub: $1
+$(_T)_sub: $1
 endef
 
 define ZIMK__PREPROCRULE
@@ -227,7 +227,7 @@ $(_T)_PKGSTATUS := $$(shell $$(PKGCONFIG) --exists '$$($(_T)_PKGDEPS)';\
 	echo $$$$?)
 ifneq ($$($(_T)_PKGSTATUS),0)
 $$(error $$(shell $$(PKGCONFIG) --print-errors --exists '$$($(_T)_PKGDEPS)')\
-Required packages for $$(_T) not found)
+Required packages for $(_T) not found)
 endif
 $(_T)_PKGCFLAGS := $$(shell $$(PKGCONFIG) --cflags '$$($(_T)_PKGDEPS)')
 $(_T)_CFLAGS += $$($(_T)_PKGCFLAGS)
@@ -243,7 +243,7 @@ $(_T)_PKGSTATUS := $$(shell $$(PKGCONFIG) --exists '$$($(_T)_PKGSTATICDEPS)';\
 ifneq ($$($(_T)_PKGSTATUS),0)
 $$(error $$(shell $$(PKGCONFIG) --print-errors\
 	--exists '$$($(_T)_PKGSTATICDEPS)')\
-Required packages for $$(_T) not found)
+Required packages for $(_T) not found)
 endif
 $(_T)_PKGCFLAGS := $$(shell $$(PKGCONFIG) --cflags '$$($(_T)_PKGSTATICDEPS)')
 $(_T)_CFLAGS += $$($(_T)_PKGCFLAGS)
