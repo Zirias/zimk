@@ -7,11 +7,15 @@ $(_T)_ICONSRCDIR ?= $$($(_T)_SRCDIR)$$(PSEP)icons
 $(_T)_ICONTYPES ?= png
 $(_T)_MIMEICONSIZES ?= $$($(_T)_ICONSIZES)
 $(_T)_MIMEICONTYPES ?= $$($(_T)_ICONTYPES)
-$(_T)_TGTDIR ?= $$(BINDIR)
 $(_T)_LIBDIR ?= $$(LIBDIR)
 $(_T)_MIMEDIR ?= $$($(_T)_SRCDIR)$$(PSEP)mime
 $(_T)_BUILDWITH ?= all
+ifeq ($$($(_T)_NOBUILD),1)
+$(_T)_TGTDIR ?= $$($(_T)_SRCDIR)
+else
+$(_T)_TGTDIR ?= $$(BINDIR)
 $(_T)_STRIPWITH ?= strip
+endif
 $(_T)_INSTALLWITH ?= install
 $(_T)_INSTALLDIRNAME ?= bin
 
@@ -103,6 +107,7 @@ $$($(_T)_STRIPWITH):: $$($(_T)_EXE)
 
 endif
 
+ifneq ($$($(_T)_NOBUILD),1)
 ifeq ($$(BFMT_PLATFORM),win32)
 $$($(_T)_EXE): $$($(_T)_OBJS) $$($(_T)_ROBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
 	$$(VCCLD)
@@ -118,6 +123,7 @@ $$($(_T)_EXE): $$($(_T)_OBJS) $$($(_T)_ROBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
 		$$($(_T)_$$(PLATFORM)_LDFLAGS) $$($(_T)_LDFLAGS) $$(LDFLAGS) \
 		$$($(_T)_OBJS) $$($(_T)_ROBJS) $$(_$(_T)_LINK)
 
+endif
 endif
 
 $(_T)_install: $$($(_T)_EXE)
