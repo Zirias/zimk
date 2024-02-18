@@ -1,3 +1,11 @@
+define ZIMK__INSTEXTRARECIPELINE
+
+$(ZIMK__TAB)$$(eval _ZIMK_1 := $$(DESTDIR)$$($1dir))
+$(ZIMK__TAB)$$(eval _ZIMK_0 := $$(_ZIMK_1)$$(PSEP)$$(notdir $2))
+$(ZIMK__TAB)$$(VINST)
+$(ZIMK__TAB)$$(VR)$$(call instfile,$2,$$(_ZIMK_1),664)
+endef
+
 define BINRULES
 $(OBJRULES)
 
@@ -107,7 +115,10 @@ $$($(_T)_STRIPWITH):: $$($(_T)_EXE)
 
 endif
 
-ifneq ($$($(_T)_NOBUILD),1)
+ifeq ($$($(_T)_NOBUILD),1)
+$$($(_T)_BUILDWITH):: $(_T)_sub
+
+else
 ifeq ($$(BFMT_PLATFORM),win32)
 $$($(_T)_EXE): $$($(_T)_OBJS) $$($(_T)_ROBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
 	$$(VCCLD)
@@ -124,6 +135,15 @@ $$($(_T)_EXE): $$($(_T)_OBJS) $$($(_T)_ROBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
 		$$($(_T)_OBJS) $$($(_T)_ROBJS) $$(_$(_T)_LINK)
 
 endif
+endif
+
+ifneq ($$(strip $$($(_T)_SYSCONF)),)
+$$($(_T)_INSTALLWITH):: $(_T)_installsysconf
+
+$$(eval $$(_T)_installsysconf: $$(foreach \
+	_F,$$($$(_T)_SYSCONF),$$(call \
+	ZIMK__INSTEXTRARECIPELINE,sysconf,$$($$(_T)_SRCDIR)$$(PSEP)$$(_F))))
+
 endif
 
 $(_T)_install: $$($(_T)_EXE)
@@ -151,7 +171,8 @@ endif
 endif
 
 .PHONY: $(_T) $(_T)_install $(_T)_installdesktop $(_T)_installicons \
-	$(_T)_installmimeicons $(_T)_installsharedmimeinfo
+	$(_T)_installmimeicons $(_T)_installsharedmimeinfo \
+	$(_T)_installsysconf
 
 endef
 
