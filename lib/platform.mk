@@ -37,8 +37,9 @@ CATIN := cat
 CATADD :=
 CATOUT := >
 READ := cat
+ECHOTO := echo "
+ETOEND := "
 EQT := "
-#" make vim syntax highlight happy
 CMDQUIET := >/dev/null 2>&1
 CODNOERR := 2>/dev/null
 CMDNOIN := </dev/null
@@ -70,6 +71,8 @@ CATIN := copy /b
 CATADD := +
 CATOUT :=
 READ := type
+ECHOTO := (echo 
+ETOEND := )
 EQT :=
 CMDQUIET := >nul 2>nul & verify >nul
 CMDNOERR := 2>nul & verify >nul
@@ -77,7 +80,7 @@ CMDNOIN := <nul
 
 INSTDIR := $(MDP)
 
-instfile = $(MDP) $(dir $(2)) $(CMDQUIET) $(CMDSEP) copy $(1) $(2) $(CMDQUIET)
+instfile = $(MDP) $(2) $(CMDQUIET) $(CMDSEP) copy $(1) $(2) $(CMDQUIET)
 geq = $(shell if $(1) geq $(2) echo 1)
 
 touch = copy /b $(1) +,,

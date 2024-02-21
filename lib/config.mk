@@ -56,20 +56,20 @@ ZIMK__CFGCACHE:=.cache_$(BUILDCFG).cfg
 
 define ZIMK__WRITECACHELINE
 
-$(ZIMK__TAB)$$(VR)echo $$(EQT)C_$(_cv) := $$(strip $($(_cv)))$$(EQT) >>$$(ZIMK__CFGCACHE)
+$(ZIMK__TAB)$$(VR)$$(ECHOTO)C_$(_cv) := $$(strip $($(_cv)))$$(ETOEND) >>$$(ZIMK__CFGCACHE)
 endef
 define ZIMK__WRITECACHE
 $$(ZIMK__CFGCACHE):
-	$$(VR)echo $$(EQT)# generated file, do not edit!$$(EQT) >$$(ZIMK__CFGCACHE)$(foreach _cv,$(CONFVARS),$(if $(strip $($(_cv))),$(ZIMK__WRITECACHELINE),))
+	$$(VR)$$(ECHOTO)# generated file, do not edit!$$(ETOEND) >$$(ZIMK__CFGCACHE)$(foreach _cv,$(CONFVARS),$(if $(strip $($(_cv))),$(ZIMK__WRITECACHELINE),))
 endef
 define ZIMK__WRITECFGLINE
 
-$(ZIMK__TAB)$$(VR)echo $$(EQT)$(_cv) ?= $$(strip $($(_cv)))$$(EQT) >>$$(USERCONFIG)
+$(ZIMK__TAB)$$(VR)$$(ECHOTO)$(_cv) ?= $$(strip $($(_cv)))$$(ETOEND) >>$$(USERCONFIG)
 endef
 define ZIMK__WRITECFG
 $(ZIMK__CFGTARGET): $$(USERCONFIG)
 	$$(VCFG)
-	$$(VR)echo $$(EQT)# generated file, do not edit!$$(EQT) >$$(USERCONFIG)$(foreach _cv,$(CONFVARS),$(if $(strip $($(_cv))),$(ZIMK__WRITECFGLINE),))
+	$$(VR)$$(ECHOTO)# generated file, do not edit!$$(ETOEND) >$$(USERCONFIG)$(foreach _cv,$(CONFVARS),$(if $(strip $($(_cv))),$(ZIMK__WRITECFGLINE),))
 endef
 define ZIMK__WRITECFGTAG
 undefine ZIMK__CFGTAG
@@ -102,13 +102,13 @@ $(eval $(ZIMK__WRITECFG))
 
 config: global.cfg _build_config
 	$(VCFG)
-	$(VR)echo $(EQT)# generated file, do not edit!$(EQT) >$<
-	$(VR)echo $(EQT)BUILDCFG ?= $(BUILDCFG)$(EQT) >>$<
+	$(VR)$(ECHOTO)# generated file, do not edit!$(ETOEND) >$<
+	$(VR)$(ECHOTO)BUILDCFG ?= $(BUILDCFG)$(ETOEND) >>$<
 
 changeconfig: global.cfg _build_changeconfig
 	$(VCFG)
-	$(VR)echo $(EQT)# generated file, do not edit!$(EQT) >$<
-	$(VR)echo $(EQT)BUILDCFG ?= $(BUILDCFG)$(EQT) >>$<
+	$(VR)$(ECHOTO)# generated file, do not edit!$(ETOEND) >$<
+	$(VR)$(ECHOTO)BUILDCFG ?= $(BUILDCFG)$(ETOEND) >>$<
 
 global.cfg: ;
 
@@ -205,32 +205,32 @@ docrootdir ?= $(datarootdir)
 libdir ?= $(exec_prefix)
 localedir ?= $(datarootdir)
 pkgconfigdir ?= $(prefix)
-icondir ?= $(datarootdir)/icons
+icondir ?= $(datarootdir)$(PSEP)icons
 desktopdir ?= $(datarootdir)
-mimedir ?= $(datarootdir)/mime
+mimedir ?= $(datarootdir)$(PSEP)mime
 sharedmimeinfodir ?= $(mimedir)
 else
-prefix ?= /usr/local
+prefix ?= $(PSEP)usr$(PSEP)local
 exec_prefix ?= $(prefix)
-bindir ?= $(exec_prefix)/bin
-sbindir ?= $(exec_prefix)/sbin
-libexecdir ?= $(exec_prefix)/libexec
-datarootdir ?= $(prefix)/share
-sysconfdir ?= $(prefix)/etc
-sharedstatedir ?= $(prefix)/com
-localstatedir ?= $(prefix)/var
-runstatedir ?= $(localstatedir)/run
-includedir ?= $(prefix)/include
-docrootdir ?= $(datarootdir)/doc
-libdir ?= $(exec_prefix)/lib
-localedir ?= $(datarootdir)/locale
-pkgconfigdir ?= $(prefix)/lib/pkgconfig
-icondir ?= $(datarootdir)/icons/hicolor
+bindir ?= $(exec_prefix)$(PSEP)bin
+sbindir ?= $(exec_prefix)$(PSEP)sbin
+libexecdir ?= $(exec_prefix)$(PSEP)libexec
+datarootdir ?= $(prefix)$(PSEP)share
+sysconfdir ?= $(prefix)$(PSEP)etc
+sharedstatedir ?= $(prefix)$(PSEP)com
+localstatedir ?= $(prefix)$(PSEP)var
+runstatedir ?= $(localstatedir)$(PSEP)run
+includedir ?= $(prefix)$(PSEP)include
+docrootdir ?= $(datarootdir)$(PSEP)doc
+libdir ?= $(exec_prefix)$(PSEP)lib
+localedir ?= $(datarootdir)$(PSEP)locale
+pkgconfigdir ?= $(prefix)$(PSEP)lib$(PSEP)pkgconfig
+icondir ?= $(datarootdir)$(PSEP)icons$(PSEP)hicolor
 iconsubdir ?= apps
 mimeiconsubdir ?= mimetypes
-desktopdir ?= $(datarootdir)/applications
-mimedir ?= $(datarootdir)/mime
-sharedmimeinfodir ?= $(mimedir)/packages
+desktopdir ?= $(datarootdir)$(PSEP)applications
+mimedir ?= $(datarootdir)$(PSEP)mime
+sharedmimeinfodir ?= $(mimedir)$(PSEP)packages
 endif
 
 TARGETARCH:= $(strip $(shell $(CROSS_COMPILE)$(_ZIMK__TESTCC) -dumpmachine))

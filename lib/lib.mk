@@ -264,19 +264,19 @@ $(_T)_install_pkgconfig:
 	$$(eval _ZIMK_0 := $$(DESTDIR)$$($(_T)_PKGCONFIG))
 	$$(VINST)
 	$$(VR)$$(INSTDIR) $$(dir $$(_ZIMK_0))
-	$$(VR)echo $$(EQT)libdir=$$($$($(_T)_INSTALLDIRNAME)dir)$$(EQT) \
+	$$(VR)$$(ECHOTO)libdir=$$($$($(_T)_INSTALLDIRNAME)dir)$$(ETOEND) \
 		>$$(DESTDIR)$$($(_T)_PKGCONFIG)
-	$$(VR)echo $$(EQT)includedir=$$($(_T)_HEADERTGTBASEDIR)$$(EQT) \
+	$$(VR)$$(ECHOTO)includedir=$$($(_T)_HEADERTGTBASEDIR)$$(ETOEND) \
 		>>$$(DESTDIR)$$($(_T)_PKGCONFIG)
 	$$(VR)echo >>$$(DESTDIR)$$($(_T)_PKGCONFIG)
-	$$(VR)echo $$(EQT)Name: $(_T)$$(EQT) >>$$(DESTDIR)$$($(_T)_PKGCONFIG)
-	$$(VR)echo $$(EQT)Description: $$($(_T)_DESCRIPTION)$$(EQT) \
+	$$(VR)$$(ECHOTO)Name: $(_T)$$(ETOEND) >>$$(DESTDIR)$$($(_T)_PKGCONFIG)
+	$$(VR)$$(ECHOTO)Description: $$($(_T)_DESCRIPTION)$$(ETOEND) \
 		>>$$(DESTDIR)$$($(_T)_PKGCONFIG)
-	$$(VR)echo $$(EQT)Version: $$($(_T)_VERSION)$$(EQT) \
+	$$(VR)$$(ECHOTO)Version: $$($(_T)_VERSION)$$(ETOEND) \
 		>>$$(DESTDIR)$$($(_T)_PKGCONFIG)
-	$$(VR)echo $$(EQT)Cflags: -I\$$$${includedir}$$(EQT) \
+	$$(VR)$$(ECHOTO)Cflags: -I\$$$${includedir}$$(ETOEND) \
 		>>$$(DESTDIR)$$($(_T)_PKGCONFIG)
-	$$(VR)echo $$(EQT)Libs: -L\$$$${libdir} -l$(_T)$$(EQT) \
+	$$(VR)$$(ECHOTO)Libs: -L\$$$${libdir} -l$(_T)$$(ETOEND) \
 		>>$$(DESTDIR)$$($(_T)_PKGCONFIG)
 
 $$($(_T)_INSTALLWITH):: $(_T)_install_pkgconfig
