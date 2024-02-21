@@ -52,15 +52,30 @@ install:: all
 
 install-strip:: strip install
 
+define ZIMK__CLEANLINE
+
+$(ZIMK__TAB)$(VRM)
+$(ZIMK__TAB)$(VR)$(call rmfile,$1)
+endef
+ZIMK__CLEANRECIPE=@:$(foreach f,$1\
+	,$(eval _ZIMK_0:=$f)$(call ZIMK__CLEANLINE,$f))
+
 clean::
-	$(RMF) $(CLEAN)
+	$(call ZIMK__CLEANRECIPE,$(CLEAN))
+
+ZIMK__CONFIGS=$(foreach c,$(BUILDCFGS),.cache_$c.cfg $c.cfg) global.cfg
+ZIMK__DISTCLEAN=$(BINBASEDIR) $(LIBBASEDIR) $(TESTBASEDIR) $(OBJBASEDIR)
+define ZIMK__DISTCLEANLINE
+
+$(ZIMK__TAB)$(VRMDR)
+$(ZIMK__TAB)$(VR)$(call rmdir,$1)
+endef
+ZIMK__DISTCLEANRECIPE=@:$(foreach d,$1\
+	,$(eval _ZIMK_0:=$d)$(call ZIMK__DISTCLEANLINE,$d))
 
 distclean::
-	$(RMF) $(DISTCLEAN) .cache_*.cfg *.cfg
-	$(RMFR) $(BINBASEDIR)
-	$(RMFR) $(LIBBASEDIR)
-	$(RMFR) $(TESTBASEDIR)
-	$(RMFR) $(OBJBASEDIR)
+	$(call ZIMK__CLEANRECIPE,$(DISTCLEAN) $(ZIMK__CONFIGS))
+	$(call ZIMK__DISTCLEANRECIPE,$(ZIMK__DISTCLEAN))
 
 strip:: all
 

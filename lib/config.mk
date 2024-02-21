@@ -233,7 +233,7 @@ mimedir ?= $(datarootdir)$(PSEP)mime
 sharedmimeinfodir ?= $(mimedir)$(PSEP)packages
 endif
 
-TARGETARCH:= $(strip $(shell $(CROSS_COMPILE)$(_ZIMK__TESTCC) -dumpmachine))
+TARGETARCH:= $(strip $(shell $(CROSS_COMPILE)$(_ZIMK__TESTCC) -dumpmachine $(CMDNOERR)))
 ifeq ($(TARGETARCH),)
 TARGETARCH:= unknown
 endif
