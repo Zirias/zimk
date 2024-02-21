@@ -143,6 +143,7 @@ endef
 
 ifeq ($(PLATFORM),win32)
 define ZIMK__WINDRESRULE
+CLEAN += $$($(_T)_OBJDIR)$$(PSEP)$1.o
 
 $$($(_T)_OBJDIR)$$(PSEP)$1.o: $$($(_T)_SRCDIR)$$(PSEP)$1.rc \
     $$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
