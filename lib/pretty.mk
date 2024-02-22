@@ -1,23 +1,48 @@
 ifndef NCOL
 
-ifdef TERM
-ZIMK__PRNORM := $(shell tput sgr0 || tput me)
-ZIMK__PRBOLD := $(shell tput bold || tput md)
-ZIMK__PRRED := $(shell tput setaf 1 || tput AF 1)
-ZIMK__PRGREEN := $(shell tput setaf 2 || tput AF 2)
-ZIMK__PRBROWN := $(shell tput setaf 3 || tput AF 3)
-ZIMK__PRBLUE := $(shell tput setaf 4 || tput AF 4)
-ZIMK__PRMAGENTA := $(shell tput setaf 5 || tput AF 5)
-ZIMK__PRCYAN := $(shell tput setaf 6 || tput AF 6)
-ZIMK__PRLGRAY := $(shell tput setaf 7 || tput AF 7)
-ZIMK__PRGRAY := $(shell tput setaf 8 || tput AF 8 || tput setaf 0 || tput Af 0)
-ZIMK__PRLRED := $(shell tput setaf 9 || tput AF 9 || tput setaf 1 || tput AF 1)
-ZIMK__PRLGREEN := $(shell tput setaf 10 || tput AF 10 || tput setaf 2 || tput AF 2)
-ZIMK__PRYELLOW := $(shell tput setaf 11 || tput AF 11 || tput setaf 3 || tput AF 3)
-ZIMK__PRLBLUE := $(shell tput setaf 12 || tput AF 12 || tput setaf 4 || tput AF 4)
-ZIMK__PRLMAGENTA := $(shell tput setaf 13 || tput AF 13 || tput setaf 5 || tput AF 5)
-ZIMK__PRLCYAN := $(shell tput setaf 14 || tput AF 14 || tput setaf 6 || tput AF 6)
-ZIMK__PRWHITE := $(shell tput setaf 15 || tput AF 15 || tput setaf 7 || tput AF 7)
+ifeq ($(POSIXSHELL),1)
+undefine zimk__tcap
+ZIMK__PRNORM := $(shell tput me 2>/dev/null)
+ifeq ($(.SHELLSTATUS),0)
+zimk__tcap = $(shell tput $1 2>/dev/null)
+else
+ZIMK__PRNORM := $(shell tput sgr0 2>/dev/null)
+ifeq ($(.SHELLSTATUS),0)
+zimk__tcap = $(shell tput $2 2>/dev/null)
+endif
+endif
+ifdef zimk__tcap
+ZIMK__PRBOLD := $(call zimk__tcap,md,bold)
+ZIMK__COLORS := $(call toint,$(call zimk__tcap,Co,colors))
+ifneq ($(call geq,$(ZIMK__COLORS),8),)
+ZIMK__PRRED := $(call zimk__tcap,AF 1,setaf 1)
+ZIMK__PRGREEN := $(call zimk__tcap,AF 2,setaf 2)
+ZIMK__PRBROWN := $(call zimk__tcap,AF 3,setaf 3)
+ZIMK__PRBLUE := $(call zimk__tcap,AF 4,setaf 4)
+ZIMK__PRMAGENTA := $(call zimk__tcap,AF 5,setaf 5)
+ZIMK__PRCYAN := $(call zimk__tcap,AF 6,setaf 6)
+ZIMK__PRLGRAY := $(call zimk__tcap,AF 7,setaf 7)
+ifneq ($(call geq,$(ZIMK__COLORS),16),)
+ZIMK__PRGRAY := $(call zimk__tcap,AF 8,setaf 8)
+ZIMK__PRLRED := $(call zimk__tcap,AF 9,setaf 9)
+ZIMK__PRLGREEN := $(call zimk__tcap,AF 10,setaf 10)
+ZIMK__PRYELLOW := $(call zimk__tcap,AF 11,setaf 11)
+ZIMK__PRLBLUE := $(call zimk__tcap,AF 12,setaf 12)
+ZIMK__PRLMAGENTA := $(call zimk__tcap,AF 13,setaf 13)
+ZIMK__PRLCYAN := $(call zimk__tcap,AF 14,setaf 14)
+ZIMK__PRWHITE := $(call zimk__tcap,AF 15,setaf 15)
+else
+ZIMK__PRGRAY := $(ZIMK__PRLGRAY)
+ZIMK__PRLRED := $(ZIMK__PRRED)
+ZIMK__PRLGREEN := $(ZIMK__PRGREEN)
+ZIMK__PRYELLOW := $(ZIMK__PRBROWN)
+ZIMK__PRLBLUE := $(ZIMK__PRBLUE)
+ZIMK__PRLMAGENTA := $(ZIMK__PRMAGENTA)
+ZIMK__PRLCYAN := $(ZIMK__PRCYAN)
+ZIMK__PRWHITE := $(ZIMK__PRLGRAY)
+endif
+endif
+endif
 else
 
 ifeq ($(OS),Windows_NT)

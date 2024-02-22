@@ -50,6 +50,10 @@ tolower = $(subst A,a,$(subst B,b,$(subst C,c,$(subst D,d,$(subst E,e,$(subst \
 	  U,u,$(subst V,v,$(subst W,w,$(subst X,x,$(subst Y,y,$(subst \
 	  Z,z,$1))))))))))))))))))))))))))
 
+toint = $(if $1,$(if $(subst 0,,$(subst 1,,$(subst 2,,$(subst 3,,$(subst \
+	4,,$(subst 5,,$(subst 6,,$(subst 7,,$(subst 8,,$(subst \
+	9,,$1)))))))))),0,$1),0)
+
 define __F_TOBOOL
 _ZIMK__V := $$(call tolower,$$(strip $(1)))
 _ZIMK__VE := bool flag "$(1)" not in [0,no,false,off,1,yes,true,on]
