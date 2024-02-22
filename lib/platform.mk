@@ -87,7 +87,7 @@ rmfile = $(RMF) $(1) $(CMDNOERR)
 rmdir = $(RMFR) $(1) $(CMDNOERR)
 geq = $(shell if $(1) geq $(2) echo 1)
 
-touch = copy /b $(1) +,,
+touch = copy /b $(1)+,,$(1) $(CMDQUIET)
 
 SYSNAME := $(shell uname 2>nul & verify >nul)
 
