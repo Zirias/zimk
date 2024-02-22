@@ -34,14 +34,14 @@ include $(ZIMKPATH)lib/lib.mk
 ifndef MAKE_RESTARTS
 ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)
 ifneq ($(shell git --version $(CMDNOERR)),)
-ZIMKSUBMODULECFG:=$(shell $(READ) $(ZIMKPATH).git $(CMDNOERR))
+ZIMKSUBMODULECFG:=$(shell $(READ) $(subst /,$(PSEP),$(ZIMKPATH)).git $(CMDNOERR))
 ifeq ($(words $(ZIMKSUBMODULECFG)),2)
 ZIMKSUBMODULEGITDIR:=$(realpath $(ZIMKPATH)$(lastword $(ZIMKSUBMODULECFG)))
 ifneq ($(ZIMKSUBMODULEGITDIR),)
 $(ZIMKPATH)zimk.mk: $(ZIMKSUBMODULEGITDIR)/FETCH_HEAD
 	$(VGIT)
 	$(VR)git submodule update $(ZIMKPATH)
-	$(VR)$(call touch,$@)
+	$(VR)$(call touch,$(subst /,$(PSEP),$@))
 endif
 endif
 endif
