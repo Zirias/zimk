@@ -36,6 +36,26 @@ OSVER_REV := $(word 3, $(_ZIMK__OSVER))
 
 else
 ifndef POSIXSHELL
+define ZIMK__POSIXSHMSG
+
+*** No POSIX shell could be detected while not building on Windows
+
+The zimk build system needs a POSIX compliant shell. Detection of the shell
+can be overridden by passing variables to make:
+
+HOSTSH:  Path to the POSIX shell on the build system
+         Defaults to the value of SH when not cross-building
+SH:      Path to the POSIX shell on the target system
+
+If you know your system has a POSIX shell available, pass its full path in
+one of these variables, e.g.
+
+    make SH=/bin/sh
+
+for the most commonly used path.
+
+endef
+$(info $(ZIMK__POSIXSHMSG))
 $(error zimk only works with a POSIX shell or Windows CMD.EXE)
 endif
 endif
