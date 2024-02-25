@@ -1,26 +1,42 @@
-ifeq ($(OS),Windows_NT)
-
+ifeq ($(POSIXSHELL),)
+ifeq ($(shell getconf _POSIX_SHELL 2>&1),1)
+ifeq ($(.SHELLSTATUS),0)
+POSIXSHELL := $(shell PATH=$$(getconf PATH) command -v sh 2>/dev/null)
+endif
+endif
+endif
+ifeq ($(POSIXSHELL),)
 undefine POSIXSHELL
-undefine _ZIMK_NOMANGLE
-ifneq ($(strip $(filter %sh,$(basename $(realpath $(SHELL))))),)
-POSIXSHELL := 1
-_ZIMK_NOMANGLE := MSYS_NO_PATHCONV=1 CYGWIN_DISABLE_ARGUMENT_MANGLING=1 \
-	MSYS2_ARG_CONV_EXCL="*"
 endif
 
-OSVER := $(subst ],,$(lastword $(shell $(_ZIMK_NOMANGLE) cmd /c ver)))
+ifeq ($(OS),Windows_NT)
+undefine _ZIMK_WINCMD
+ifdef POSIXSHELL
+_ZIMK_WINCMD := MSYS_NO_PATHCONV=1 CYGWIN_DISABLE_ARGUMENT_MANGLING=1 \
+	MSYS2_ARG_CONV_EXCL="*" CMD /C
+else
+export .SHELLFLAGS=/C
+SHELL:=cmd.exe
+SHELL:=$(shell ECHO %COMSPEC%)
+_ZIMK_WINCMD :=
+export SHELL
+endif
+
+OSVER := $(subst ],,$(lastword $(shell $(_ZIMK_WINCMD) ver)))
 _ZIMK__OSVER := $(subst ., ,$(OSVER))
 OSVER_MAJ := $(firstword $(_ZIMK__OSVER))
 OSVER_MIN := $(word 2, $(_ZIMK__OSVER))
 OSVER_REV := $(word 3, $(_ZIMK__OSVER))
 
 else
-
-POSIXSHELL := 1
-
+ifndef POSIXSHELL
+$(error zimk only works with a POSIX shell or Windows CMD.EXE)
+endif
 endif
 
 ifdef POSIXSHELL
+SHELL:=$(POSIXSHELL)
+export SHELL
 
 CMDSEP := ;
 PSEP := /
@@ -92,4 +108,3 @@ touch = copy /b $(1)+,,$(1) $(CMDQUIET)
 SYSNAME := $(shell uname 2>nul & verify >nul)
 
 endif
-
