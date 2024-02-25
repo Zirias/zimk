@@ -1,6 +1,6 @@
 ifndef NCOL
 
-ifeq ($(POSIXSHELL),1)
+ifdef POSIXSHELL
 undefine zimk__tcap
 ZIMK__PRNORM := $(shell tput me 2>/dev/null)
 ifeq ($(.SHELLSTATUS),0)
