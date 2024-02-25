@@ -1,7 +1,13 @@
+POSIXSHELL := $(if $(CROSS_COMPILE),$(HOSTSH),$(or $(HOSTSH),$(SH)))
+ZIMK__POSIXSH :=
 ifeq ($(POSIXSHELL),)
 ifeq ($(shell getconf _POSIX_SHELL 2>&1),1)
 ifeq ($(.SHELLSTATUS),0)
-POSIXSHELL := $(shell PATH=$$(getconf PATH) command -v sh 2>/dev/null)
+ZIMK__CHECKSHELLS := $(addsuffix /sh,$(subst \
+		     :, ,$(shell getconf PATH 2>/dev/null)))
+$(foreach s,$(ZIMK__CHECKSHELLS),$(if $(POSIXSHELL),,$(if \
+	$(shell test -x "$s" && echo 1),$(eval POSIXSHELL:=$s))))
+ZIMK__POSIXSH := $(POSIXSHELL)
 endif
 endif
 endif
