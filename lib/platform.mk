@@ -63,6 +63,13 @@ endif
 ifdef POSIXSHELL
 SHELL:=$(POSIXSHELL)
 export SHELL
+POSIXPATH:=$(shell getconf PATH 2>/dev/null)
+ifeq ($(.SHELLSTATUS),0)
+PATH:=$(POSIXPATH)
+export PATH
+else
+POSIXPATH:=
+endif
 
 CMDSEP := ;
 PSEP := /
