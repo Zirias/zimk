@@ -3,8 +3,9 @@ $(strip $(eval undefine __ZIMK__UNIQ__SEEN)$(foreach \
     _v,$1,$(if $(filter $(_v),$(__ZIMK__UNIQ__SEEN)),,$(eval \
         __ZIMK__UNIQ__SEEN += $(_v))))$(__ZIMK__UNIQ__SEEN))
 endef
-ZIMK__HOSTTOOLS := MOC RCC
-ZIMK__CROSSTOOLS := CC CXX CPP AR STRIP OBJCOPY OBJDUMP PKGCONFIG WINDRES
+HOSTTOOLS += GIT
+CROSSTOOLS += CC CXX CPP
+FALLBACKTOOLS += AR STRIP OBJCOPY OBJDUMP PKGCONFIG WINDRES MOC RCC
 SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 		  sysconfdir sharedstatedir localstatedir runstatedir \
 		  includedir docrootdir libdir localedir pkgconfigdir \
@@ -13,8 +14,8 @@ SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 BOOLCONFVARS := $(call ZIMK__UNIQ,PORTABLE STATIC SHAREDLIBS STATICLIBS \
 		$(BOOLCONFVARS))
 BOOLCONFVARS_DEFAULT_ON += SHAREDLIBS
-SINGLECONFVARS := $(call ZIMK__UNIQ,$(ZIMK__CROSSTOOLS) $(ZIMK__HOSTTOOLS) \
-	SH HOSTSH $(SINGLECONFVARS) $(BOOLCONFVARS))
+SINGLECONFVARS := $(call ZIMK__UNIQ,SH HOSTSH $(HOSTTOOLS) $(CROSSTOOLS) \
+		  $(FALLBACKTOOLS) $(SINGLECONFVARS) $(BOOLCONFVARS))
 LISTCONFVARS := $(call ZIMK__UNIQ,CFLAGS CXXFLAGS DEFINES INCLUDES LDFLAGS \
 	$(LISTCONFVARS))
 CONFVARS := $(SINGLECONFVARS) $(LISTCONFVARS)
@@ -127,6 +128,7 @@ DEFAULT_PKGCONFIG ?= pkg-config
 DEFAULT_WINDRES ?= windres
 DEFAULT_MOC ?= moc
 DEFAULT_RCC ?= rcc
+DEFAULT_GIT ?= git
 DEFAULT_SH ?= $(if $(CROSS_COMPILE),$(or $(ZIMK__POSIXSH),/bin/sh),/bin/sh)
 DEFAULT_HOSTSH ?= $(if $(CROSS_COMPILE),,$(SH))
 
@@ -309,7 +311,7 @@ override undefine $1
 endif
 $1:=$$(call findtool,$($1))
 endef
-$(foreach t,MAKE $(ZIMK__HOSTTOOLS),$(eval $(call ZIMK__UPDATEHOSTTOOL,$t)))
+$(foreach t,MAKE $(HOSTTOOLS),$(eval $(call ZIMK__UPDATEHOSTTOOL,$t)))
 export MAKE
 
 define ZIMK__UPDATECROSSTOOL
@@ -318,7 +320,15 @@ override undefine $1
 endif
 $1:=$$(call findtool,$(CROSS_COMPILE)$($1))
 endef
-$(foreach t,$(ZIMK__CROSSTOOLS),$(eval $(call ZIMK__UPDATECROSSTOOL,$t)))
+$(foreach t,$(CROSSTOOLS),$(eval $(call ZIMK__UPDATECROSSTOOL,$t)))
+
+define ZIMK__UPDATEFALLBACKTOOL
+ifeq ($$(strip $$(origin $1)),command line)
+override undefine $1
+endif
+$1:=$$(or $$(call findtool,$(CROSS_COMPILE)$($1)),$$(call findtool,$($1)))
+endef
+$(foreach t,$(FALLBACKTOOLS),$(eval $(call ZIMK__UPDATEFALLBACKTOOL,$t)))
 
 .PHONY: config changeconfig _build_config _build_changeconfig _cfg_message showconfig
 
