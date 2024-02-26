@@ -29,7 +29,7 @@ define ZIMK__C_OBJRULES
 $$($(_T)_OBJDIR)$$(PSEP)$1$3.d: $$($(_T)_$2)$$(PSEP)$1$3.c $(_T)_sub \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VDEP)
-	$$(VR)$$(CROSS_COMPILE)$$(CC) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ \
+	$$(VR)$$(CC) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) \
@@ -38,7 +38,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.d: $$($(_T)_$2)$$(PSEP)$1$3.c $(_T)_sub \
 $$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.c \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCC)
-	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
+	$$(VR)$$(CC) -c -o$$@ \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) \
@@ -50,7 +50,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.c \
 $$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.c \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCC)
-	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
+	$$(VR)$$(CC) -c -o$$@ \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) \
@@ -65,7 +65,7 @@ define ZIMK__CXX_OBJRULES
 $$($(_T)_OBJDIR)$$(PSEP)$1$3.d: $$($(_T)_$2)$$(PSEP)$1$3.cpp $(_T)_sub \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VDEP)
-	$$(VR)$$(CROSS_COMPILE)$$(CXX) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ \
+	$$(VR)$$(CXX) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$($(_T)_$$(PLATFORM)_CXXFLAGS) \
@@ -74,7 +74,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.d: $$($(_T)_$2)$$(PSEP)$1$3.cpp $(_T)_sub \
 $$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.cpp \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCXX)
-	$$(VR)$$(CROSS_COMPILE)$$(CXX) -c -o$$@ \
+	$$(VR)$$(CXX) -c -o$$@ \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) \
@@ -86,7 +86,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.cpp \
 $$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.cpp \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCXX)
-	$$(VR)$$(CROSS_COMPILE)$$(CXX) -c -o$$@ \
+	$$(VR)$$(CXX) -c -o$$@ \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) \
@@ -101,7 +101,7 @@ define ZIMK__ASM_OBJRULES
 $$($(_T)_OBJDIR)$$(PSEP)$1$3.d: $$($(_T)_$2)$$(PSEP)$1$3.S $(_T)_sub \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VDEP)
-	$$(VR)$$(CROSS_COMPILE)$$(CC) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ \
+	$$(VR)$$(CC) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) \
@@ -110,7 +110,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.d: $$($(_T)_$2)$$(PSEP)$1$3.S $(_T)_sub \
 $$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.S \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCAS)
-	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
+	$$(VR)$$(CC) -c -o$$@ \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) \
@@ -122,7 +122,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.S \
 $$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.S \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCAS)
-	$$(VR)$$(CROSS_COMPILE)$$(CC) -c -o$$@ \
+	$$(VR)$$(CC) -c -o$$@ \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) \
@@ -148,7 +148,7 @@ CLEAN += $$($(_T)_OBJDIR)$$(PSEP)$1.o
 $$($(_T)_OBJDIR)$$(PSEP)$1.o: $$($(_T)_SRCDIR)$$(PSEP)$1.rc \
     $$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VRES)
-	$$(VR)$$(CROSS_COMPILE)windres $$< $$@
+	$$(VR)$$(WINDRES) $$< $$@
 
 endef
 endif
@@ -165,7 +165,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1_qrc.o: \
 		$$($(_T)_OBJDIR)$$(PSEP)$1_qrc.cpp \
 		$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCXX)
-	$$(VR)$$(CROSS_COMPILE)$$(CXX) -c -o$$@ \
+	$$(VR)$$(CXX) -c -o$$@ \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$($(_T)_$$(PLATFORM)_CXXFLAGS_STATIC) \
@@ -177,7 +177,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1_qrc_s.o: \
 		$$($(_T)_OBJDIR)$$(PSEP)$1_qrc.cpp \
 		$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCXX)
-	$$(VR)$$(CROSS_COMPILE)$$(CXX) -c -o$$@ \
+	$$(VR)$$(CXX) -c -o$$@ \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$($(_T)_$$(PLATFORM)_CXXFLAGS_SHARED) \

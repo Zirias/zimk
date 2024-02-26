@@ -117,7 +117,7 @@ $(DIRRULES)
 
 $$($(_T)_STATICLIB): $$($(_T)_OBJS) $$($(_T)_ROBJS) | $$(_$(_T)_DIRS)
 	$$(VAR)
-	$$(VR)$$(CROSS_COMPILE)$$(AR) rcs $$@1 $$^
+	$$(VR)$$(AR) rcs $$@1 $$^
 	$$(VR)$$(RMF) $$@ $$(CMDQUIET)
 	$$(VR)$$(MV) $$@1 $$@ $$(CMDQUIET)
 
@@ -131,7 +131,7 @@ ifeq ($$(BFMT_PLATFORM),win32)
 $$($(_T)_LIB): $$($(_T)_SOBJS) $$($(_T)_ROBJS) $$(_$(_T)_DEPS) \
 	| $$(_$(_T)_DIRS)
 	$$($(_T)_VL)
-	$$(VR)$$(CROSS_COMPILE)$$($(_T)_LDC) -shared -o$$@ \
+	$$(VR)$$($(_T)_LDC) -shared -o$$@ \
 		-Wl,--out-implib,$$($(_T)_TGTDIR)$$(PSEP)lib$(_T).dll.a \
 		-Wl,--output-def,$$($(_T)_TGTDIR)$$(PSEP)$(_T).def \
 		$$($(_T)_$$(PLATFORM)_LDFLAGS) $$($(_T)_LDFLAGS) $$(LDFLAGS) \
@@ -169,7 +169,7 @@ endif
 $$(_$(_T)_LIB_FULL): $$($(_T)_SOBJS) $$($(_T)_ROBJS) $$(_$(_T)_DEPS) \
 	| $$(_$(_T)_DIRS)
 	$$($(_T)_VL)
-	$$(VR)$$(CROSS_COMPILE)$$($(_T)_LDC) -shared -o$$@ \
+	$$(VR)$$($(_T)_LDC) -shared -o$$@ \
 		-Wl,-soname,lib$(_T).so.$$($(_T)_V_MAJ) \
 		$$($(_T)_$$(PLATFORM)_LDFLAGS) $$($(_T)_LDFLAGS) $$(LDFLAGS) \
 		$$($(_T)_SOBJS) $$($(_T)_ROBJS) $$(_$(_T)_LINK)
@@ -212,7 +212,7 @@ endif
 
 $$($(_T)_TARGET)_stripshared:: $$($(_T)_LIB)
 	$$(VSTRP)
-	$$(VR)$$(CROSS_COMPILE)$$(STRIP) --strip-unneeded $$<
+	$$(VR)$$(STRIP) --strip-unneeded $$<
 
 ifneq ($$(strip $$($(_T)_STRIPSHAREDWITH)),)
 $$($(_T)_STRIPSHAREDWITH):: $$($(_T)_TARGET)_stripshared
@@ -221,7 +221,7 @@ endif
 
 $$($(_T)_TARGET)_stripstatic:: $$($(_T)_STATICLIB)
 	$$(VSTRP)
-	$$(VR)$$(CROSS_COMPILE)$$(STRIP) --strip-unneeded $$<
+	$$(VR)$$(STRIP) --strip-unneeded $$<
 
 ifneq ($$(strip $$($(_T)_STRIPSTATICWITH)),)
 $$($(_T)_STRIPSTATICWITH):: $$($(_T)_TARGET)_stripstatic

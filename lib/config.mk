@@ -3,6 +3,8 @@ $(strip $(eval undefine __ZIMK__UNIQ__SEEN)$(foreach \
     _v,$1,$(if $(filter $(_v),$(__ZIMK__UNIQ__SEEN)),,$(eval \
         __ZIMK__UNIQ__SEEN += $(_v))))$(__ZIMK__UNIQ__SEEN))
 endef
+ZIMK__HOSTTOOLS := MOC RCC
+ZIMK__CROSSTOOLS := CC CXX CPP AR STRIP OBJCOPY PKGCONFIG WINDRES
 SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 		  sysconfdir sharedstatedir localstatedir runstatedir \
 		  includedir docrootdir libdir localedir pkgconfigdir \
@@ -11,8 +13,8 @@ SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 BOOLCONFVARS := $(call ZIMK__UNIQ,PORTABLE STATIC SHAREDLIBS STATICLIBS \
 		$(BOOLCONFVARS))
 BOOLCONFVARS_DEFAULT_ON += SHAREDLIBS
-SINGLECONFVARS := $(call ZIMK__UNIQ,CC CXX CPP AR STRIP OBJCOPY MOC RCC \
-	PKGCONFIG SH HOSTSH $(SINGLECONFVARS) $(BOOLCONFVARS))
+SINGLECONFVARS := $(call ZIMK__UNIQ,$(ZIMK__CROSSTOOLS) $(ZIMK__HOSTTOOLS) \
+	SH HOSTSH $(SINGLECONFVARS) $(BOOLCONFVARS))
 LISTCONFVARS := $(call ZIMK__UNIQ,CFLAGS CXXFLAGS DEFINES INCLUDES LDFLAGS \
 	$(LISTCONFVARS))
 CONFVARS := $(SINGLECONFVARS) $(LISTCONFVARS)
@@ -91,6 +93,11 @@ $(eval $(ZIMK__WRITECFGTAG))
 endif
 endif
 
+zimk__ensurepath=$(if $(POSIXPATH),$(shell env PATH=$(ZIMK__ENVPATH) \
+		 command -v $1 2>/dev/null),$1)
+zimk__ensurecrosspath=$(if $(POSIXPATH),$(call zimk__ensurepath \
+		      ,$(CROSS_COMPILE)$1),$(CROSS_COMPILE)$1)
+
 # save userconfig
 ZIMK__CFGTARGET := _build_config
 $(eval $(ZIMK__WRITECFG))
@@ -121,6 +128,7 @@ DEFAULT_AR ?= ar
 DEFAULT_STRIP ?= strip
 DEFAULT_OBJCOPY ?= objcopy
 DEFAULT_PKGCONFIG ?= pkg-config
+DEFAULT_WINDRES ?= windres
 DEFAULT_MOC ?= moc
 DEFAULT_RCC ?= rcc
 DEFAULT_SH ?= $(if $(CROSS_COMPILE),$(or $(ZIMK__POSIXSH),/bin/sh),/bin/sh)
@@ -142,8 +150,9 @@ BUILD_release_CFLAGS ?= -g0 -O2 -ffunction-sections -fdata-sections
 BUILD_release_CXXFLAGS ?= -g0 -O2 -ffunction-sections -fdata-sections
 BUILD_release_LDFLAGS ?= -O2 -Wl,--gc-sections
 
-_ZIMK__TESTCC:=$(or $(CC),$(DEFAULT_CC),$(BUILD_$(BUILDCFG)_CC))
-ZIMK__DEFDEFINES:= $(shell $(CROSS_COMPILE)$(_ZIMK__TESTCC) -dM -E - $(CMDNOIN))
+_ZIMK__TESTCC:=$(call zimk__ensurecrosspath,$(or \
+	       $(CC),$(DEFAULT_CC),$(BUILD_$(BUILDCFG)_CC)))
+ZIMK__DEFDEFINES:= $(shell $(_ZIMK__TESTCC) -dM -E - $(CMDNOIN))
 ifeq ($(filter _WIN32,$(ZIMK__DEFDEFINES)),)
 PLATFORM:= posix
 EXE:=
@@ -235,7 +244,7 @@ mimedir ?= $(datarootdir)$(PSEP)mime
 sharedmimeinfodir ?= $(mimedir)$(PSEP)packages
 endif
 
-TARGETARCH:= $(strip $(shell $(CROSS_COMPILE)$(_ZIMK__TESTCC) -dumpmachine $(CMDNOERR)))
+TARGETARCH:= $(strip $(shell $(_ZIMK__TESTCC) -dumpmachine $(CMDNOERR)))
 ifeq ($(TARGETARCH),)
 TARGETARCH:= unknown
 endif
@@ -288,6 +297,23 @@ CLEAN += $(ZIMK__CFGCACHE)
 
 showconfig:
 	@:
+
+define ZIMK__UPDATEHOSTTOOL
+ifeq ($$(strip $$(origin $1)),command line)
+override undefine $1
+endif
+$1:=$$(call zimk__ensurepath,$($1))
+endef
+$(foreach t,MAKE $(ZIMK__HOSTTOOLS),$(eval $(call ZIMK__UPDATEHOSTTOOL,$t)))
+export MAKE
+
+define ZIMK__UPDATECROSSTOOL
+ifeq ($$(strip $$(origin $1)),command line)
+override undefine $1
+endif
+$1:=$$(call zimk__ensurecrosspath,$($1))
+endef
+$(foreach t,$(ZIMK__CROSSTOOLS),$(eval $(call ZIMK__UPDATECROSSTOOL,$t)))
 
 .PHONY: config changeconfig _build_config _build_changeconfig _cfg_message showconfig
 

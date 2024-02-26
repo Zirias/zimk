@@ -65,6 +65,7 @@ SHELL:=$(POSIXSHELL)
 export SHELL
 POSIXPATH:=$(shell getconf PATH 2>/dev/null)
 ifeq ($(.SHELLSTATUS),0)
+ZIMK__ENVPATH:=$(PATH)
 PATH:=$(POSIXPATH)
 export PATH
 else

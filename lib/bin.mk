@@ -111,7 +111,7 @@ endif
 ifneq ($$(strip $$($(_T)_STRIPWITH)),)
 $$($(_T)_STRIPWITH):: $$($(_T)_EXE)
 	$$(VSTRP)
-	$$(VR)$$(CROSS_COMPILE)$$(STRIP) --strip-all $$<
+	$$(VR)$$(STRIP) --strip-all $$<
 
 endif
 
@@ -122,7 +122,7 @@ else
 ifeq ($$(BFMT_PLATFORM),win32)
 $$($(_T)_EXE): $$($(_T)_OBJS) $$($(_T)_ROBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
 	$$(VCCLD)
-	$$(VR)$$(CROSS_COMPILE)$$($$($(_T)_LINKERFRONT)) -o$$@ \
+	$$(VR)$$($$($(_T)_LINKERFRONT)) -o$$@ \
 		-Wl,--out-implib,$$($(_T)_IMPLIB) \
 		$$($(_T)_$$(PLATFORM)_LDFLAGS) $$($(_T)_LDFLAGS) $$(LDFLAGS) \
 		$$($(_T)_OBJS) $$($(_T)_ROBJS) $$(_$(_T)_LINK)
@@ -130,7 +130,7 @@ $$($(_T)_EXE): $$($(_T)_OBJS) $$($(_T)_ROBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
 else
 $$($(_T)_EXE): $$($(_T)_OBJS) $$($(_T)_ROBJS) $$(_$(_T)_DEPS) | $$(_$(_T)_DIRS)
 	$$(VCCLD)
-	$$(VR)$$(CROSS_COMPILE)$$($$($(_T)_LINKERFRONT)) -o$$@ \
+	$$(VR)$$($$($(_T)_LINKERFRONT)) -o$$@ \
 		$$($(_T)_$$(PLATFORM)_LDFLAGS) $$($(_T)_LDFLAGS) $$(LDFLAGS) \
 		$$($(_T)_OBJS) $$($(_T)_ROBJS) $$(_$(_T)_LINK)
 
