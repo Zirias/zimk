@@ -88,11 +88,18 @@ ZIMK__CFGMSG := $$(ZIMK__EMPTY)   $$(ZIMK__PRBOLD)$$(ZIMK__PRYELLOW)[CFG]$$(ZIMK
 $$(info $$(ZIMK__CFGMSG))
 endef
 
+ZIMK__PATHCACHE:=.path-cache
 ifndef MAKE_RESTARTS
 ifneq ($(filter config,$(MAKECMDGOALS)),)
 $(eval $(ZIMK__WRITECFGTAG))
 endif
+ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)
+$(file >$(ZIMK__PATHCACHE),ZIMK__ENVPATH:=$(ZIMK__ENVPATH))
 endif
+endif
+CLEAN += $(ZIMK__PATHCACHE)
+DISTCLEAN += $(ZIMK__PATHCACHE)
+-include $(ZIMK__PATHCACHE)
 
 # save userconfig
 ZIMK__CFGTARGET := _build_config
