@@ -99,7 +99,7 @@ CMDNOIN := </dev/null
 INSTALL ?= install
 INSTDIR := $(INSTALL) -d
 
-findtool = $(shell env PATH=$(ZIMK__ENVPATH) command -v $1 2>/dev/null)
+findtool = $(shell env PATH="$(ZIMK__ENVPATH)" command -v $1 2>/dev/null)
 instfile = $(INSTDIR) $(2) $(CMDSEP) $(INSTALL) -m$(3) $(1) $(2)
 rmfile = $(RMF) $(1)
 rmdir = $(RMFR) $(1)
@@ -142,7 +142,9 @@ ifeq ($$(.SHELLSTATUS),2)
 _ZIMK__TOOL:=$1
 endif
 ifneq ($$(_ZIMK__TOOL),)
-_ZIMK__TOOL:=set "PATH=%PATH%;$$(dir $$(_ZIMK__TOOL))" & $1
+ZIMK__EMPTY:=
+_ZIMK__TOOL:=set "PATH=%PATH%;$$(subst ?, ,$$(dir \
+	     $$(subst $$(ZIMK__EMPTY) ,?,$$(_ZIMK__TOOL))))" & $1
 endif
 endef
 findtool = $(eval $(call _ZIMK__FINDTOOL,$1))$(_ZIMK__TOOL)
