@@ -4,7 +4,7 @@ $(strip $(eval undefine __ZIMK__UNIQ__SEEN)$(foreach \
         __ZIMK__UNIQ__SEEN += $(_v))))$(__ZIMK__UNIQ__SEEN))
 endef
 ZIMK__HOSTTOOLS := MOC RCC
-ZIMK__CROSSTOOLS := CC CXX CPP AR STRIP OBJCOPY PKGCONFIG WINDRES
+ZIMK__CROSSTOOLS := CC CXX CPP AR STRIP OBJCOPY OBJDUMP PKGCONFIG WINDRES
 SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 		  sysconfdir sharedstatedir localstatedir runstatedir \
 		  includedir docrootdir libdir localedir pkgconfigdir \
@@ -127,6 +127,7 @@ DEFAULT_CPP ?= cpp
 DEFAULT_AR ?= ar
 DEFAULT_STRIP ?= strip
 DEFAULT_OBJCOPY ?= objcopy
+DEFAULT_OBJDUMP ?= objdump
 DEFAULT_PKGCONFIG ?= pkg-config
 DEFAULT_WINDRES ?= windres
 DEFAULT_MOC ?= moc
@@ -249,14 +250,23 @@ ifeq ($(TARGETARCH),)
 TARGETARCH:= unknown
 endif
 
+_ZIMK__TESTOBJCOPY:=$(call zimk__ensurecrosspath,$(or \
+	       $(OBJCOPY),$(DEFAULT_OBJCOPY),$(BUILD_$(BUILDCFG)_OBJCOPY)))
+_ZIMK__TESTOBJDUMP:=$(call zimk__ensurecrosspath,$(or \
+	       $(OBJDUMP),$(DEFAULT_OBJDUMP),$(BUILD_$(BUILDCFG)_OBJDUMP)))
 ifdef POSIXSHELL
-TARGETBFD:= $(strip $(shell (objcopy --info || objdump -i) 2>/dev/null | head -n 2 | tail -n 1))
-TARGETBARCH:= $(strip $(shell (objcopy --info || objdump -i) 2>/dev/null | head -n 4 | tail -n 1))
+_ZIMK__TESTOBJ:=$(if $(_ZIMK__TESTOBJCOPY),$(_ZIMK__TESTOBJCOPY)\
+		--info,false) || $(if \
+		$(_ZIMK__TESTOBJDUMP),$(_ZIMK__TESTOBJDUMP) -i,false)
+TARGETBFD:= $(strip $(shell (\
+	    $(_ZIMK__TESTOBJ)) 2>/dev/null | head -n 2 | tail -n 1))
+TARGETBARCH:= $(strip $(shell (\
+	      $(_ZIMK__TESTOBJ)) 2>/dev/null | head -n 4 | tail -n 1))
 else
-TARGETBFD:= $(strip $(subst 2:,, \
-		$(shell objcopy --info | findstr /n "." | findstr "^2:")))
-TARGETBARCH:= $(strip $(subst 4:,, \
-		$(shell objcopy --info | findstr /n "." | findstr "^4:")))
+TARGETBFD:= $(strip $(subst 2:,,$(shell \
+	    $(_ZIMK__TESTOBJCOPY) --info | findstr /n "." | findstr "^2:")))
+TARGETBARCH:= $(strip $(subst 4:,,$(shell \
+	      $(_ZIMK__TESTOBJCOPY) --info | findstr /n "." | findstr "^4:")))
 endif
 
 OBJBASEDIR ?= obj
