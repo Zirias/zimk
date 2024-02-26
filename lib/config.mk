@@ -93,11 +93,6 @@ $(eval $(ZIMK__WRITECFGTAG))
 endif
 endif
 
-zimk__ensurepath=$(if $(POSIXPATH),$(shell env PATH=$(ZIMK__ENVPATH) \
-		 command -v $1 2>/dev/null),$1)
-zimk__ensurecrosspath=$(if $(POSIXPATH),$(call zimk__ensurepath \
-		      ,$(CROSS_COMPILE)$1),$(CROSS_COMPILE)$1)
-
 # save userconfig
 ZIMK__CFGTARGET := _build_config
 $(eval $(ZIMK__WRITECFG))
@@ -151,7 +146,7 @@ BUILD_release_CFLAGS ?= -g0 -O2 -ffunction-sections -fdata-sections
 BUILD_release_CXXFLAGS ?= -g0 -O2 -ffunction-sections -fdata-sections
 BUILD_release_LDFLAGS ?= -O2 -Wl,--gc-sections
 
-_ZIMK__TESTCC:=$(call zimk__ensurecrosspath,$(or \
+_ZIMK__TESTCC:=$(call findtool,$(CROSS_COMPILE)$(or \
 	       $(CC),$(DEFAULT_CC),$(BUILD_$(BUILDCFG)_CC)))
 ZIMK__DEFDEFINES:= $(shell $(_ZIMK__TESTCC) -dM -E - $(CMDNOIN))
 ifeq ($(filter _WIN32,$(ZIMK__DEFDEFINES)),)
@@ -250,9 +245,9 @@ ifeq ($(TARGETARCH),)
 TARGETARCH:= unknown
 endif
 
-_ZIMK__TESTOBJCOPY:=$(call zimk__ensurecrosspath,$(or \
+_ZIMK__TESTOBJCOPY:=$(call findtool,$(CROSS_COMPILE)$(or \
 	       $(OBJCOPY),$(DEFAULT_OBJCOPY),$(BUILD_$(BUILDCFG)_OBJCOPY)))
-_ZIMK__TESTOBJDUMP:=$(call zimk__ensurecrosspath,$(or \
+_ZIMK__TESTOBJDUMP:=$(call findtool,$(CROSS_COMPILE)$(or \
 	       $(OBJDUMP),$(DEFAULT_OBJDUMP),$(BUILD_$(BUILDCFG)_OBJDUMP)))
 ifdef POSIXSHELL
 _ZIMK__TESTOBJ:=$(if $(_ZIMK__TESTOBJCOPY),$(_ZIMK__TESTOBJCOPY)\
@@ -312,7 +307,7 @@ define ZIMK__UPDATEHOSTTOOL
 ifeq ($$(strip $$(origin $1)),command line)
 override undefine $1
 endif
-$1:=$$(call zimk__ensurepath,$($1))
+$1:=$$(call findtool,$($1))
 endef
 $(foreach t,MAKE $(ZIMK__HOSTTOOLS),$(eval $(call ZIMK__UPDATEHOSTTOOL,$t)))
 export MAKE
@@ -321,7 +316,7 @@ define ZIMK__UPDATECROSSTOOL
 ifeq ($$(strip $$(origin $1)),command line)
 override undefine $1
 endif
-$1:=$$(call zimk__ensurecrosspath,$($1))
+$1:=$$(call findtool,$(CROSS_COMPILE)$($1))
 endef
 $(foreach t,$(ZIMK__CROSSTOOLS),$(eval $(call ZIMK__UPDATECROSSTOOL,$t)))
 

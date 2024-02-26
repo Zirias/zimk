@@ -16,15 +16,17 @@ undefine POSIXSHELL
 endif
 
 ifeq ($(OS),Windows_NT)
-undefine _ZIMK_WINCMD
+export MSYS_NO_PATHCONV=1
+export CYGWIN_DISABLE_ARGUMENT_MANGLING=1
+export MSYS2_ARG_CONV_EXCL=*
 ifdef POSIXSHELL
-_ZIMK_WINCMD := MSYS_NO_PATHCONV=1 CYGWIN_DISABLE_ARGUMENT_MANGLING=1 \
-	MSYS2_ARG_CONV_EXCL="*" CMD /C
+_ZIMK_WINCMD := CMD /C
 else
-export .SHELLFLAGS=/C
-SHELL:=cmd.exe
-SHELL:=$(shell ECHO %COMSPEC%)
+WIN32PATH:=$(shell CMD /C ECHO %SystemRoot%)\system32
+WIN32SHELL:=$(WIN32PATH)\cmd.exe
+SHELL:=$(WIN32SHELL)
 _ZIMK_WINCMD :=
+export .SHELLFLAGS=/C
 export SHELL
 endif
 
@@ -60,12 +62,13 @@ $(error zimk only works with a POSIX shell or Windows CMD.EXE)
 endif
 endif
 
+ZIMK__ENVPATH:=$(PATH)
+
 ifdef POSIXSHELL
 SHELL:=$(POSIXSHELL)
 export SHELL
 POSIXPATH:=$(shell getconf PATH 2>/dev/null)
 ifeq ($(.SHELLSTATUS),0)
-ZIMK__ENVPATH:=$(PATH)
 PATH:=$(POSIXPATH)
 export PATH
 else
@@ -97,6 +100,7 @@ CMDNOIN := </dev/null
 INSTALL ?= install
 INSTDIR := $(INSTALL) -d
 
+findtool = $(shell env PATH=$(ZIMK__ENVPATH) command -v $1 2>/dev/null)
 instfile = $(INSTDIR) $(2) $(CMDSEP) $(INSTALL) -m$(3) $(1) $(2)
 rmfile = $(RMF) $(1)
 rmdir = $(RMFR) $(1)
@@ -107,6 +111,8 @@ touch = touch $(1)
 SYSNAME := $(shell uname 2>/dev/null)
 
 else
+PATH:=$(WIN32PATH)
+export PATH
 
 CMDSEP := &
 PSEP := \\
@@ -132,6 +138,16 @@ CMDNOIN := <nul
 
 INSTDIR := $(MDP)
 
+define _ZIMK__FINDTOOL
+_ZIMK__TOOL:=$$(shell where "$(ZIMK__ENVPATH):$1" 2>NUL)
+ifeq ($$(.SHELLSTATUS),2)
+_ZIMK__TOOL:=$1
+endif
+ifneq ($$(_ZIMK__TOOL),)
+_ZIMK__TOOL:=set "PATH=%PATH%;$$(dir $$(_ZIMK__TOOL))" & $1
+endif
+endef
+findtool = $(eval $(call _ZIMK__FINDTOOL,$1))$(_ZIMK__TOOL)
 instfile = $(MDP) $(2) $(CMDQUIET) $(CMDSEP) copy $(1) $(2) $(CMDQUIET)
 rmfile = $(RMF) $(1) $(CMDNOERR)
 rmdir = $(RMFR) $(1) $(CMDNOERR)
