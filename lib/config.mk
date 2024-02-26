@@ -254,10 +254,12 @@ ifeq ($(TARGETARCH),)
 TARGETARCH:= unknown
 endif
 
-_ZIMK__TESTOBJCOPY:=$(call findtool,$(CROSS_COMPILE)$(or \
-	       $(OBJCOPY),$(DEFAULT_OBJCOPY),$(BUILD_$(BUILDCFG)_OBJCOPY)))
-_ZIMK__TESTOBJDUMP:=$(call findtool,$(CROSS_COMPILE)$(or \
-	       $(OBJDUMP),$(DEFAULT_OBJDUMP),$(BUILD_$(BUILDCFG)_OBJDUMP)))
+_ZIMK__TOCNM:=$(or $(OBJCOPY),$(DEFAULT_OBJCOPY)$(BUILD_$(BUILDCFG)_OBJCOPY))
+_ZIMK__TODNM:=$(or $(OBJDUMP),$(DEFAULT_OBJDUMP)$(BUILD_$(BUILDCFG)_OBJDUMP))
+_ZIMK__TESTOBJCOPY:=$(or $(call findtool,$(CROSS_COMPILE)$(_ZIMK__TOCNM)), \
+		    $(call findtool,$(_ZIMK__TOCNM)))
+_ZIMK__TESTOBJDUMP:=$(or $(call findtool,$(CROSS_COMPILE)$(_ZIMK__TODNM)), \
+		    $(call findtool,$(_ZIMK__TODNM)))
 ifdef POSIXSHELL
 _ZIMK__TESTOBJ:=$(if $(_ZIMK__TESTOBJCOPY),$(_ZIMK__TESTOBJCOPY)\
 		--info,false) || $(if \
