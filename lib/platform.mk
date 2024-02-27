@@ -99,7 +99,7 @@ CMDNOIN := </dev/null
 INSTALL ?= install
 INSTDIR := $(INSTALL) -d
 
-findtool = $(shell env PATH="$(ZIMK__ENVPATH)" command -v $1 2>/dev/null)
+findtool = $(shell PATH="$(ZIMK__ENVPATH)" command -v $1 2>/dev/null)
 instfile = $(INSTDIR) $(2) $(CMDSEP) $(INSTALL) -m$(3) $(1) $(2)
 rmfile = $(RMF) $(1)
 rmdir = $(RMFR) $(1)
