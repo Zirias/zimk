@@ -81,8 +81,10 @@ strip:: all
 
 ifdef POSIXSHELL
 DISTVERSIONPREFIX?=v
+TAR:=$(call findtool,tar)
 dist:
-	@$(SHELL) $(ZIMKPATH)scripts/mkdist.sh $(DISTVERSIONPREFIX) $(PKGNAME)
+	@GIT="${GIT}" TAR="${TAR}" $(SHELL) \
+		$(ZIMKPATH)scripts/mkdist.sh $(DISTVERSIONPREFIX) $(PKGNAME)
 
 else
 dist:

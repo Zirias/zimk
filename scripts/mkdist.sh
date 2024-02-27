@@ -1,39 +1,36 @@
 #!/bin/sh
 
-if ! tool="$(type git 2>/dev/null)" || test -z "$tool"; then
+if [ -z "${GIT}" ]; then
 	echo >&2 Error: mkdist.sh requires git.
 	exit 1
 fi
 
-if ! tool="$(type tar 2>/dev/null)" || test -z "$tool"; then
+if [ -z "${TAR}" ]; then
 	echo >&2 Error: mkdist.sh requires tar.
 	exit 1
 fi
 
-if ! reporoot="$(git rev-parse --show-toplevel 2>/dev/null)"; then
+if ! reporoot="$(${GIT} rev-parse --show-toplevel 2>/dev/null)"; then
 	echo >&2 Error: mkdist.sh only works in a git working copy.
 	exit 1
 fi
 
-version_git=$(git describe)
-tag=$(git describe --abbrev=0)
+version_git=$(${GIT} describe)
+tag=$(${GIT} describe --abbrev=0)
 
 VERSIONPREFIX=${1:-v}
 DISTVERSION=${tag#${VERSIONPREFIX}}
 
 if [ "$tag" != "$version_git" ]; then
-	if ! tool="$(type sed 2>/dev/null)" || test -z "$tool"; then
-		echo >&2 Error: mkdist.sh requires sed.
-		exit 1
-	fi
-	if ! tool="$(type date 2>/dev/null)" || test -z "$tool"; then
+	if ! command -v date >/dev/null 2>&1; then
 		echo >&2 Error: mkdist.sh requires date.
 		exit 1
 	fi
-	if [ -z "$(echo $DISTVERSION | sed -ne '/\..*\./p')" ]; then
-		DISTVERSION="${DISTVERSION}.0"
-	fi
-	branch=$(git rev-parse --abbrev-ref HEAD)
+	case "${DISTVERSION}" in
+		?*.?*.?*) 	;;
+		*)		DISTVERSION="${DISTVERSION}.0";;
+	esac
+	branch=$(${GIT} rev-parse --abbrev-ref HEAD)
 	DISTVERSION="${DISTVERSION}.${branch}"
 	DISTVERSION="${DISTVERSION}.$(date +%Y%m%d)"
 fi
@@ -49,12 +46,13 @@ fi
 
 DISTNAME="${PKGNAME}-${DISTVERSION}"
 cd "$reporoot"
-if ! git clone . --recurse-submodules "${DISTNAME}"; then
+if ! ${GIT} clone . --recurse-submodules "${DISTNAME}"; then
 	rm -fr "${DISTNAME}"
 	echo >&2 mkdist.sh: Error cloning "${DISTNAME}"
 	exit 1
 fi
-tar --exclude-vcs --exclude ".github/*" -cJf "${DISTNAME}.tar.xz" "${DISTNAME}"
+${TAR} --exclude-vcs --exclude ".github/*" \
+	-cJf "${DISTNAME}.tar.xz" "${DISTNAME}"
 rm -fr "${DISTNAME}"
 echo Created distfile: ${reporoot}/${DISTNAME}.tar.xz
 
