@@ -188,10 +188,18 @@ endef
 
 define ZIMK__DOCS_INST_RECIPE_LINE
 
-$(ZIMK__TAB)$$(eval _ZIMK_1 := $$(DESTDIR)$$($(_T)_DOCDIR))
+$(ZIMK__TAB)$$(eval _ZIMK_1 := $$(DESTDIR)$$($(_T)_docdir))
 $(ZIMK__TAB)$$(eval _ZIMK_0 := $$(_ZIMK_1)$$(PSEP)$(_D))
 $(ZIMK__TAB)$$(VINST)
 $(ZIMK__TAB)$$(VR)$$(call instfile,$(_D),$$(dir $$(_ZIMK_1)$$(PSEP)$(_D)),664)
+endef
+
+define ZIMK__INSTEXTRARECIPELINE
+
+$(ZIMK__TAB)$$(eval _ZIMK_1 := $$(DESTDIR)$$($(_T)_$1dir))
+$(ZIMK__TAB)$$(eval _ZIMK_0 := $$(_ZIMK_1)$$(PSEP)$$(notdir $2))
+$(ZIMK__TAB)$$(VINST)
+$(ZIMK__TAB)$$(VR)$$(call instfile,$2,$$(_ZIMK_1),664)
 endef
 
 define OBJRULES
@@ -219,8 +227,15 @@ $(_T)_LINKERFRONT ?= CXX
 else
 $(_T)_LINKERFRONT ?= CC
 endif
-$(_T)_DOCDIR ?= $$(docrootdir)$$(PSEP)$(_T)
 $(_T)_INSTALLDOCSWITH ?= install
+$(_T)_INSTALLEXTRAWITH ?= install
+
+$(_T)_datadir ?= $$(datarootdir)$$(PSEP)$(_T)
+$(_T)_docdir ?= $$(docrootdir)$$(PSEP)$(_T)
+$(_T)_localstatedir ?= $$(localstatedir)
+$(_T)_runstatedir ?= $$(runstatedir)
+$(_T)_sharedstatedir ?= $$(sharedstatedir)
+$(_T)_sysconfdir ?= $$(sysconfdir)
 
 ifneq ($$(strip $$($(_T)_PKGDEPS)),)
 ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)
@@ -434,7 +449,17 @@ $$(eval $$(_T)_install_docs: $$(_$$(_T)_DOCS_INSTALL)$$(foreach \
 
 $$($(_T)_INSTALLDOCSWITH):: $(_T)_install_docs
 
-.PHONY: $(_T)_install_docs
+endif
+
+ifneq ($$(strip $$($(_T)_EXTRADIRS)),)
+$$(eval $$(_T)_installextra: $$(foreach \
+	_D,$$($$(_T)_EXTRADIRS),$$(foreach \
+	_F,$$($$(_T)_$$(_D)_FILES),$$(call \
+	ZIMK__INSTEXTRARECIPELINE,$$(_D),$$($$(_T)_SRCDIR)$$(PSEP)$$(_F)))))
+
+$$($(_T)_INSTALLEXTRAWITH):: $(_T)_installextra
+
+.PHONY: $(_T)_install_docs $(_T)_installextra
 endif
 
 endef
