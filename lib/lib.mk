@@ -81,6 +81,7 @@ $(_T)_VL = $$(VCXLD)
 endif
 
 $(_T)_STATICLIB := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).a
+$(_T)_STATICSTRPSTAMP := $$($(_T)_TGTDIR)$$(PSEP).lib$(_T).a.stripped
 
 $(BUILDDEPS)
 $(LINKFLAGS)
@@ -89,14 +90,18 @@ ifeq ($$(BFMT_PLATFORM),win32)
 ifeq ($$(PLATFORM),win32)
 ifeq ($$($(_T)_LIBTYPE),library)
 $(_T)_LIB := $$($(_T)_BINDIR)$$(PSEP)$(_T)-$$($(_T)_V_MAJ).dll
+$(_T)_STRPSTAMP := $$($(_T)_BINDIR)$$(PSEP).$(_T)-$$($(_T)_V_MAJ).dll.stripped
 else
 $(_T)_LIB := $$($(_T)_BINDIR)$$(PSEP)$(_T).dll
+$(_T)_STRPSTAMP := $$($(_T)_BINDIR)$$(PSEP).$(_T).dll.stripped
 endif
 else
 ifeq ($$($(_T)_LIBTYPE),library)
 $(_T)_LIB := $$($(_T)_TGTDIR)$$(PSEP)$(_T)-$$($(_T)_V_MAJ).dll
+$(_T)_STRPSTAMP := $$($(_T)_TGTDIR)$$(PSEP).$(_T)-$$($(_T)_V_MAJ).dll.stripped
 else
 $(_T)_LIB := $$($(_T)_TGTDIR)$$(PSEP)$(_T).dll
+$(_T)_STRPSTAMP := $$($(_T)_TGTDIR)$$(PSEP).$(_T).dll.stripped
 endif
 endif
 
@@ -105,9 +110,11 @@ ifeq ($$($(_T)_LIBTYPE),library)
 _$(_T)_LIB_FULL := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).so.$$($(_T)_VERSION)
 _$(_T)_LIB_MAJ := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).so.$$($(_T)_V_MAJ)
 $(_T)_LIB := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).so
+_$(_T)_STRPSTAMP := $$($(_T)_TGTDIR)$$(PSEP).lib$(_T).so.$$($(_T)_VERSION).stripped
 else
 _$(_T)_LIB_FULL := $$($(_T)_TGTDIR)$$(PSEP)$(_T).so
 $(_T)_LIB := $$($(_T)_TGTDIR)$$(PSEP)$(_T).so
+$(_T)_STRPSTAMP := $$($(_T)_TGTDIR)$$(PSEP).$(_T).so.stripped
 endif
 
 endif
@@ -210,18 +217,24 @@ $$($(_T)_INSTALLSTATICWITH):: static_$(_T)_install
 
 endif
 
-$$($(_T)_TARGET)_stripshared:: $$($(_T)_LIB)
+$$($(_T)_STRPSTAMP): $$($(_T)_LIB)
 	$$(VSTRP)
 	$$(VR)$$(STRIP) --strip-unneeded $$<
+	$$(VR)$$(STAMP) $$@
+
+$$($(_T)_TARGET)_stripshared:: $$($(_T)_STRPSTAMP)
 
 ifneq ($$(strip $$($(_T)_STRIPSHAREDWITH)),)
 $$($(_T)_STRIPSHAREDWITH):: $$($(_T)_TARGET)_stripshared
 
 endif
 
-$$($(_T)_TARGET)_stripstatic:: $$($(_T)_STATICLIB)
+$$($(_T)_STATICSTRPSTAMP): $$($(_T)_STATICLIB)
 	$$(VSTRP)
 	$$(VR)$$(STRIP) --strip-unneeded $$<
+	$$(VR)$$(STAMP) $$@
+
+$$($(_T)_TARGET)_stripstatic:: $$($(_T)_STATICSTRPSTAMP)
 
 ifneq ($$(strip $$($(_T)_STRIPSTATICWITH)),)
 $$($(_T)_STRIPSTATICWITH):: $$($(_T)_TARGET)_stripstatic

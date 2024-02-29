@@ -23,6 +23,7 @@ $(BUILDDEPS)
 $(LINKFLAGS)
 
 $(_T)_EXE := $$($(_T)_TGTDIR)$$(PSEP)$$($(_T)_TARGET)$$(EXE)
+$(_T)_STRPSTAMP := $$($(_T)_TGTDIR)$$(PSEP).$$($(_T)_TARGET)$$(EXE).stripped
 
 $(_T): $$($(_T)_EXE)
 
@@ -101,9 +102,12 @@ endif
 endif
 
 ifneq ($$(strip $$($(_T)_STRIPWITH)),)
-$$($(_T)_STRIPWITH):: $$($(_T)_EXE)
+$$($(_T)_STRPSTAMP): $$($(_T)_EXE)
 	$$(VSTRP)
 	$$(VR)$$(STRIP) --strip-all $$<
+	$$(VR)$$(STAMP) $$@
+
+$$($(_T)_STRIPWITH):: $$($(_T)_STRPSTAMP)
 
 endif
 
