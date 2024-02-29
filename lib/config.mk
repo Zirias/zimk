@@ -15,15 +15,15 @@ BOOLCONFVARS_ON := $(call ZIMK__UNIQ,SHAREDLIBS $(BOOLCONFVARS_ON))
 BOOLCONFVARS_OFF := $(call ZIMK__UNIQ,PORTABLE STATIC STATICLIBS \
 		    $(BOOLCONFVARS_OFF))
 BOOLCONFVARS := $(BOOLCONFVARS_ON) $(BOOLCONFVARS_OFF)
-SINGLECONFVARS := $(call ZIMK__UNIQ,SH HOSTSH $(HOSTTOOLS) $(CROSSTOOLS) \
-		  $(FALLBACKTOOLS) $(SINGLECONFVARS))
+SINGLECONFVARS := $(call ZIMK__UNIQ,DEFGOAL SH HOSTSH \
+		  $(HOSTTOOLS) $(CROSSTOOLS) $(FALLBACKTOOLS) $(SINGLECONFVARS))
 LISTCONFVARS := $(call ZIMK__UNIQ,CFLAGS CXXFLAGS DEFINES INCLUDES LDFLAGS \
-	$(LISTCONFVARS))
+		$(LISTCONFVARS))
 CONFVARS := $(BOOLCONFVARS) $(SINGLECONFVARS) $(LISTCONFVARS)
 BUILDCFGS := $(call ZIMK__UNIQ,release debug $(BUILDCFGS))
 NOBUILDTARGETS := $(sort clean distclean dist config changeconfig showconfig \
-	_build_config _build_changeconfig $(NOBUILDTARGETS))
-MAKECMDGOALS ?= all
+		  _build_config _build_changeconfig $(NOBUILDTARGETS))
+MAKECMDGOALS ?= _zimk__dummy
 
 -include global.cfg
 
@@ -143,6 +143,7 @@ DEFAULT_RCC ?= rcc
 DEFAULT_GIT ?= git
 DEFAULT_SH ?= $(if $(CROSS_COMPILE),$(or $(ZIMK__POSIXSH),/bin/sh),/bin/sh)
 DEFAULT_HOSTSH ?= $(if $(CROSS_COMPILE),,$(SH))
+DEFAULT_DEFGOAL ?= all
 
 DEFAULT_CFLAGS ?= -std=c11 -Wall -Wextra -Wshadow -pedantic
 DEFAULT_CXXFLAGS ?= -std=c++11 -Wall -Wextra -pedantic
@@ -156,6 +157,7 @@ BUILD_debug_CFLAGS ?= -g3 -O0
 BUILD_debug_CXXFLAGS ?= -g3 -O0
 BUILD_debug_DEFINES ?= -DDEBUG
 
+BUILD_release_DEFGOAL ?= strip
 BUILD_release_CFLAGS ?= -g0 -O2 -ffunction-sections -fdata-sections
 BUILD_release_CXXFLAGS ?= -g0 -O2 -ffunction-sections -fdata-sections
 BUILD_release_LDFLAGS ?= -O2 -Wl,--gc-sections
@@ -295,9 +297,9 @@ define ZIMK__UPDATESINGLECFGVARS
 ifeq ($$(strip $$(origin $(_cv))$$($(_cv))),command line)
 override undefine $(_cv)
 endif
-$(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(DEFAULT_$(_cv)))
-$(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(PLATFORM_$(PLATFORM)_$(_cv)))
 $(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(BUILD_$(BUILDCFG)_$(_cv)))
+$(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(PLATFORM_$(PLATFORM)_$(_cv)))
+$(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(DEFAULT_$(_cv)))
 endef
 $(foreach _cv,$(BOOLCONFVARS) $(SINGLECONFVARS),$(eval $(ZIMK__UPDATESINGLECFGVARS)))
 
@@ -315,6 +317,7 @@ ifneq ($(filter showconfig,$(MAKECMDGOALS)),)
 $(foreach _cv,BUILDCFG PLATFORM TARGETARCH BFMT_PLATFORM $(CONFVARS),$(info $(_cv) = $($(_cv))))
 endif
 
+.DEFAULT_GOAL := $(DEFGOAL)
 CLEAN += $(ZIMK__CFGCACHE)
 
 showconfig:

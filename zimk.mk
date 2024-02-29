@@ -1,5 +1,3 @@
-all::
-
 ZIMKPATH:=$(subst /zimk.mk,,$(lastword $(MAKEFILE_LIST)))
 ifneq ($(ZIMKPATH),)
 ZIMKPATH:=$(ZIMKPATH)/
@@ -49,8 +47,7 @@ endif
 endif
 
 install:: all
-
-install-strip:: strip install
+strip:: all
 
 define ZIMK__CLEANLINE
 
@@ -77,8 +74,6 @@ distclean::
 	$(call ZIMK__CLEANRECIPE,$(DISTCLEAN) $(ZIMK__CONFIGS))
 	$(call ZIMK__DISTCLEANRECIPE,$(ZIMK__DISTCLEAN))
 
-strip:: all
-
 ifdef POSIXSHELL
 DISTVERSIONPREFIX?=v
 TAR:=$(call findtool,tar)
@@ -95,8 +90,7 @@ endif
 endif
 
 .PHONY: all sharedlibs staticlibs stripsharedlibs stripstaticlibs strip \
-	install installsharedlibs installstaticlibs install-strip \
-	clean distclean dist
+	install installsharedlibs installstaticlibs clean distclean dist
 .SUFFIXES:
 
 # vim: noet:si:ts=8:sts=8:sw=8
