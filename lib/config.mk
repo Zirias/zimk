@@ -11,14 +11,15 @@ SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 		  includedir docrootdir libdir localedir pkgconfigdir \
 		  icondir iconsubdir mimeiconsubdir desktopdir mimedir \
 		  sharedmimeinfodir
-BOOLCONFVARS := $(call ZIMK__UNIQ,PORTABLE STATIC SHAREDLIBS STATICLIBS \
-		$(BOOLCONFVARS))
-BOOLCONFVARS_DEFAULT_ON += SHAREDLIBS
+BOOLCONFVARS_ON := $(call ZIMK__UNIQ,SHAREDLIBS $(BOOLCONFVARS_ON))
+BOOLCONFVARS_OFF := $(call ZIMK__UNIQ,PORTABLE STATIC STATICLIBS \
+		    $(BOOLCONFVARS_OFF))
+BOOLCONFVARS := $(BOOLCONFVARS_ON) $(BOOLCONFVARS_OFF)
 SINGLECONFVARS := $(call ZIMK__UNIQ,SH HOSTSH $(HOSTTOOLS) $(CROSSTOOLS) \
-		  $(FALLBACKTOOLS) $(SINGLECONFVARS) $(BOOLCONFVARS))
+		  $(FALLBACKTOOLS) $(SINGLECONFVARS))
 LISTCONFVARS := $(call ZIMK__UNIQ,CFLAGS CXXFLAGS DEFINES INCLUDES LDFLAGS \
 	$(LISTCONFVARS))
-CONFVARS := $(SINGLECONFVARS) $(LISTCONFVARS)
+CONFVARS := $(BOOLCONFVARS) $(SINGLECONFVARS) $(LISTCONFVARS)
 BUILDCFGS := $(call ZIMK__UNIQ,release debug $(BUILDCFGS))
 NOBUILDTARGETS := $(sort clean distclean dist config changeconfig showconfig \
 	_build_config _build_changeconfig $(NOBUILDTARGETS))
@@ -76,7 +77,11 @@ $(ZIMK__CFGTARGET): $$(USERCONFIG)
 endef
 define ZIMK__WRITECFGTAG
 undefine ZIMK__CFGTAG
-$$(foreach _cv,$$(CONFVARS), \
+$$(foreach _cv,$$(BOOLCONFVARS_ON), \
+    $$(if $$(filter 0,$$($$(_cv))),$$(eval ZIMK__CFGTAG += $$(_cv)=$$$$(strip $$$$($$(_cv)))),))
+$$(foreach _cv,$$(BOOLCONFVARS_OFF), \
+    $$(if $$(filter 1,$$($$(_cv))),$$(eval ZIMK__CFGTAG += $$(_cv)=$$$$(strip $$$$($$(_cv)))),))
+$$(foreach _cv,$$(SINGLECONFVARS) $$(LISTCONFVARS), \
     $$(if $$($$(_cv)),$$(eval ZIMK__CFGTAG += $$(_cv)=$$$$(strip $$$$($$(_cv)))),))
 ifdef ZIMK__CFGTAG
 ZIMK__CFGTAG := $$(ZIMK__PRWHITE)[$$(ZIMK__PRLRED)$$(BUILDCFG)$$(ZIMK__PRWHITE): $$(ZIMK__PRBROWN)$$(ZIMK__CFGTAG)$$(ZIMK__PRWHITE)]$$(ZIMK__PRNORM)
@@ -173,13 +178,14 @@ BFMT_PLATFORM:= win32
 endif
 
 ifeq ($(PLATFORM),win32)
-BOOLCONFVARS_DEFAULT_ON += PORTABLE
+BOOLCONFVARS_OFF := $(filter-out PORTABLE,$(BOOLCONFVARS_OFF))
+BOOLCONFVARS_ON += PORTABLE
 endif
 
 define ZIMK__UPDATEBOOLCONFVARS
 ifndef $(_cv)
 $(_cv) := $$(if $$(filter $(_cv),$$(filter-out \
-	$$(BOOLCONFVARS_DEFAULT_OFF),$$(BOOLCONFVARS_DEFAULT_ON))),1,0)
+	$$(BOOLCONFVARS_OFF),$$(BOOLCONFVARS_ON))),1,0)
 endif
 endef
 $(foreach _cv,$(BOOLCONFVARS),$(eval $(ZIMK__UPDATEBOOLCONFVARS)))
@@ -293,7 +299,7 @@ $(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(DEFAULT_$(_cv)))
 $(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(PLATFORM_$(PLATFORM)_$(_cv)))
 $(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(BUILD_$(BUILDCFG)_$(_cv)))
 endef
-$(foreach _cv,$(SINGLECONFVARS),$(eval $(ZIMK__UPDATESINGLECFGVARS)))
+$(foreach _cv,$(BOOLCONFVARS) $(SINGLECONFVARS),$(eval $(ZIMK__UPDATESINGLECFGVARS)))
 
 define ZIMK__UPDATELISTCFGVARS
 ifeq ($$(strip $$(origin $(_cv))$$($(_cv))),command line)
