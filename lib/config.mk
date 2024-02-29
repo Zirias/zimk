@@ -95,9 +95,6 @@ endef
 
 ZIMK__PATHCACHE:=.path-cache
 ifndef MAKE_RESTARTS
-ifneq ($(filter config,$(MAKECMDGOALS)),)
-$(eval $(ZIMK__WRITECFGTAG))
-endif
 ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)
 $(file >$(ZIMK__PATHCACHE),ZIMK__ENVPATH:=$(ZIMK__ENVPATH))
 endif
@@ -204,7 +201,7 @@ endif
 endif
 
 ifndef MAKE_RESTARTS
-ifneq ($(filter-out $(filter-out changeconfig,$(NOBUILDTARGETS)),$(MAKECMDGOALS)),)
+ifneq ($(filter-out $(filter-out config changeconfig,$(NOBUILDTARGETS)),$(MAKECMDGOALS)),)
 $(eval $(ZIMK__WRITECFGTAG))
 endif
 endif

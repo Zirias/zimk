@@ -1,4 +1,4 @@
-ifndef NCOL
+ifeq ($(COLORS),1)
 
 ifdef POSIXSHELL
 undefine zimk__tcap
@@ -69,4 +69,4 @@ endif # Windows_NT
 
 endif # TERM
 
-endif # NCOL
+endif # COLORS

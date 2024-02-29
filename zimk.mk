@@ -19,6 +19,7 @@ endif
 -include defaults.mk
 include $(ZIMKPATH)lib/funcs.mk
 include $(ZIMKPATH)lib/platform.mk
+ifndef ZIMK__RECURSE
 include $(ZIMKPATH)lib/pretty.mk
 include $(ZIMKPATH)lib/config.mk
 include $(ZIMKPATH)lib/silent.mk
@@ -92,5 +93,9 @@ endif
 .PHONY: all sharedlibs staticlibs stripsharedlibs stripstaticlibs strip \
 	install installsharedlibs installstaticlibs clean distclean dist
 .SUFFIXES:
+
+else
+zinc:=
+endif # ZIMK__RECURSE
 
 # vim: noet:si:ts=8:sts=8:sw=8

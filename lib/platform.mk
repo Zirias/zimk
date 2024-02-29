@@ -3,6 +3,13 @@ ZIMK__POSIXSH :=
 ifeq ($(POSIXSHELL),)
 ifeq ($(shell getconf _POSIX_SHELL 2>&1),1)
 ifeq ($(.SHELLSTATUS),0)
+ifndef ZIMK__ISTTY
+ZIMK__RECURSE=$(MAKE) --no-print-directory ZIMK__ISTTY=$1 $(MAKECMDGOALS)
+all $(MAKECMDGOALS):
+	+@[ -t 1 ] && $(call ZIMK__RECURSE,1) || $(call ZIMK__RECURSE,0)
+
+.PHONY: all $(MAKECMDGOALS)
+else
 ZIMK__CHECKSHELLS := $(addsuffix /sh,$(subst \
 		     :, ,$(shell getconf PATH 2>/dev/null)))
 $(foreach s,$(ZIMK__CHECKSHELLS),$(if $(POSIXSHELL),,$(if \
@@ -11,10 +18,12 @@ ZIMK__POSIXSH := $(POSIXSHELL)
 endif
 endif
 endif
+endif
 ifeq ($(POSIXSHELL),)
 undefine POSIXSHELL
 endif
 
+ifndef ZIMK__RECURSE
 ifeq ($(OS),Windows_NT)
 export MSYS_NO_PATHCONV=1
 export CYGWIN_DISABLE_ARGUMENT_MANGLING=1
@@ -28,6 +37,7 @@ SHELL:=$(WIN32SHELL)
 _ZIMK_WINCMD :=
 export .SHELLFLAGS=/C
 export SHELL
+ZIMK__ISTTY:=1
 endif
 
 OSVER := $(subst ],,$(lastword $(shell $(_ZIMK_WINCMD) ver)))
@@ -157,4 +167,13 @@ touch = copy /b $(1)+,,$(1) $(CMDQUIET)
 
 SYSNAME := $(shell uname 2>nul & verify >nul)
 
+endif
+endif
+
+ifeq ($(ZIMK__ISTTY),1)
+V?=0
+COLORS?=1
+else
+V?=1
+COLORS?=0
 endif
