@@ -158,6 +158,7 @@ BUILD_release_DEFGOAL ?= strip
 BUILD_release_CFLAGS ?= -g0 -O2 -ffunction-sections -fdata-sections
 BUILD_release_CXXFLAGS ?= -g0 -O2 -ffunction-sections -fdata-sections
 BUILD_release_LDFLAGS ?= -O2 -Wl,--gc-sections
+BUILD_release_DEFINES ?= -DNDEBUG
 
 _ZIMK__TESTCC:=$(call findtool,$(CROSS_COMPILE)$(or \
 	       $(CC),$(DEFAULT_CC),$(BUILD_$(BUILDCFG)_CC)))
