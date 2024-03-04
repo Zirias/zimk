@@ -17,6 +17,7 @@ VGIT:=
 VSUB:=
 VRM:=
 VRMDR:=
+VWRN:=	@echo $(EQT) *** Warning: $(_ZIMK_0)$(EQT)
 VR:=
 else
 ifeq ($(PSEP),\\)
@@ -42,6 +43,7 @@ VGIT=	@echo $(EQT)   $(ZIMK__PRBOLD)$(ZIMK__PRWHITE)[GIT]$(ZIMK__PRNORM)  $(call
 VSUB=	@echo $(EQT)   $(ZIMK__PRBOLD)$(ZIMK__PRWHITE)[SUB]$(ZIMK__PRNORM)  $(call zimk__pp,$@)$(EQT)
 VRM=	@echo $(EQT)   $(ZIMK__PRBOLD)$(ZIMK__PRLRED)[RM]   $(ZIMK__PRNORM)$(ZIMK__PRRED)$(call zimk__pp,$(call zimk__pp,$(_ZIMK_0)))$(ZIMK__PRNORM)$(EQT)
 VRMDR=	@echo $(EQT)   $(ZIMK__PRBOLD)$(ZIMK__PRLRED)[RMDR] $(ZIMK__PRNORM)$(ZIMK__PRLRED)$(call zimk__pp,$(_ZIMK_0))$(ZIMK__PRNORM)$(EQT)
+VWRN=	@echo $(EQT)   $(ZIMK__PRBOLD)$(ZIMK__PRYELLOW)[WARN]$(ZIMK__PRNORM) $(ZIMK__PRBOLD)$(ZIMK__PRBROWN)$(_ZIMK_0)$(ZIMK__PRNORM)$(EQT)
 VR:=	@
 endif
 

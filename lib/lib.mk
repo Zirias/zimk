@@ -1,6 +1,7 @@
 ZIMK__LIBTYPES := library plugin test
 
 define LIBRULES
+$(_T)_MANSECT ?= 3
 $(OBJRULES)
 
 $(_T)_LIBTYPE ?= library

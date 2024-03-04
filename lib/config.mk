@@ -3,14 +3,14 @@ $(strip $(eval undefine __ZIMK__UNIQ__SEEN)$(foreach \
     _v,$1,$(if $(filter $(_v),$(__ZIMK__UNIQ__SEEN)),,$(eval \
         __ZIMK__UNIQ__SEEN += $(_v))))$(__ZIMK__UNIQ__SEEN))
 endef
-HOSTTOOLS += GIT
+HOSTTOOLS += GIT GZIP
 CROSSTOOLS += CC CXX CPP
 FALLBACKTOOLS += AR STRIP OBJCOPY OBJDUMP PKGCONFIG WINDRES MOC RCC
 SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 		  sysconfdir sharedstatedir localstatedir runstatedir \
-		  includedir docrootdir libdir localedir pkgconfigdir \
-		  icondir iconsubdir mimeiconsubdir desktopdir mimedir \
-		  sharedmimeinfodir
+		  includedir docrootdir mandir mansectdir libdir localedir \
+		  pkgconfigdir icondir iconsubdir mimeiconsubdir desktopdir \
+		  mimedir sharedmimeinfodir
 BOOLCONFVARS_ON := $(call ZIMK__UNIQ,SHAREDLIBS $(BOOLCONFVARS_ON))
 BOOLCONFVARS_OFF := $(call ZIMK__UNIQ,PORTABLE STATIC STATICLIBS \
 		    $(BOOLCONFVARS_OFF))
@@ -138,6 +138,7 @@ DEFAULT_WINDRES ?= windres
 DEFAULT_MOC ?= moc
 DEFAULT_RCC ?= rcc
 DEFAULT_GIT ?= git
+DEFAULT_GZIP ?= gzip
 DEFAULT_SH ?= $(if $(CROSS_COMPILE),$(or $(ZIMK__POSIXSH),/bin/sh),/bin/sh)
 DEFAULT_HOSTSH ?= $(if $(CROSS_COMPILE),,$(SH))
 DEFAULT_DEFGOAL ?= all
@@ -224,6 +225,8 @@ localstatedir ?= $(prefix)
 runstatedir ?= $(localstatedir)
 includedir ?= $(prefix)
 docrootdir ?= $(datarootdir)
+mandir ?= $(datarootdir)$(PSEP)man
+mansectdir ?= $(mandir)$(PSEP)man%s%
 libdir ?= $(exec_prefix)
 localedir ?= $(datarootdir)
 pkgconfigdir ?= $(prefix)
@@ -244,6 +247,8 @@ localstatedir ?= $(prefix)$(PSEP)var
 runstatedir ?= $(localstatedir)$(PSEP)run
 includedir ?= $(prefix)$(PSEP)include
 docrootdir ?= $(datarootdir)$(PSEP)doc
+mandir ?= $(datarootdir)$(PSEP)man
+mansectdir ?= $(mandir)$(PSEP)man%s%
 libdir ?= $(exec_prefix)$(PSEP)lib
 localedir ?= $(datarootdir)$(PSEP)locale
 pkgconfigdir ?= $(prefix)$(PSEP)lib$(PSEP)pkgconfig

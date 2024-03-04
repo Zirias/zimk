@@ -1,4 +1,5 @@
 define BINRULES
+$(_T)_MANSECT ?= 1
 $(OBJRULES)
 
 $(_T)_TARGET ?= $(_T)
