@@ -73,7 +73,7 @@ endef
 ZIMK__DISTCLEANRECIPE=@:$(foreach d,$1\
 	,$(eval _ZIMK_0:=$d)$(call ZIMK__DISTCLEANLINE,$d))
 
-distclean::
+distclean:: $(DISTCLEANGOALS)
 	$(call ZIMK__CLEANRECIPE,$(DISTCLEAN) $(ZIMK__CONFIGS))
 	$(call ZIMK__DISTCLEANRECIPE,$(ZIMK__DISTCLEAN))
 
