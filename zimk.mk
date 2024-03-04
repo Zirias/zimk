@@ -81,7 +81,7 @@ ifdef POSIXSHELL
 DISTVERSIONPREFIX?=v
 TAR:=$(call findtool,tar)
 dist:
-	@GIT="${GIT}" TAR="${TAR}" $(SHELL) \
+	@GIT="$(GIT)" TAR="$(TAR)" NODIST="$(NODIST)" $(SHELL) \
 		$(ZIMKPATH)scripts/mkdist.sh $(DISTVERSIONPREFIX) $(PKGNAME)
 
 else

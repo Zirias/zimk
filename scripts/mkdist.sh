@@ -51,6 +51,9 @@ if ! ${GIT} clone . --recurse-submodules "${DISTNAME}"; then
 	echo >&2 mkdist.sh: Error cloning "${DISTNAME}"
 	exit 1
 fi
+[ -n "${NODIST}" ] && for p in ${NODIST}; do
+	rm -fr "${DISTNAME}/$p"
+done
 ${TAR} --exclude-vcs --exclude ".github/*" \
 	-cJf "${DISTNAME}.tar.xz" "${DISTNAME}"
 rm -fr "${DISTNAME}"
