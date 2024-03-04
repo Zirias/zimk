@@ -31,6 +31,7 @@ include $(ZIMKPATH)lib/bin.mk
 include $(ZIMKPATH)lib/lib.mk
 
 ifndef MAKE_RESTARTS
+ifneq ($(GIT),)
 ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)
 ifneq ($(shell $(GIT) --version $(CMDNOERR)),)
 ZIMKSUBMODULECFG:=$(shell $(READ) $(subst /,$(PSEP),$(ZIMKPATH)).git $(CMDNOERR))
@@ -41,6 +42,7 @@ $(ZIMKPATH)zimk.mk: $(ZIMKSUBMODULEGITDIR)/FETCH_HEAD
 	$(VGIT)
 	$(VR)$(GIT) submodule update $(ZIMKPATH)
 	$(VR)$(call touch,$(subst /,$(PSEP),$@))
+endif
 endif
 endif
 endif
