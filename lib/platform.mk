@@ -110,6 +110,8 @@ CMDNOIN := </dev/null
 INSTALL ?= install
 INSTDIR := $(INSTALL) -d
 
+MAKE := PATH="$(ZIMK__ENVPATH)" $(MAKE)
+
 findtool = $(shell PATH="$(ZIMK__ENVPATH)" command -v $1 2>/dev/null)
 instfile = $(INSTDIR) $(2) $(CMDSEP) $(INSTALL) -m$(3) $(1) $(2)
 rmfile = $(RMF) $(1)
@@ -146,6 +148,8 @@ CMDNOERR := 2>nul & verify >nul
 CMDNOIN := <nul
 
 INSTDIR := $(MDP)
+
+MAKE := set "PATH=$(ZIMK__ENVPATH)" & $(MAKE)
 
 define _ZIMK__FINDTOOL
 _ZIMK__TOOL:=$$(shell where "$(ZIMK__ENVPATH):$1" 2>NUL)

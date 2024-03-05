@@ -332,8 +332,7 @@ override undefine $1
 endif
 $1:=$$(call findtool,$($1))
 endef
-$(foreach t,MAKE $(HOSTTOOLS),$(eval $(call ZIMK__UPDATEHOSTTOOL,$t)))
-export MAKE
+$(foreach t,$(HOSTTOOLS),$(eval $(call ZIMK__UPDATEHOSTTOOL,$t)))
 
 define ZIMK__UPDATECROSSTOOL
 ifeq ($$(strip $$(origin $1)),command line)
