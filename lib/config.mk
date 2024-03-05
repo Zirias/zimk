@@ -3,16 +3,16 @@ $(strip $(eval undefine __ZIMK__UNIQ__SEEN)$(foreach \
     _v,$1,$(if $(filter $(_v),$(__ZIMK__UNIQ__SEEN)),,$(eval \
         __ZIMK__UNIQ__SEEN += $(_v))))$(__ZIMK__UNIQ__SEEN))
 endef
-HOSTTOOLS += GIT GZIP
 CROSSTOOLS += CC CXX CPP
 FALLBACKTOOLS += AR STRIP OBJCOPY OBJDUMP PKGCONFIG WINDRES MOC RCC
+HOSTTOOLS += GIT GZIP $(addprefix HOST,$(CROSSTOOLS) $(FALLBACKTOOLS))
 SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 		  sysconfdir sharedstatedir localstatedir runstatedir \
 		  includedir docrootdir mandir mansectdir libdir localedir \
 		  pkgconfigdir icondir iconsubdir mimeiconsubdir desktopdir \
 		  mimedir sharedmimeinfodir
 BOOLCONFVARS_ON := $(call ZIMK__UNIQ,SHAREDLIBS $(BOOLCONFVARS_ON))
-BOOLCONFVARS_OFF := $(call ZIMK__UNIQ,PORTABLE STATIC STATICLIBS \
+BOOLCONFVARS_OFF := $(call ZIMK__UNIQ,PORTABLE STATIC STATICLIBS HOSTBUILD \
 		    $(BOOLCONFVARS_OFF))
 BOOLCONFVARS := $(BOOLCONFVARS_ON) $(BOOLCONFVARS_OFF)
 SINGLECONFVARS := $(call ZIMK__UNIQ,DEFGOAL SH HOSTSH \
@@ -110,8 +110,8 @@ $(eval $(ZIMK__WRITECFG))
 -include $(USERCONFIG)
 
 MAKEOVERRIDES:= $(MAKEOVERRIDES) $(foreach \
-		t,$(HOSTTOOLS) $(CROSSTOOLS) $(FALLBACKTOOLS),$t=$($t))
-export MAKEOVERRIDES
+		t,$(filter-out HOST%,$(HOSTTOOLS)) $(CROSSTOOLS) \
+		$(FALLBACKTOOLS),$t=$($t))
 
 ZIMK__CFGTARGET := _build_changeconfig
 $(eval $(ZIMK__WRITECFG))
@@ -146,6 +146,8 @@ DEFAULT_GZIP ?= gzip
 DEFAULT_SH ?= $(if $(CROSS_COMPILE),$(or $(ZIMK__POSIXSH),/bin/sh),/bin/sh)
 DEFAULT_HOSTSH ?= $(if $(CROSS_COMPILE),,$(SH))
 DEFAULT_DEFGOAL ?= all
+$(foreach t,$(filter HOST%,$(HOSTTOOLS)),$(eval DEFAULT_$t ?= \
+	$$(or $$($(subst HOST,,$t)),$$(DEFAULT_$(subst HOST,,$t)))))
 
 DEFAULT_CFLAGS ?= -std=c11 -Wall -Wextra -Wshadow -pedantic
 DEFAULT_CXXFLAGS ?= -std=c++11 -Wall -Wextra -pedantic
@@ -165,15 +167,35 @@ BUILD_release_CXXFLAGS ?= -g0 -O2 -ffunction-sections -fdata-sections
 BUILD_release_LDFLAGS ?= -O2 -Wl,--gc-sections
 BUILD_release_DEFINES ?= -DNDEBUG
 
+_ZIMK__TESTHCC:=$(call findtool,$(or \
+	       $(HOSTCC),$(DEFAULT_HOSTCC),$(BUILD_$(BUILDCFG)_HOSTCC)))
+ifneq ($(_ZIMK__TESTHCC),)
+ZIMK__HDEFDEFINES:= $(shell $(_ZIMK__TESTHCC) -dM -E - $(CMDNOIN))
+endif
+ifeq ($(filter _WIN32,$(ZIMK__HDEFDEFINES)),)
+HOSTPLATFORM:= posix
+HOSTEXE:=
+else
+HOSTPLATFORM:= win32
+HOSTEXE:=.exe
+endif
+
+ifeq ($(HOSTBUILD),1)
+PLATFORM:= $(HOSTPLATFORM)
+EXE:= $(HOSTEXE)
+else
 _ZIMK__TESTCC:=$(call findtool,$(CROSS_COMPILE)$(or \
 	       $(CC),$(DEFAULT_CC),$(BUILD_$(BUILDCFG)_CC)))
+ifneq ($(_ZIMK__TESTCC),)
 ZIMK__DEFDEFINES:= $(shell $(_ZIMK__TESTCC) -dM -E - $(CMDNOIN))
+endif
 ifeq ($(filter _WIN32,$(ZIMK__DEFDEFINES)),)
 PLATFORM:= posix
 EXE:=
 else
 PLATFORM:= win32
 EXE:=.exe
+endif
 endif
 
 ifeq ($(filter __CYGWIN__,$(ZIMK__DEFDEFINES)),)
@@ -264,7 +286,9 @@ mimedir ?= $(datarootdir)$(PSEP)mime
 sharedmimeinfodir ?= $(mimedir)$(PSEP)packages
 endif
 
-TARGETARCH:= $(strip $(shell $(_ZIMK__TESTCC) -dumpmachine $(CMDNOERR)))
+TARGETARCH:= $(strip $(shell $(if $(filter \
+	     1,$(HOSTBUILD)),$(_ZIMK__TESTHCC),$(_ZIMK__TESTCC)) \
+	     -dumpmachine $(CMDNOERR)))
 ifeq ($(TARGETARCH),)
 TARGETARCH:= unknown
 endif
@@ -353,6 +377,10 @@ endif
 $1:=$$(or $$(call findtool,$(CROSS_COMPILE)$($1)),$$(call findtool,$($1)))
 endef
 $(foreach t,$(FALLBACKTOOLS),$(eval $(call ZIMK__UPDATEFALLBACKTOOL,$t)))
+
+ifeq ($(HOSTBUILD),1)
+$(foreach t,$(filter HOST%,$(HOSTTOOLS)),$(eval $(subst HOST,,$t):=$$($t)))
+endif
 
 .PHONY: config changeconfig _build_config _build_changeconfig _cfg_message showconfig
 
