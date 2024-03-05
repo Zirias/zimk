@@ -16,11 +16,12 @@ endef
 define ZIMK__GENRULE
 
 $$($(_T)_$$(if $$(GEN_$1_obj),OBJ,SRC)DIR)$$(PSEP)$2: \
-	$$($(_T)_SRCDIR)$$(PSEP)$3 $$(GEN_$1_tool) \
+	$$($(_T)_SRCDIR)$$(PSEP)$3 $$(subst /,$$(PSEP),$$(GEN_$1_tool)) \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE)
 	$$(VGEN)
-	$$(VR)$$(GEN_$1_tool) $$(if $$(GEN_$1_args),$$(subst \
-		%o%,$$@,$$(subst %i%,$$<,$$(GEN_$1_args))),<$$< >$$@)
+	$$(VR)$$(subst /,$$(PSEP),$$(GEN_$1_tool)) $$(if \
+		$$(GEN_$1_args),$$(subst %o%,$$@,$$(subst \
+		%i%,$$<,$$(GEN_$1_args))),<$$< >$$@)
 
 $(_T)_sub: $$($(_T)_$$(if $$(GEN_$1_obj),OBJ,SRC)DIR)$$(PSEP)$2
 endef
