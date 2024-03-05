@@ -13,6 +13,18 @@ $1: $1.in $$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE)
 $(_T)_sub: $1
 endef
 
+define ZIMK__GENRULE
+
+$$($(_T)_$$(if $$(GEN_$1_obj),OBJ,SRC)DIR)$$(PSEP)$2: \
+	$$($(_T)_SRCDIR)$$(PSEP)$3 $$(GEN_$1_tool) \
+	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE)
+	$$(VGEN)
+	$$(VR)$$(GEN_$1_tool) $$(if $$(GEN_$1_args),$$(subst \
+		%o%,$$@,$$(subst %i%,$$<,$$(GEN_$1_args))),<$$< >$$@)
+
+$(_T)_sub: $$($(_T)_$$(if $$(GEN_$1_obj),OBJ,SRC)DIR)$$(PSEP)$2
+endef
+
 define ZIMK__PREPROCRULE
 
 $$($(_T)_OBJDIR)$$(PSEP)$1_$$(PREPROC_$$($(_T)_PREPROC)_suffix).$$(PREPROC_$$($(_T)_PREPROC)_outtype): \
@@ -453,7 +465,24 @@ $(_T)_SUB_LIST += VERSION=$$($(_T)_VERSION) V_MAJ=$$($(_T)_V_MAJ) \
 	V_MIN=$$($(_T)_V_MIN) V_REV=$$($(_T)_V_REV) SH=$$(SH)
 $$(eval $$(foreach f,$$($(_T)_SUB_FILES),\
 	$$(call ZIMK__SUBRULE,$$($(_T)_SRCDIR)$$(PSEP)$$(f))))
-else
+endif
+
+$(_T)__ALLGEN :=
+ifneq ($$(strip $$($(_T)_GEN)),)
+$(_T)__ALLGEN := $$(foreach _G,$$($(_T)_GEN),$$(addprefix \
+	$$($(_T)_$$(if $$(GEN_$$(_G)_obj),OBJ,SRC)DIR)$$(PSEP),$$(foreach \
+	_P,$$($(_T)_$$(_G)_FILES),$$(firstword $$(subst :, ,$$(_P))))))
+ifneq ($$(strip $$($(_T)__ALLGEN)),)
+CLEAN += $$($(_T)__ALLGEN)
+DISTCLEAN += $$($(_T)__ALLGEN)
+$$(eval $$(foreach _G,$$($(_T)_GEN),$$(foreach \
+	_P,$$($(_T)_$$(_G)_FILES),$$(call \
+	ZIMK__GENRULE,$$(_G),$$(firstword $$(subst \
+	:, ,$$(_P))),$$(word 2,$$(subst :, ,$$(_P)))))))
+endif
+endif
+
+ifeq ($$(strip $$($(_T)_SUB_FILES) $$($(_T)__ALLGEN)),)
 $(_T)_sub: ;
 endif
 
