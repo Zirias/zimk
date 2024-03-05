@@ -109,6 +109,10 @@ $(eval $(ZIMK__WRITECFG))
 
 -include $(USERCONFIG)
 
+MAKEOVERRIDES:= $(MAKEOVERRIDES) $(foreach \
+		t,$(HOSTTOOLS) $(CROSSTOOLS) $(FALLBACKTOOLS),$t=$($t))
+export MAKEOVERRIDES
+
 ZIMK__CFGTARGET := _build_changeconfig
 $(eval $(ZIMK__WRITECFG))
 
