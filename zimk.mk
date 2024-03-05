@@ -3,6 +3,11 @@ ifneq ($(ZIMKPATH),)
 ZIMKPATH:=$(ZIMKPATH)/
 endif
 
+ifndef ZIMK__BASEDIR
+ZIMK__BASEDIR:=$(CURDIR)
+export ZIMK__BASEDIR
+endif
+
 ifeq ($(origin CC),default)
 undefine CC
 endif

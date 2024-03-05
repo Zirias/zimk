@@ -10,6 +10,7 @@ all $(MAKECMDGOALS):
 
 .PHONY: all $(MAKECMDGOALS)
 else
+override undefine MAKEFLAGS
 ZIMK__CHECKSHELLS := $(addsuffix /sh,$(subst \
 		     :, ,$(shell getconf PATH 2>/dev/null)))
 $(foreach s,$(ZIMK__CHECKSHELLS),$(if $(POSIXSHELL),,$(if \
@@ -168,6 +169,11 @@ touch = copy /b $(1)+,,$(1) $(CMDQUIET)
 SYSNAME := $(shell uname 2>nul & verify >nul)
 
 endif
+endif
+
+ZIMK__SUBDIR:= $(subst $(ZIMK__BASEDIR),,$(CURDIR))
+ifneq ($(ZIMK__SUBDIR),)
+ZIMK__SUBDIR:= $(patsubst /%,%,$(subst /,$(PSEP),$(ZIMK__SUBDIR)))$(PSEP)
 endif
 
 ifeq ($(ZIMK__ISTTY),1)
