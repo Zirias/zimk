@@ -43,10 +43,10 @@ ZIMKSUBMODULECFG:=$(shell $(READ) $(subst /,$(PSEP),$(ZIMKPATH)).git $(CMDNOERR)
 ifeq ($(words $(ZIMKSUBMODULECFG)),2)
 ZIMKSUBMODULEGITDIR:=$(realpath $(ZIMKPATH)$(lastword $(ZIMKSUBMODULECFG)))
 ifneq ($(ZIMKSUBMODULEGITDIR),)
-$(ZIMKPATH)zimk.mk: $(ZIMKSUBMODULEGITDIR)/FETCH_HEAD
+$(subst /,$(PSEP),$(ZIMKPATH))zimk.mk: $(ZIMKSUBMODULEGITDIR)/FETCH_HEAD
 	$(VGIT)
 	$(VR)$(GIT) submodule update $(ZIMKPATH)
-	$(VR)$(call touch,$(subst /,$(PSEP),$@))
+	$(VR)$(call touch, $@)
 endif
 endif
 endif
@@ -56,6 +56,9 @@ endif
 
 install:: all
 strip:: all
+
+$(foreach v,CLEAN DISTCLEAN DISTCLEANDIRS \
+	,$(eval $v:=$$(subst /,$$(PSEP),$$($v))))
 
 define ZIMK__SUBBUILDRULES
 
