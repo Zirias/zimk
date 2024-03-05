@@ -73,7 +73,10 @@ $(error zimk only works with a POSIX shell or Windows CMD.EXE)
 endif
 endif
 
+ifndef ZIMK__ENVPATH
 ZIMK__ENVPATH:=$(PATH)
+export ZIMK__ENVPATH
+endif
 
 ifdef POSIXSHELL
 SHELL:=$(POSIXSHELL)
