@@ -47,7 +47,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.d: $$($(_T)_$2)$$(PSEP)$1$3.c $(_T)_sub \
 		$$(INCLUDES) $$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) \
 		$$(CFLAGS) $$<
 
-$$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.c \
+$$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.c $(_T)_sub \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCC)
 	$$(VR)$$(CC) -c -o$$@ \
@@ -59,7 +59,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.c \
 		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
 		$$<
 
-$$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.c \
+$$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.c $(_T)_sub \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCC)
 	$$(VR)$$(CC) -c -o$$@ \
@@ -83,7 +83,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.d: $$($(_T)_$2)$$(PSEP)$1$3.cpp $(_T)_sub \
 		$$(INCLUDES) $$($(_T)_$$(PLATFORM)_CXXFLAGS) \
 		$$($(_T)_CXXFLAGS) $$(CXXFLAGS) $$<
 
-$$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.cpp \
+$$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.cpp $(_T)_sub \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCXX)
 	$$(VR)$$(CXX) -c -o$$@ \
@@ -95,7 +95,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.cpp \
 		$$($(_T)_$$(PLATFORM)_CXXFLAGS) $$($(_T)_CXXFLAGS) \
 		$$(CXXFLAGS) $$<
 
-$$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.cpp \
+$$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.cpp $(_T)_sub \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCXX)
 	$$(VR)$$(CXX) -c -o$$@ \
@@ -119,7 +119,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.d: $$($(_T)_$2)$$(PSEP)$1$3.S $(_T)_sub \
 		$$(INCLUDES) $$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) \
 		$$(CFLAGS) $$<
 
-$$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.S \
+$$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.S $(_T)_sub \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCAS)
 	$$(VR)$$(CC) -c -o$$@ \
@@ -131,7 +131,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.S \
 		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
 		$$<
 
-$$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.S \
+$$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.S $(_T)_sub \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCAS)
 	$$(VR)$$(CC) -c -o$$@ \
@@ -146,7 +146,7 @@ endef
 
 define ZIMK__RESRULE
 
-$$($(_T)_OBJDIR)$$(PSEP)$1.o: $$($(_T)_SRCDIR)$$(PSEP)$1$2 \
+$$($(_T)_OBJDIR)$$(PSEP)$1.o: $$($(_T)_SRCDIR)$$(PSEP)$1$2 $(_T)_sub \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VGEN)
 	$$(VR)$$(OBJCOPY) -Ibinary -O$(TARGETBFD) -B$(TARGETBARCH) $$< $$@
@@ -157,7 +157,7 @@ ifeq ($(PLATFORM),win32)
 define ZIMK__WINDRESRULE
 CLEAN += $$($(_T)_OBJDIR)$$(PSEP)$1.o
 
-$$($(_T)_OBJDIR)$$(PSEP)$1.o: $$($(_T)_SRCDIR)$$(PSEP)$1.rc \
+$$($(_T)_OBJDIR)$$(PSEP)$1.o: $$($(_T)_SRCDIR)$$(PSEP)$1.rc $(_T)_sub \
     $$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VRES)
 	$$(VR)$$(WINDRES) $$< $$@
@@ -168,13 +168,13 @@ endif
 define ZIMK__QRCRULES
 
 $$($(_T)_OBJDIR)$$(PSEP)$1_qrc.cpp: \
-		$$($(_T)_SRCDIR)$$(PSEP)$1.qrc \
+		$$($(_T)_SRCDIR)$$(PSEP)$1.qrc $(_T)_sub \
 		| $$(_$(_T)_DIRS)
 	$$(VGEN)
 	$$(VR)$$(RCC) -o $$@ --name $$(notdir $$(basename $$@)) $$<
 
 $$($(_T)_OBJDIR)$$(PSEP)$1_qrc.o: \
-		$$($(_T)_OBJDIR)$$(PSEP)$1_qrc.cpp \
+		$$($(_T)_OBJDIR)$$(PSEP)$1_qrc.cpp $(_T)_sub \
 		$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCXX)
 	$$(VR)$$(CXX) -c -o$$@ \
@@ -186,7 +186,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1_qrc.o: \
 		$$(CXXFLAGS) $$<
 
 $$($(_T)_OBJDIR)$$(PSEP)$1_qrc_s.o: \
-		$$($(_T)_OBJDIR)$$(PSEP)$1_qrc.cpp \
+		$$($(_T)_OBJDIR)$$(PSEP)$1_qrc.cpp $(_T)_sub \
 		$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCXX)
 	$$(VR)$$(CXX) -c -o$$@ \
@@ -432,6 +432,21 @@ endif
 
 
 ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)
+ifneq ($$(strip $$($(_T)_MODULES) $$($(_T)_PLATFORMMODULES) \
+	$$($(_T)_ASMMODULES) $$($(_T)_PLATFORMASMMODULES)),)
+$$(if $$(CC),,$$(error No C compiler found!))
+endif
+ifneq ($$(strip $$($(_T)_CXXMODULES) $$($(_T)_PLATFORMCXXMODULES)),)
+$$(if $$(CXX),,$$(error No C++ compiler found!))
+endif
+ifneq ($$(strip $$($(_T)_RESFILES) $$($(_T)_PLATFORMRESFILES)),)
+$$(if $$(OBJCOPY),,$$(error No objcopy tool found!))
+endif
+ifeq ($$(PLATFORM),win32)
+ifneq ($$(strip $$($(_T)_win32_RES)),)
+$$(if $$(WINDRES),,$$(error No windres tool found!))
+endif
+endif
 -include $$($(_T)_OBJS:.o=.d)
 endif
 

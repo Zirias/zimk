@@ -57,6 +57,22 @@ endif
 install:: all
 strip:: all
 
+define ZIMK__SUBBUILDRULES
+
+$$(subst /,$$(PSEP),$$($1_TARGET)): $$(subst /,$$(PSEP),$$($1_PREREQ))
+	+@$$(MAKE) -C $$(subst /,$$(PSEP),$$($1_SRCDIR)) \
+		$$(subst /,$$(PSEP),$$($1_MAKEARGS)) $$($1_MAKEGOAL)
+
+sub_$1_clean:
+	+@$$(MAKE) -C $$(subst /,$$(PSEP),$$($1_SRCDIR)) \
+		$$(subst /,$$(PSEP),$$($1_MAKEARGS)) \
+		$$(or $$($1_CLEANGOAL),clean)
+
+.PHONY: sub_$1_clean
+CLEANGOALS+= sub_$1_clean
+endef
+$(foreach _S,$(SUBBUILD),$(eval $(call ZIMK__SUBBUILDRULES,$(_S))))
+
 define ZIMK__CLEANLINE
 
 $(ZIMK__TAB)$(VRM)
@@ -65,7 +81,7 @@ endef
 ZIMK__CLEANRECIPE=@:$(foreach f,$1\
 	,$(eval _ZIMK_0:=$f)$(call ZIMK__CLEANLINE,$f))
 
-clean::
+clean:: $(CLEANGOALS)
 	$(call ZIMK__CLEANRECIPE,$(CLEAN))
 
 ZIMK__CONFIGS=$(foreach c,$(BUILDCFGS),.cache_$c.cfg $c.cfg) global.cfg
@@ -78,7 +94,7 @@ endef
 ZIMK__DISTCLEANRECIPE=@:$(foreach d,$1\
 	,$(eval _ZIMK_0:=$d)$(call ZIMK__DISTCLEANLINE,$d))
 
-distclean:: $(DISTCLEANGOALS)
+distclean:: $(CLEANGOALS) $(DISTCLEANGOALS)
 	$(call ZIMK__CLEANRECIPE,$(DISTCLEAN) $(ZIMK__CONFIGS))
 	$(call ZIMK__DISTCLEANRECIPE,$(DISTCLEANDIRS) $(ZIMK__DISTCLEAN))
 

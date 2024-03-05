@@ -6,7 +6,8 @@ ifeq ($(.SHELLSTATUS),0)
 ifndef ZIMK__ISTTY
 ZIMK__RECURSE=$(MAKE) --no-print-directory ZIMK__ISTTY=$1 $(MAKECMDGOALS)
 all $(MAKECMDGOALS):
-	+@[ -t 1 ] && $(call ZIMK__RECURSE,1) || $(call ZIMK__RECURSE,0)
+	+@if [ -t 1 ]; then $(call ZIMK__RECURSE,1); \
+		       else $(call ZIMK__RECURSE,0); fi
 
 .PHONY: all $(MAKECMDGOALS)
 else
@@ -73,10 +74,7 @@ $(error zimk only works with a POSIX shell or Windows CMD.EXE)
 endif
 endif
 
-ifndef ZIMK__ENVPATH
 ZIMK__ENVPATH:=$(PATH)
-export ZIMK__ENVPATH
-endif
 
 ifdef POSIXSHELL
 SHELL:=$(POSIXSHELL)

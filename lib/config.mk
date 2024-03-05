@@ -286,9 +286,11 @@ mimedir ?= $(datarootdir)$(PSEP)mime
 sharedmimeinfodir ?= $(mimedir)$(PSEP)packages
 endif
 
-TARGETARCH:= $(strip $(shell $(if $(filter \
-	     1,$(HOSTBUILD)),$(_ZIMK__TESTHCC),$(_ZIMK__TESTCC)) \
-	     -dumpmachine $(CMDNOERR)))
+_ZIMK__TESTARCHCC:= $(if $(filter \
+		    1,$(HOSTBUILD)),$(_ZIMK__TESTHCC),$(_ZIMK__TESTCC))
+TARGETARCH:= $(strip $(if \
+	     $(_ZIMK__TESTARCHCC),$(shell $(_ZIMK__TESTARCHCC) \
+	     -dumpmachine $(CMDNOERR))))
 ifeq ($(TARGETARCH),)
 TARGETARCH:= unknown
 endif
