@@ -180,7 +180,7 @@ endif
 
 ZIMK__SUBDIR:= $(subst $(ZIMK__BASEDIR),,$(CURDIR))
 ifneq ($(ZIMK__SUBDIR),)
-ZIMK__SUBDIR:= $(patsubst /%,%,$(subst /,$(PSEP),$(ZIMK__SUBDIR)))$(PSEP)
+ZIMK__SUBDIR:= $(subst /,$(PSEP),$(patsubst /%,%,$(ZIMK__SUBDIR)))$(PSEP)
 endif
 
 ifeq ($(ZIMK__ISTTY),1)
