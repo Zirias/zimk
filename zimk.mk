@@ -37,7 +37,8 @@ include $(ZIMKPATH)lib/lib.mk
 
 ifndef MAKE_RESTARTS
 ifneq ($(GIT),)
-ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)
+ifneq ($(filter-out $(NOBUILDTARGETS) install installsharedlibs \
+	installstaticlibs,$(MAKECMDGOALS)),)
 ifneq ($(shell $(GIT) rev-parse --is-inside-work-tree $(CMDNOERR)),)
 ZIMKSUBMODULECFG:=$(shell $(READ) $(subst /,$(PSEP),$(ZIMKPATH)).git $(CMDNOERR))
 ifeq ($(words $(ZIMKSUBMODULECFG)),2)
