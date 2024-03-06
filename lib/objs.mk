@@ -3,6 +3,9 @@ PREPROC_MOC_intype := h
 PREPROC_MOC_outtype := cpp
 PREPROC_MOC_preproc := $(MOC)
 
+ZIMK__EMPTY:=
+ZIMK__COMMA:=,
+
 define ZIMK__SUBRULE
 
 $1: $1.in $$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE)
@@ -13,18 +16,22 @@ $1: $1.in $$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE)
 $(_T)_sub: $1
 endef
 
-define ZIMK__GENRULE
+define ZIMK__GENRULE_EXP3
 
-$$($(_T)_$$(if $$(GEN_$1_obj),OBJ,SRC)DIR)$$(PSEP)$2: \
-	$$($(_T)_SRCDIR)$$(PSEP)$3 $$(subst /,$$(PSEP),$$(GEN_$1_tool)) \
-	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE)
+$2: $3 $1 $$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE)
 	$$(VGEN)
-	$$(VR)$$(subst /,$$(PSEP),$$(GEN_$1_tool)) $$(if \
-		$$(GEN_$1_args),$$(subst %o%,$$@,$$(subst \
-		%i%,$$<,$$(GEN_$1_args))),<$$< >$$@)
-
-$(_T)_sub: $$($(_T)_$$(if $$(GEN_$1_obj),OBJ,SRC)DIR)$$(PSEP)$2
+	$$(VR)$1 $4
+$(_T)_sub: $2
 endef
+ZIMK__GENRULE_EXP2=$(call ZIMK__GENRULE_EXP3,$(subst \
+		   /,$(PSEP),$(GEN_$1_tool)),$2,$3,$(if \
+		   $(GEN_$1_args),$$(call GEN_$1_args,$2,$(subst \
+		   $(ZIMK__EMPTY) ,$(ZIMK__COMMA),$3)),>$2 <$3))
+ZIMK__GENRULE_EXP1=$(call ZIMK__GENRULE_EXP2,$1,$($(_T)_$(if \
+		   $(GEN_$1_obj),OBJ,SRC)DIR)$(PSEP)$(firstword \
+		   $2),$(addprefix $($(_T)_SRCDIR)$(PSEP),$(wordlist \
+		   2,$(words $2),$2)))
+ZIMK__GENRULE=$(call ZIMK__GENRULE_EXP1,$1,$(subst :, ,$2))
 
 define ZIMK__PREPROCRULE
 
@@ -493,8 +500,7 @@ CLEAN += $$($(_T)__ALLGEN)
 DISTCLEAN += $$($(_T)__ALLGEN)
 $$(eval $$(foreach _G,$$($(_T)_GEN),$$(foreach \
 	_P,$$($(_T)_$$(_G)_FILES),$$(call \
-	ZIMK__GENRULE,$$(_G),$$(firstword $$(subst \
-	:, ,$$(_P))),$$(word 2,$$(subst :, ,$$(_P)))))))
+	ZIMK__GENRULE,$$(_G),$$(_P)))))
 endif
 endif
 
