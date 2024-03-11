@@ -261,8 +261,13 @@ $(_T)_INSTALLDOCSWITH ?= install
 $(_T)_INSTALLMANWITH ?= install
 $(_T)_INSTALLEXTRAWITH ?= install
 
+ifeq ($(PORTABLE),1)
+$(_T)_datadir ?= $$(datarootdir)
+$(_T)_docdir ?= $$(docrootdir)
+else
 $(_T)_datadir ?= $$(datarootdir)$$(PSEP)$(_T)
 $(_T)_docdir ?= $$(docrootdir)$$(PSEP)$(_T)
+endif
 $(_T)_localstatedir ?= $$(localstatedir)
 $(_T)_runstatedir ?= $$(runstatedir)
 $(_T)_sharedstatedir ?= $$(sharedstatedir)
