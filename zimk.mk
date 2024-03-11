@@ -55,7 +55,7 @@ endif
 endif
 endif
 
-install:: all
+install:: $(DEFGOAL)
 strip:: all
 
 $(foreach v,CLEAN DISTCLEAN DISTCLEANDIRS \
