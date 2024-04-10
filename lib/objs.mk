@@ -1,8 +1,3 @@
-PREPROC_MOC_suffix := moc
-PREPROC_MOC_intype := h
-PREPROC_MOC_outtype := cpp
-PREPROC_MOC_preproc := $(MOC)
-
 ZIMK__EMPTY:=
 ZIMK__COMMA:=,
 
@@ -173,39 +168,6 @@ $$($(_T)_OBJDIR)$$(PSEP)$1.o: $$($(_T)_SRCDIR)$$(PSEP)$1.rc $(_T)_sub \
 endef
 endif
 
-define ZIMK__QRCRULES
-
-$$($(_T)_OBJDIR)$$(PSEP)$1_qrc.cpp: \
-		$$($(_T)_SRCDIR)$$(PSEP)$1.qrc $(_T)_sub \
-		| $$(_$(_T)_DIRS)
-	$$(VGEN)
-	$$(VR)$$(RCC) -o $$@ --name $$(notdir $$(basename $$@)) $$<
-
-$$($(_T)_OBJDIR)$$(PSEP)$1_qrc.o: \
-		$$($(_T)_OBJDIR)$$(PSEP)$1_qrc.cpp $(_T)_sub \
-		$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
-	$$(VCXX)
-	$$(VR)$$(CXX) -c -o$$@ $$(_$(_T)_CXXFLAGS) \
-		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
-		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
-		$$(INCLUDES) $$($(_T)_$$(PLATFORM)_CXXFLAGS_STATIC) \
-		$$($(_T)_CXXFLAGS_STATIC) $$(CXXFLAGS_STATIC) \
-		$$($(_T)_$$(PLATFORM)_CXXFLAGS) $$($(_T)_CXXFLAGS) \
-		$$(CXXFLAGS) $$<
-
-$$($(_T)_OBJDIR)$$(PSEP)$1_qrc_s.o: \
-		$$($(_T)_OBJDIR)$$(PSEP)$1_qrc.cpp $(_T)_sub \
-		$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
-	$$(VCXX)
-	$$(VR)$$(CXX) -c -o$$@ $$(_$(_T)_CXXFLAGS) \
-		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
-		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
-		$$(INCLUDES) $$($(_T)_$$(PLATFORM)_CXXFLAGS_SHARED) \
-		$$($(_T)_CXXFLAGS_SHARED) $$(CXXFLAGS_SHARED) \
-		$$($(_T)_$$(PLATFORM)_CXXFLAGS) $$($(_T)_CXXFLAGS) \
-		$$(CXXFLAGS) $$<
-endef
-
 define ZIMK__DOCS_INST_RECIPE_LINE
 
 $(ZIMK__TAB)$$(eval _ZIMK_1 := $$(DESTDIR)$$($(_T)_docdir))
@@ -281,6 +243,10 @@ $(_T)_runstatedir ?= $$(runstatedir)
 $(_T)_sharedstatedir ?= $$(sharedstatedir)
 $(_T)_sysconfdir ?= $$(sysconfdir)
 $(_T)_mandir ?= $$(mandir)
+
+$$(foreach u,$$($(_T)_USES),$$(or $$(ZIMK__USE_$$(call toupper,$$(u))),\
+	$$(eval include $$(ZIMKPATH)lib/uses/$$(u).mk))\
+	$$(eval $$(ZIMK__USE_$$(call toupper,$$(u)))))
 
 $$(foreach s,$$($(_T)_MANSECT),$$(eval $(_T)_man$$sdir ?= $$$$(subst \
 	%s%,$$s,$(mansectdir))))
@@ -417,14 +383,6 @@ $$(eval $$(foreach p,$$($(_T)_PLATFORMPREPROCMODULES),\
 CLEAN += $$($(_T)_PPSOURCES)
 endif
 
-ifneq ($$(strip $$($(_T)_QRC)),)
-$(_T)_ROBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
-	$$(addsuffix _qrc.o,$$($(_T)_QRC)))
-$(_T)_QRCSOURCE := $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
-	$$(addsuffix _qrc.cpp,$$($(_T)_QRC)))
-CLEAN += $$($(_T)_QRCSOURCE)
-endif
-
 CLEAN += $$($(_T)_OBJS:.o=.d) $$($(_T)_OBJS)
 
 OUTFILES := $$($(_T)_OBJS)
@@ -488,10 +446,6 @@ $$(eval $$(foreach m,$$($(_T)_PREPROCMODULES),\
 $$(eval $$(foreach m,$$($(_T)_PLATFORMPREPROCMODULES),\
 	$$(call ZIMK__ASM_OBJRULES,$$m_$$(PREPROC_$$($(_T)_PREPROC)_suffix),OBJDIR,_$$(PLATFORM))))
 endif
-endif
-
-ifneq ($$(strip $$($(_T)_QRC)),)
-$$(eval $$(foreach q,$$($(_T)_QRC),$$(call ZIMK__QRCRULES,$$q)))
 endif
 
 ifneq ($$(strip $$($(_T)_SUB_FILES)),)
