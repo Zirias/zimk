@@ -49,7 +49,7 @@ define ZIMK__C_OBJRULES
 $$($(_T)_OBJDIR)$$(PSEP)$1$3.d: $$($(_T)_$2)$$(PSEP)$1$3.c $(_T)_sub \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VDEP)
-	$$(VR)$$(CC) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ \
+	$$(VR)$$(CC) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ $$(_$(_T)_CFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) \
@@ -58,7 +58,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.d: $$($(_T)_$2)$$(PSEP)$1$3.c $(_T)_sub \
 $$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.c $(_T)_sub \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCC)
-	$$(VR)$$(CC) -c -o$$@ \
+	$$(VR)$$(CC) -c -o$$@ $$(_$(_T)_CFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) \
@@ -70,7 +70,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.c $(_T)_sub \
 $$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.c $(_T)_sub \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCC)
-	$$(VR)$$(CC) -c -o$$@ \
+	$$(VR)$$(CC) -c -o$$@ $$(_$(_T)_CFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) \
@@ -85,7 +85,7 @@ define ZIMK__CXX_OBJRULES
 $$($(_T)_OBJDIR)$$(PSEP)$1$3.d: $$($(_T)_$2)$$(PSEP)$1$3.cpp $(_T)_sub \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VDEP)
-	$$(VR)$$(CXX) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ \
+	$$(VR)$$(CXX) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ $$(_$(_T)_CXXFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$($(_T)_$$(PLATFORM)_CXXFLAGS) \
@@ -94,7 +94,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.d: $$($(_T)_$2)$$(PSEP)$1$3.cpp $(_T)_sub \
 $$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.cpp $(_T)_sub \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCXX)
-	$$(VR)$$(CXX) -c -o$$@ \
+	$$(VR)$$(CXX) -c -o$$@ $$(_$(_T)_CXXFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) \
@@ -106,7 +106,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.cpp $(_T)_sub \
 $$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.cpp $(_T)_sub \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCXX)
-	$$(VR)$$(CXX) -c -o$$@ \
+	$$(VR)$$(CXX) -c -o$$@ $$(_$(_T)_CXXFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) \
@@ -121,7 +121,7 @@ define ZIMK__ASM_OBJRULES
 $$($(_T)_OBJDIR)$$(PSEP)$1$3.d: $$($(_T)_$2)$$(PSEP)$1$3.S $(_T)_sub \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VDEP)
-	$$(VR)$$(CC) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ \
+	$$(VR)$$(CC) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ $$(_$(_T)_CFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) \
@@ -130,7 +130,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.d: $$($(_T)_$2)$$(PSEP)$1$3.S $(_T)_sub \
 $$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.S $(_T)_sub \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCAS)
-	$$(VR)$$(CC) -c -o$$@ \
+	$$(VR)$$(CC) -c -o$$@ $$(_$(_T)_CFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) \
@@ -142,7 +142,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.S $(_T)_sub \
 $$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.S $(_T)_sub \
 	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCAS)
-	$$(VR)$$(CC) -c -o$$@ \
+	$$(VR)$$(CC) -c -o$$@ $$(_$(_T)_CFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) \
@@ -185,7 +185,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1_qrc.o: \
 		$$($(_T)_OBJDIR)$$(PSEP)$1_qrc.cpp $(_T)_sub \
 		$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCXX)
-	$$(VR)$$(CXX) -c -o$$@ \
+	$$(VR)$$(CXX) -c -o$$@ $$(_$(_T)_CXXFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$($(_T)_$$(PLATFORM)_CXXFLAGS_STATIC) \
@@ -197,7 +197,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1_qrc_s.o: \
 		$$($(_T)_OBJDIR)$$(PSEP)$1_qrc.cpp $(_T)_sub \
 		$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
 	$$(VCXX)
-	$$(VR)$$(CXX) -c -o$$@ \
+	$$(VR)$$(CXX) -c -o$$@ $$(_$(_T)_CXXFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) $$($(_T)_$$(PLATFORM)_CXXFLAGS_SHARED) \
@@ -256,6 +256,14 @@ $(_T)_LINKERFRONT ?= CXX
 else
 $(_T)_LINKERFRONT ?= CC
 endif
+$(_T)_CSTD ?= $$(CSTD)
+$(_T)_CXXSTD ?= $$(CXXSTD)
+ifneq ($$(strip $$($(_T)_CSTD)),)
+_$(_T)_CFLAGS += -std=$$($(_T)_CSTD)
+endif
+ifneq ($$(strip $$($(_T)_CXXSTD)),)
+_$(_T)_CXXFLAGS += -std=$$($(_T)_CXXSTD)
+endif
 $(_T)_MANSUFX ?= .%s%
 $(_T)_INSTALLDOCSWITH ?= install
 $(_T)_INSTALLMANWITH ?= install
@@ -286,8 +294,8 @@ $$(error $$(shell $$(PKGCONFIG) --print-errors --exists '$$($(_T)_PKGDEPS)')\
 Required packages for $(_T) not found)
 endif
 $(_T)_PKGCFLAGS := $$(shell $$(PKGCONFIG) --cflags '$$($(_T)_PKGDEPS)')
-$(_T)_CFLAGS += $$($(_T)_PKGCFLAGS)
-$(_T)_CXXFLAGS += $$($(_T)_PKGCFLAGS)
+_$(_T)_CFLAGS += $$($(_T)_PKGCFLAGS)
+_$(_T)_CXXFLAGS += $$($(_T)_PKGCFLAGS)
 $(_T)_PKGLINKFLAGS += $$(shell $$(PKGCONFIG) --libs '$$($(_T)_PKGDEPS)')
 endif
 endif
@@ -302,8 +310,8 @@ $$(error $$(shell $$(PKGCONFIG) --print-errors\
 Required packages for $(_T) not found)
 endif
 $(_T)_PKGCFLAGS := $$(shell $$(PKGCONFIG) --cflags '$$($(_T)_PKGSTATICDEPS)')
-$(_T)_CFLAGS += $$($(_T)_PKGCFLAGS)
-$(_T)_CXXFLAGS += $$($(_T)_PKGCFLAGS)
+_$(_T)_CFLAGS += $$($(_T)_PKGCFLAGS)
+_$(_T)_CXXFLAGS += $$($(_T)_PKGCFLAGS)
 $(_T)_PKGSTATICLINKFLAGS += $$(shell $$(PKGCONFIG) --libs\
 	'$$($(_T)_PKGSTATICDEPS)')
 endif
