@@ -229,8 +229,8 @@ $(_T)_sysconfdir ?= $$(sysconfdir)
 $(_T)_mandir ?= $$(mandir)
 
 $$(foreach u,$$($(_T)_USES),$$(or $$(ZIMK__USE_$$(call toupper,$$(u))),\
-	$$(eval include $$(ZIMKPATH)lib/uses/$$(u).mk))\
-	$$(eval $$(ZIMK__USE_$$(call toupper,$$(u)))))
+	$$(eval include $$(ZIMKPATH)lib/uses/$$(u).mk)))
+$$(foreach u,$$($(_T)_USES),$$(eval $$(ZIMK__USE_$$(call toupper,$$(u)))))
 
 $$(foreach s,$$($(_T)_MANSECT),$$(eval $(_T)_man$$sdir ?= $$$$(subst \
 	%s%,$$s,$(mansectdir))))

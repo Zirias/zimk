@@ -50,6 +50,12 @@ $(_T)_QT_TOOLDIR := $$(shell $$(PKGCONFIG) --variable=libexecdir \
 	$$($(_T)_QT_CORE))
 $(_T)_QT_TOOLDIR := $$(or $$($(_T)_QT_TOOLDIR),$$(shell \
 	$$(PKGCONFIG) --variable=host_bins $$($(_T)_QT_CORE)))
+$(_T)_RCC := $$(or $$(RCC),$$(call findtool,rcc,$$($(_T)_QT_TOOLDIR)),$$(call \
+	findtool,rcc-qt$$($(_T)_VERSION)))
+$(_T)_PKGDEPS += $$(addprefix Qt$$($(_T)_QT_VERSION),Core \
+	$$($(_T)_USE_QT) $$($(_T)_USE_QT$$($(_T)_QT_VERSION)))
+endif
+
 ifneq ($$($(_T)_MOCMODULES),)
 $(_T)_PREPROC = MOC
 $(_T)_PREPROCFLAGS ?= -p.
@@ -59,11 +65,6 @@ $(_T)_CXXMODULES += $$($(_T)_MOCMODULES)
 $(_T)_MOC := $$(or $$(MOC),$$(call findtool,moc,$$($(_T)_QT_TOOLDIR)),$$(call \
 	findtool,moc-qt$$($(_T)_VERSION)))
 PREPROC_MOC_preproc := $$($(_T)_MOC)
-endif
-$(_T)_RCC := $$(or $$(RCC),$$(call findtool,rcc,$$($(_T)_QT_TOOLDIR)),$$(call \
-	findtool,rcc-qt$$($(_T)_VERSION)))
-$(_T)_PKGDEPS += $$(addprefix Qt$$($(_T)_QT_VERSION),Core \
-	$$($(_T)_USE_QT) $$($(_T)_USE_QT$$($(_T)_QT_VERSION)))
 endif
 
 ifneq ($$(strip $$($(_T)_QRC)),)
