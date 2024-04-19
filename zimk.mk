@@ -44,10 +44,12 @@ ZIMKSUBMODULECFG:=$(shell $(READ) $(subst /,$(PSEP),$(ZIMKPATH)).git $(CMDNOERR)
 ifeq ($(words $(ZIMKSUBMODULECFG)),2)
 ZIMKSUBMODULEGITDIR:=$(realpath $(ZIMKPATH)$(lastword $(ZIMKSUBMODULECFG)))
 ifneq ($(ZIMKSUBMODULEGITDIR),)
+ifneq ($(wildcard $(ZIMKSUBMODULEGITDIR)/FETCH_HEAD),)
 $(subst /,$(PSEP),$(ZIMKPATH))zimk.mk: $(ZIMKSUBMODULEGITDIR)/FETCH_HEAD
 	$(VGIT)
 	$(VR)$(GIT) submodule update $(ZIMKPATH)
 	$(VR)$(call touch, $@)
+endif
 endif
 endif
 endif

@@ -5,14 +5,14 @@ PREPROC_MOC_outtype := cpp
 define ZIMK__QRCRULES
 
 $$($(_T)_OBJDIR)$$(PSEP)$1_qrc.cpp: \
-		$$($(_T)_SRCDIR)$$(PSEP)$1.qrc $(_T)_sub \
-		| $$(_$(_T)_DIRS)
+		$$($(_T)_SRCDIR)$$(PSEP)$1.qrc \
+		| $$(_$(_T)_DIRS) $(_T)_sub
 	$$(VGEN)
 	$$(VR)$$($(_T)_RCC) -o $$@ --name $$(notdir $$(basename $$@)) $$<
 
 $$($(_T)_OBJDIR)$$(PSEP)$1_qrc.o: \
-		$$($(_T)_OBJDIR)$$(PSEP)$1_qrc.cpp $(_T)_sub \
-		$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+		$$($(_T)_OBJDIR)$$(PSEP)$1_qrc.cpp $$($(_T)_MAKEFILES) \
+		$$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS) $(_T)_sub
 	$$(VCXX)
 	$$(VR)$$(CXX) -c -o$$@ $$(_$(_T)_CXXFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
@@ -23,8 +23,8 @@ $$($(_T)_OBJDIR)$$(PSEP)$1_qrc.o: \
 		$$(CXXFLAGS) $$<
 
 $$($(_T)_OBJDIR)$$(PSEP)$1_qrc_s.o: \
-		$$($(_T)_OBJDIR)$$(PSEP)$1_qrc.cpp $(_T)_sub \
-		$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+		$$($(_T)_OBJDIR)$$(PSEP)$1_qrc.cpp $$($(_T)_MAKEFILES) \
+		$$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS) $(_T)_sub
 	$$(VCXX)
 	$$(VR)$$(CXX) -c -o$$@ $$(_$(_T)_CXXFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \

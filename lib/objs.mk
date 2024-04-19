@@ -39,21 +39,17 @@ $$($(_T)_OBJDIR)$$(PSEP)$1_$$(PREPROC_$$($(_T)_PREPROC)_suffix).$$(PREPROC_$$($(
 		$$($(_T)_PREPROCFLAGS) $$< >$$@
 endef
 
+ZIMK__DEPFLAGS=-MT $@ -MMD -MP -MF$(@:.o=.dT)
+ZIMK__DEPFINISH=$(MV) -f $(@:.o=.dT) $(@:.o=.d) $(CMDSEP) $(STAMP) $@
+ZIMK__DEFPREREQ=$$($(_T)_OBJDIR)$(PSEP)$1.d $$($(_T)_MAKEFILES) \
+		$$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS) $(_T)_sub
+
 define ZIMK__C_OBJRULES
 
-$$($(_T)_OBJDIR)$$(PSEP)$1$3.d: $$($(_T)_$2)$$(PSEP)$1$3.c $(_T)_sub \
-	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
-	$$(VDEP)
-	$$(VR)$$(CC) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ $$(_$(_T)_CFLAGS) \
-		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
-		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
-		$$(INCLUDES) $$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) \
-		$$(CFLAGS) $$<
-
-$$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.c $(_T)_sub \
-	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+$$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.c \
+	$(call ZIMK__DEFPREREQ,$1$3)
 	$$(VCC)
-	$$(VR)$$(CC) -c -o$$@ $$(_$(_T)_CFLAGS) \
+	$$(VR)$$(CC) $$(ZIMK__DEPFLAGS) -c -o$$@ $$(_$(_T)_CFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) \
@@ -61,11 +57,12 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.c $(_T)_sub \
 		$$(CFLAGS_STATIC) \
 		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
 		$$<
+	$$(VR)$$(ZIMK__DEPFINISH)
 
-$$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.c $(_T)_sub \
-	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+$$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.c \
+	$(call ZIMK__DEFPREREQ,$1$3)
 	$$(VCC)
-	$$(VR)$$(CC) -c -o$$@ $$(_$(_T)_CFLAGS) \
+	$$(VR)$$(CC) $$(ZIMK__DEPFLAGS) -c -o$$@ $$(_$(_T)_CFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) \
@@ -73,23 +70,15 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.c $(_T)_sub \
 		$$(CFLAGS_SHARED) \
 		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
 		$$<
+	$$(VR)$$(ZIMK__DEPFINISH)
 endef
 
 define ZIMK__CXX_OBJRULES
 
-$$($(_T)_OBJDIR)$$(PSEP)$1$3.d: $$($(_T)_$2)$$(PSEP)$1$3.cpp $(_T)_sub \
-	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
-	$$(VDEP)
-	$$(VR)$$(CXX) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ $$(_$(_T)_CXXFLAGS) \
-		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
-		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
-		$$(INCLUDES) $$($(_T)_$$(PLATFORM)_CXXFLAGS) \
-		$$($(_T)_CXXFLAGS) $$(CXXFLAGS) $$<
-
-$$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.cpp $(_T)_sub \
-	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+$$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.cpp \
+	$(call ZIMK__DEFPREREQ,$1$3)
 	$$(VCXX)
-	$$(VR)$$(CXX) -c -o$$@ $$(_$(_T)_CXXFLAGS) \
+	$$(VR)$$(CXX) $$(ZIMK__DEPFLAGS) -c -o$$@ $$(_$(_T)_CXXFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) \
@@ -97,11 +86,12 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.cpp $(_T)_sub \
 		$$($(_T)_CXXFLAGS_STATIC) $$(CXXFLAGS_STATIC) \
 		$$($(_T)_$$(PLATFORM)_CXXFLAGS) $$($(_T)_CXXFLAGS) \
 		$$(CXXFLAGS) $$<
+	$$(VR)$$(ZIMK__DEPFINISH)
 
-$$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.cpp $(_T)_sub \
-	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+$$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.cpp \
+	$(call ZIMK__DEFPREREQ,$1$3)
 	$$(VCXX)
-	$$(VR)$$(CXX) -c -o$$@ $$(_$(_T)_CXXFLAGS) \
+	$$(VR)$$(CXX) $$(ZIMK__DEPFLAGS) -c -o$$@ $$(_$(_T)_CXXFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) \
@@ -109,23 +99,15 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.cpp $(_T)_sub \
 		$$($(_T)_CXXFLAGS_SHARED) $$(CXXFLAGS_SHARED) \
 		$$($(_T)_$$(PLATFORM)_CXXFLAGS) $$($(_T)_CXXFLAGS) \
 		$$(CXXFLAGS) $$<
+	$$(VR)$$(ZIMK__DEPFINISH)
 endef
 
 define ZIMK__ASM_OBJRULES
 
-$$($(_T)_OBJDIR)$$(PSEP)$1$3.d: $$($(_T)_$2)$$(PSEP)$1$3.S $(_T)_sub \
-	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
-	$$(VDEP)
-	$$(VR)$$(CC) -MM -MT"$$@ $$(@:.d=.o)" -MF$$@ $$(_$(_T)_CFLAGS) \
-		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
-		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
-		$$(INCLUDES) $$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) \
-		$$(CFLAGS) $$<
-
-$$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.S $(_T)_sub \
-	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+$$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.S \
+	$(call ZIMK__DEFPREREQ,$1$3)
 	$$(VCAS)
-	$$(VR)$$(CC) -c -o$$@ $$(_$(_T)_CFLAGS) \
+	$$(VR)$$(CC) $$(ZIMK__DEPFLAGS) -c -o$$@ $$(_$(_T)_CFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) \
@@ -133,11 +115,12 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.S $(_T)_sub \
 		$$(CFLAGS_STATIC) \
 		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
 		$$<
+	$$(VR)$$(ZIMK__DEPFINISH)
 
-$$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.S $(_T)_sub \
-	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+$$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.S \
+	$(call ZIMK__DEFPREREQ,$1$3)
 	$$(VCAS)
-	$$(VR)$$(CC) -c -o$$@ $$(_$(_T)_CFLAGS) \
+	$$(VR)$$(CC) $$(ZIMK__DEPFLAGS) -c -o$$@ $$(_$(_T)_CFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
 		$$($(_T)_$$(PLATFORM)_INCLUDES) $$($(_T)_INCLUDES) \
 		$$(INCLUDES) \
@@ -145,12 +128,13 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.S $(_T)_sub \
 		$$(CFLAGS_SHARED) \
 		$$($(_T)_$$(PLATFORM)_CFLAGS) $$($(_T)_CFLAGS) $$(CFLAGS) \
 		$$<
+	$$(VR)$$(ZIMK__DEPFINISH)
 endef
 
 define ZIMK__RESRULE
 
-$$($(_T)_OBJDIR)$$(PSEP)$1.o: $$($(_T)_SRCDIR)$$(PSEP)$1$2 $(_T)_sub \
-	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+$$($(_T)_OBJDIR)$$(PSEP)$1.o: $$($(_T)_SRCDIR)$$(PSEP)$1$2 \
+	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS) $(_T)_sub
 	$$(VGEN)
 	$$(VR)$$(OBJCOPY) -Ibinary -O$(TARGETBFD) -B$(TARGETBARCH) $$< $$@
 
@@ -160,8 +144,8 @@ ifeq ($(PLATFORM),win32)
 define ZIMK__WINDRESRULE
 CLEAN += $$($(_T)_OBJDIR)$$(PSEP)$1.o
 
-$$($(_T)_OBJDIR)$$(PSEP)$1.o: $$($(_T)_SRCDIR)$$(PSEP)$1.rc $(_T)_sub \
-    $$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS)
+$$($(_T)_OBJDIR)$$(PSEP)$1.o: $$($(_T)_SRCDIR)$$(PSEP)$1.rc \
+    $$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS) $(_T)_sub
 	$$(VRES)
 	$$(VR)$$(WINDRES) $$< $$@
 
@@ -383,7 +367,9 @@ $$(eval $$(foreach p,$$($(_T)_PLATFORMPREPROCMODULES),\
 CLEAN += $$($(_T)_PPSOURCES)
 endif
 
-CLEAN += $$($(_T)_OBJS:.o=.d) $$($(_T)_OBJS)
+_$(_T)_DEPFILES := $$($(_T)_OBJS:.o=.d)
+
+CLEAN += $$($(_T)_OBJS:.o=.Td) $$(_$(_T)_DEPFILES) $$($(_T)_OBJS)
 
 OUTFILES := $$($(_T)_OBJS)
 $(DIRRULES)
@@ -426,7 +412,8 @@ ifneq ($$(strip $$($(_T)_win32_RES)),)
 $$(if $$(WINDRES),,$$(error No windres tool found!))
 endif
 endif
--include $$($(_T)_OBJS:.o=.d)
+$$(_$(_T)_DEPFILES): ;
+include $$(wildcard $$(_$(_T)_DEPFILES))
 endif
 
 ifneq ($$(strip $$($(_T)_PREPROC)),)
@@ -513,7 +500,5 @@ endif
 .PHONY: $(_T)_install_docs $(_T)_install_man $(_T)_installextra
 
 endef
-
-.SECONDARY:
 
 # vim: noet:si:ts=8:sts=8:sw=8

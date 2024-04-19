@@ -2,7 +2,6 @@ ifeq ($(V),1)
 VCC:=
 VAS:=
 VCXX:=
-VDEP:=
 VLD:=
 VAR:=
 VRES:=
@@ -30,7 +29,6 @@ endif
 VCC=	@echo $(EQT)   $(ZIMK__PRBOLD)$(ZIMK__PRLCYAN)[CC]$(ZIMK__PRNORM)   $(call zimk__pp,$(ZIMK__SUBDIR)$@)$(EQT)
 VAS=	@echo $(EQT)   $(ZIMK__PRBOLD)$(ZIMK__PRLCYAN)[AS]$(ZIMK__PRNORM)   $(call zimk__pp,$(ZIMK__SUBDIR)$@)$(EQT)
 VCXX=	@echo $(EQT)   $(ZIMK__PRBOLD)$(ZIMK__PRLCYAN)[CXX]$(ZIMK__PRNORM)  $(call zimk__pp,$(ZIMK__SUBDIR)$@)$(EQT)
-VDEP=	@echo $(EQT)   $(ZIMK__PRBOLD)$(ZIMK__PRWHITE)[DEP]$(ZIMK__PRNORM)  $(call zimk__pp,$(ZIMK__SUBDIR)$@)$(EQT)
 VLD=	@echo $(EQT)   $(ZIMK__PRBOLD)$(ZIMK__PRWHITE)[LD]$(ZIMK__PRNORM)   $(call zimk__pp,$(ZIMK__SUBDIR)$@)$(EQT)
 VAR=	@echo $(EQT)   $(ZIMK__PRBOLD)$(ZIMK__PRLGREEN)[AR]   $(call zimk__pp,$(ZIMK__SUBDIR)$@)$(ZIMK__PRNORM)$(EQT)
 VRES=   @echo $(EQT)   $(ZIMK__PRBOLD)$(ZIMK__PRLCYAN)[RES]$(ZIMK__PRNORM)  $(call zimk__pp,$(ZIMK__SUBDIR)$@)$(EQT)
