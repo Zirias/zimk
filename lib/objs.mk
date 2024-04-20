@@ -228,44 +228,10 @@ $(_T)_sharedstatedir ?= $$(sharedstatedir)
 $(_T)_sysconfdir ?= $$(sysconfdir)
 $(_T)_mandir ?= $$(mandir)
 
-$$(foreach u,$$($(_T)_USES),$$(or $$(ZIMK__USE_$$(call toupper,$$(u))),\
-	$$(eval include $$(ZIMKPATH)lib/uses/$$(u).mk)))
-$$(foreach u,$$($(_T)_USES),$$(eval $$(ZIMK__USE_$$(call toupper,$$(u)))))
+$$(ZIMK__USES)
 
 $$(foreach s,$$($(_T)_MANSECT),$$(eval $(_T)_man$$sdir ?= $$$$(subst \
 	%s%,$$s,$(mansectdir))))
-
-ifneq ($$(strip $$($(_T)_PKGDEPS)),)
-ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)
-$(_T)_PKGSTATUS := $$(shell $$(PKGCONFIG) --exists '$$($(_T)_PKGDEPS)';\
-	echo $$$$?)
-ifneq ($$($(_T)_PKGSTATUS),0)
-$$(error $$(shell $$(PKGCONFIG) --print-errors --exists '$$($(_T)_PKGDEPS)')\
-Required packages for $(_T) not found)
-endif
-$(_T)_PKGCFLAGS := $$(shell $$(PKGCONFIG) --cflags '$$($(_T)_PKGDEPS)')
-_$(_T)_CFLAGS += $$($(_T)_PKGCFLAGS)
-_$(_T)_CXXFLAGS += $$($(_T)_PKGCFLAGS)
-$(_T)_PKGLINKFLAGS += $$(shell $$(PKGCONFIG) --libs '$$($(_T)_PKGDEPS)')
-endif
-endif
-
-ifneq ($$(strip $$($(_T)_PKGSTATICDEPS)),)
-ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)
-$(_T)_PKGSTATUS := $$(shell $$(PKGCONFIG) --exists '$$($(_T)_PKGSTATICDEPS)';\
-	echo $$$$?)
-ifneq ($$($(_T)_PKGSTATUS),0)
-$$(error $$(shell $$(PKGCONFIG) --print-errors\
-	--exists '$$($(_T)_PKGSTATICDEPS)')\
-Required packages for $(_T) not found)
-endif
-$(_T)_PKGCFLAGS := $$(shell $$(PKGCONFIG) --cflags '$$($(_T)_PKGSTATICDEPS)')
-_$(_T)_CFLAGS += $$($(_T)_PKGCFLAGS)
-_$(_T)_CXXFLAGS += $$($(_T)_PKGCFLAGS)
-$(_T)_PKGSTATICLINKFLAGS += $$(shell $$(PKGCONFIG) --libs\
-	'$$($(_T)_PKGSTATICDEPS)')
-endif
-endif
 
 $(_T)_SOURCES := $$(addprefix $$($(_T)_SRCDIR)$$(PSEP), \
 	$$(addsuffix .c,$$($(_T)_MODULES)))
