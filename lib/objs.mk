@@ -28,17 +28,6 @@ ZIMK__GENRULE_EXP1=$(call ZIMK__GENRULE_EXP2,$1,$($(_T)_$(if \
 		   2,$(words $2),$2)))
 ZIMK__GENRULE=$(call ZIMK__GENRULE_EXP1,$1,$(subst :, ,$2))
 
-define ZIMK__PREPROCRULE
-
-$$($(_T)_OBJDIR)$$(PSEP)$1_$$(PREPROC_$$($(_T)_PREPROC)_suffix).$$(PREPROC_$$($(_T)_PREPROC)_outtype): \
-		$$($(_T)_PPSRCDIR)$$(PSEP)$1$2.$$(PREPROC_$$($(_T)_PREPROC)_intype) \
-	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) \
-	| $$(_$(_T)_DIRS) $$($(_T)_DEPS)
-	$$(VGEN)
-	$$(VR)$$(PREPROC_$$($(_T)_PREPROC)_preproc) \
-		$$($(_T)_PREPROCFLAGS) $$< >$$@
-endef
-
 ZIMK__DEPFLAGS=-MT $@ -MMD -MP -MF$(@:.o=.dT)
 ZIMK__DEPFINISH=$(MV) -f $(@:.o=.dT) $(@:.o=.d) $(CMDSEP) $(STAMP) $@
 ZIMK__DEFPREREQ=$$($(_T)_OBJDIR)$(PSEP)$1.d $$($(_T)_MAKEFILES) \
@@ -233,11 +222,11 @@ $$(ZIMK__USES)
 $$(foreach s,$$($(_T)_MANSECT),$$(eval $(_T)_man$$sdir ?= $$$$(subst \
 	%s%,$$s,$(mansectdir))))
 
-$(_T)_SOURCES := $$(addprefix $$($(_T)_SRCDIR)$$(PSEP), \
+$(_T)_SOURCES += $$(addprefix $$($(_T)_SRCDIR)$$(PSEP), \
 	$$(addsuffix .c,$$($(_T)_MODULES)))
-$(_T)_OBJS := $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
+$(_T)_OBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
 	$$(addsuffix .o,$$($(_T)_MODULES)))
-$(_T)_SOBJS := $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
+$(_T)_SOBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
 	$$(addsuffix _s.o,$$($(_T)_MODULES)))
 
 ifneq ($$(strip $$($(_T)_CXXMODULES)),)
@@ -304,36 +293,7 @@ $(_T)_ROBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
 endif
 endif
 
-ifneq ($$(strip $$($(_T)_PREPROC)),)
-$(_T)_PPSRCDIR ?= $$($(_T)_SRCDIR)
-
-$(_T)_OBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
-	$$(addsuffix _$$(PREPROC_$$($(_T)_PREPROC)_suffix).o, \
-	$$($(_T)_PREPROCMODULES)))
-$(_T)_SOBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
-	$$(addsuffix _$$(PREPROC_$$($(_T)_PREPROC)_suffix)_s.o, \
-	$$($(_T)_PREPROCMODULES)))
-$(_T)_OBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
-	$$(addsuffix _$$(PLATFORM)_$$(PREPROC_$$($(_T)_PREPROC)_suffix).o, \
-	$$($(_T)_PLATFORMPREPROCMODULES)))
-$(_T)_SOBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
-	$$(addsuffix _$$(PLATFORM)_$$(PREPROC_$$($(_T)_PREPROC)_suffix)_s.o, \
-	$$($(_T)_PLATFORMPREPROCMODULES)))
-
-$(_T)_PPSOURCES := $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
-	$$(addsuffix _$$(PREPROC_$$($(_T)_PREPROC)_suffix).$$(PREPROC_$$($(_T)_PREPROC)_outtype), \
-	$$($(_T)_PREPROCMODULES))) \
-	$$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
-	$$(addsuffix _$$(PLATFORM)_$$(PREPROC_$$($(_T)_PREPROC)_suffix).$$(PREPROC_$$($(_T)_PREPROC)_outtype), \
-	$$($(_T)_PLATFORMPREPROCMODULES)))
-
-$$(eval $$(foreach p,$$($(_T)_PREPROCMODULES),$$(call ZIMK__PREPROCRULE,$$p)))
-$$(eval $$(foreach p,$$($(_T)_PLATFORMPREPROCMODULES),\
-	$$(call ZIMK__PREPROCRULE,$$p,_$$(PLATFORM))))
-CLEAN += $$($(_T)_PPSOURCES)
-endif
-
-_$(_T)_DEPFILES := $$($(_T)_OBJS:.o=.d)
+_$(_T)_DEPFILES = $$($(_T)_OBJS:.o=.d)
 
 CLEAN += $$($(_T)_OBJS:.o=.Td) $$(_$(_T)_DEPFILES) $$($(_T)_OBJS)
 
@@ -380,25 +340,6 @@ endif
 endif
 $$(_$(_T)_DEPFILES): ;
 include $$(wildcard $$(_$(_T)_DEPFILES))
-endif
-
-ifneq ($$(strip $$($(_T)_PREPROC)),)
-ifeq ($$(PREPROC_$$($(_T)_PREPROC)_outtype),c)
-$$(eval $$(foreach m,$$($(_T)_PREPROCMODULES),\
-	$$(call ZIMK__C_OBJRULES,$$m_$$(PREPROC_$$($(_T)_PREPROC)_suffix),OBJDIR)))
-$$(eval $$(foreach m,$$($(_T)_PLATFORMPREPROCMODULES),\
-	$$(call ZIMK__C_OBJRULES,$$m_$$(PREPROC_$$($(_T)_PREPROC)_suffix),OBJDIR,_$$(PLATFORM))))
-else ifeq ($$(PREPROC_$$($(_T)_PREPROC)_outtype),cpp)
-$$(eval $$(foreach m,$$($(_T)_PREPROCMODULES),\
-	$$(call ZIMK__CXX_OBJRULES,$$m_$$(PREPROC_$$($(_T)_PREPROC)_suffix),OBJDIR)))
-$$(eval $$(foreach m,$$($(_T)_PLATFORMPREPROCMODULES),\
-	$$(call ZIMK__CXX_OBJRULES,$$m_$$(PREPROC_$$($(_T)_PREPROC)_suffix),OBJDIR,_$$(PLATFORM))))
-else ifeq ($$(PREPROC_$$($(_T)_PREPROC)_outtype),S)
-$$(eval $$(foreach m,$$($(_T)_PREPROCMODULES),\
-	$$(call ZIMK__ASM_OBJRULES,$$m_$$(PREPROC_$$($(_T)_PREPROC)_suffix),OBJDIR)))
-$$(eval $$(foreach m,$$($(_T)_PLATFORMPREPROCMODULES),\
-	$$(call ZIMK__ASM_OBJRULES,$$m_$$(PREPROC_$$($(_T)_PREPROC)_suffix),OBJDIR,_$$(PLATFORM))))
-endif
 endif
 
 ifneq ($$(strip $$($(_T)_SUB_FILES)),)

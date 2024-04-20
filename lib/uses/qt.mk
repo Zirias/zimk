@@ -2,7 +2,7 @@ PREPROC_MOC_suffix := moc
 PREPROC_MOC_intype := h
 PREPROC_MOC_outtype := cpp
 
-ZIMK__USE_QT_DEPENDS = pkgconfig
+ZIMK__USE_QT_DEPENDS = pkgconfig preproc
 
 define ZIMK__QRCRULES
 
