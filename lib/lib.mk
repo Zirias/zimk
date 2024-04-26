@@ -43,7 +43,6 @@ else
 $(_T)_BUILDSTATICWITH ?= staticlibs
 $(_T)_INSTALLSTATICWITH ?= installstaticlibs
 endif
-$(_T)_PKGCONFIG ?= $$(pkgconfigdir)$$(PSEP)$(_T).pc
 endif
 
 ifeq ($$($(_T)_LIBTYPE),plugin)
@@ -57,7 +56,6 @@ $(_T)_STRIPSHAREDWITH ?= stripsharedlibs
 $(_T)_STRIPSTATICWITH :=
 $(_T)_STRIPWITH ?= strip
 _$(_T)_STRIPTGTS += stripshared
-$(_T)_PKGCONFIG :=
 endif
 
 ifeq ($$($(_T)_LIBTYPE),test)
@@ -70,7 +68,6 @@ $(_T)_INSTALLSTATICWITH :=
 $(_T)_STRIPSHAREDWITH :=
 $(_T)_STRIPSTATICWITH :=
 $(_T)_STRIPWITH :=
-$(_T)_PKGCONFIG :=
 endif
 
 ifeq ($$($(_T)_CXXMODULES),)
@@ -273,33 +270,8 @@ $$($(_T)_INSTALLWITH):: $(_T)_install_headers
 
 endif
 
-ifneq ($$(strip $$($(_T)_PKGCONFIG)),)
-$(_T)_install_pkgconfig:
-	$$(eval _ZIMK_0 := $$(DESTDIR)$$($(_T)_PKGCONFIG))
-	$$(VINST)
-	$$(VR)$$(INSTDIR) $$(dir $$(_ZIMK_0))
-	$$(VR)$$(ECHOTO)libdir=$$($$($(_T)_INSTALLDIRNAME)dir)$$(ETOEND) \
-		>$$(DESTDIR)$$($(_T)_PKGCONFIG)
-	$$(VR)$$(ECHOTO)includedir=$$($(_T)_HEADERTGTBASEDIR)$$(ETOEND) \
-		>>$$(DESTDIR)$$($(_T)_PKGCONFIG)
-	$$(VR)echo >>$$(DESTDIR)$$($(_T)_PKGCONFIG)
-	$$(VR)$$(ECHOTO)Name: $(_T)$$(ETOEND) >>$$(DESTDIR)$$($(_T)_PKGCONFIG)
-	$$(VR)$$(ECHOTO)Description: $$($(_T)_DESCRIPTION)$$(ETOEND) \
-		>>$$(DESTDIR)$$($(_T)_PKGCONFIG)
-	$$(VR)$$(ECHOTO)Version: $$($(_T)_VERSION)$$(ETOEND) \
-		>>$$(DESTDIR)$$($(_T)_PKGCONFIG)
-	$$(VR)$$(ECHOTO)Cflags: -I\$$$${includedir}$$(ETOEND) \
-		>>$$(DESTDIR)$$($(_T)_PKGCONFIG)
-	$$(VR)$$(ECHOTO)Libs: -L\$$$${libdir} -l$(_T)$$(ETOEND) \
-		>>$$(DESTDIR)$$($(_T)_PKGCONFIG)
-
-$$($(_T)_INSTALLWITH):: $(_T)_install_pkgconfig
-
-endif
-
 .PHONY: $(_T) static_$(_T) $(_T)_install static_$(_T)_install \
-	$(_T)_install_headers $(_T)_install_pkgconfig \
-	$$($(_T)_TARGET) static_$$($(_T)_TARGET) \
+	$(_T)_install_headers $$($(_T)_TARGET) static_$$($(_T)_TARGET) \
 	$$($(_T)_TARGET)_stripshared $$($(_T)_TARGET)_stripstatic
 
 endef

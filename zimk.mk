@@ -25,10 +25,10 @@ endif
 include $(ZIMKPATH)lib/funcs.mk
 include $(ZIMKPATH)lib/platform.mk
 ifndef ZIMK__RECURSE
+include $(ZIMKPATH)lib/uses.mk
 include $(ZIMKPATH)lib/pretty.mk
 include $(ZIMKPATH)lib/config.mk
 include $(ZIMKPATH)lib/silent.mk
-include $(ZIMKPATH)lib/uses.mk
 include $(ZIMKPATH)lib/objs.mk
 include $(ZIMKPATH)lib/dirs.mk
 include $(ZIMKPATH)lib/deps.mk

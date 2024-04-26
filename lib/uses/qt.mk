@@ -4,6 +4,9 @@ PREPROC_MOC_outtype := cpp
 
 ZIMK__USE_QT_DEPENDS = pkgconfig preproc
 
+SINGLECONFVARS += QT_VERSION MOC RCC
+DEFAULT_QT_VERSION ?= 6
+
 define ZIMK__QRCRULES
 
 $$($(_T)_OBJDIR)$$(PSEP)$1_qrc.cpp: \
@@ -39,7 +42,9 @@ endef
 
 define ZIMK__USE_QT
 $(_T)_QT_VERSION ?= $(QT_VERSION)
-$(_T)_QT_VERSION := $$(or $$(filter 5,$$($(_T)_QT_VERSION)),6)
+ifeq ($$(filter 5 6,$$($(_T)_QT_VERSION)),)
+$$(error Invalid QT_VERSION '$$($(_T)_QT_VERSION)' selected for $(_T))
+endif
 $(_T)_QT_CORE := Qt$$($(_T)_QT_VERSION)Core
 ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)
 $(_T)_PKGSTATUS := $$(shell $$(PKGCONFIG) --exists $$($(_T)_QT_CORE);\

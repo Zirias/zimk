@@ -4,19 +4,18 @@ $(strip $(eval undefine __ZIMK__UNIQ__SEEN)$(foreach \
         __ZIMK__UNIQ__SEEN += $(_v))))$(__ZIMK__UNIQ__SEEN))
 endef
 CROSSTOOLS += CC CXX CPP
-FALLBACKTOOLS += AR STRIP OBJCOPY OBJDUMP PKGCONFIG WINDRES
+FALLBACKTOOLS += AR STRIP OBJCOPY OBJDUMP WINDRES
 HOSTTOOLS += GIT GZIP $(addprefix HOST,$(CROSSTOOLS) $(FALLBACKTOOLS))
 SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 		  sysconfdir sharedstatedir localstatedir runstatedir \
 		  includedir docrootdir mandir mansectdir libdir localedir \
-		  pkgconfigdir icondir iconsubdir mimeiconsubdir desktopdir \
+		  icondir iconsubdir mimeiconsubdir desktopdir \
 		  mimedir sharedmimeinfodir
 BOOLCONFVARS_ON := $(call ZIMK__UNIQ,SHAREDLIBS $(BOOLCONFVARS_ON))
 BOOLCONFVARS_OFF := $(call ZIMK__UNIQ,PORTABLE STATIC STATICLIBS HOSTBUILD \
 		    $(BOOLCONFVARS_OFF))
 BOOLCONFVARS := $(BOOLCONFVARS_ON) $(BOOLCONFVARS_OFF)
 SINGLECONFVARS := $(call ZIMK__UNIQ,DEFGOAL SH HOSTSH CSTD CXXSTD \
-		  QT_VERSION MOC RCC \
 		  $(HOSTTOOLS) $(CROSSTOOLS) $(FALLBACKTOOLS) $(SINGLECONFVARS))
 LISTCONFVARS := $(call ZIMK__UNIQ,CFLAGS CXXFLAGS DEFINES INCLUDES LDFLAGS \
 		$(LISTCONFVARS))
@@ -138,7 +137,6 @@ DEFAULT_AR ?= ar
 DEFAULT_STRIP ?= strip
 DEFAULT_OBJCOPY ?= objcopy
 DEFAULT_OBJDUMP ?= objdump
-DEFAULT_PKGCONFIG ?= pkg-config
 DEFAULT_WINDRES ?= windres
 DEFAULT_GIT ?= git
 DEFAULT_GZIP ?= gzip
@@ -256,7 +254,6 @@ mandir ?= $(datarootdir)$(PSEP)man
 mansectdir ?= $(mandir)$(PSEP)man%s%
 libdir ?= $(exec_prefix)
 localedir ?= $(datarootdir)
-pkgconfigdir ?= $(prefix)
 icondir ?= $(datarootdir)$(PSEP)icons
 desktopdir ?= $(datarootdir)
 mimedir ?= $(datarootdir)$(PSEP)mime
@@ -278,7 +275,6 @@ mandir ?= $(datarootdir)$(PSEP)man
 mansectdir ?= $(mandir)$(PSEP)man%s%
 libdir ?= $(exec_prefix)$(PSEP)lib
 localedir ?= $(datarootdir)$(PSEP)locale
-pkgconfigdir ?= $(prefix)$(PSEP)lib$(PSEP)pkgconfig
 icondir ?= $(datarootdir)$(PSEP)icons$(PSEP)hicolor
 iconsubdir ?= apps
 mimeiconsubdir ?= mimetypes
@@ -286,6 +282,7 @@ desktopdir ?= $(datarootdir)$(PSEP)applications
 mimedir ?= $(datarootdir)$(PSEP)mime
 sharedmimeinfodir ?= $(mimedir)$(PSEP)packages
 endif
+$(eval $(ZIMK__USES_DIRS))
 
 _ZIMK__TESTARCHCC:= $(if $(filter \
 		    1,$(HOSTBUILD)),$(_ZIMK__TESTHCC),$(_ZIMK__TESTCC))
