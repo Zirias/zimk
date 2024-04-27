@@ -2,19 +2,19 @@
 #
 # Configuration variables:
 #
-# QT_VERSION:	Major version of Qt (5 or 6, default: 6)
-# MOC:		Full path to 'moc' (default: auto-detect)
-# RCC:		Full path to 'rcc' (default: auto-detect)
+# QT_VERSION	Major version of Qt (5 or 6, default: 6)
+# MOC		Full path to 'moc' (default: auto-detect)
+# RCC		Full path to 'rcc' (default: auto-detect)
 #
 # Project variables:
 #
-# name_QT_VERSION:	Major Qt version (default: QT_VERSION)
-# name_USE_QT:		Qt modules to link, always implies "Core"
+# name_QT_VERSION	Major Qt version (default: QT_VERSION)
+# name_USE_QT		Qt modules to link, always implies "Core"
 #			example: Gui Widgets
-# name_USE_QT5:		Qt modules only for Qt5
-# name_USE_QT6:		Qt modules only for Qt6
-# name_MOCMODULES:	Modules to pre-process with 'moc'
-# name_QRC:		List of resource files to process with 'rcc'
+# name_USE_QT5		Qt modules only for Qt5
+# name_USE_QT6		Qt modules only for Qt6
+# name_MOCMODULES	Modules to pre-process with 'moc'
+# name_QRC		List of resource files to process with 'rcc'
 #
 
 PREPROC_MOC_suffix := moc
@@ -30,13 +30,13 @@ define ZIMK__QRCRULES
 
 $$($(_T)_OBJDIR)$$(PSEP)$1_qrc.cpp: \
 		$$($(_T)_SRCDIR)$$(PSEP)$1.qrc \
-		| $$(_$(_T)_DIRS) $(_T)_sub
+		| $$(_$(_T)_DIRS) $(_T)_prebuild
 	$$(VGEN)
 	$$(VR)$$($(_T)_RCC) -o $$@ --name $$(notdir $$(basename $$@)) $$<
 
 $$($(_T)_OBJDIR)$$(PSEP)$1_qrc.o: \
 		$$($(_T)_OBJDIR)$$(PSEP)$1_qrc.cpp $$($(_T)_MAKEFILES) \
-		$$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS) $(_T)_sub
+		$$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS) $(_T)_prebuild
 	$$(VCXX)
 	$$(VR)$$(CXX) -c -o$$@ $$(_$(_T)_CXXFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
@@ -48,7 +48,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1_qrc.o: \
 
 $$($(_T)_OBJDIR)$$(PSEP)$1_qrc_s.o: \
 		$$($(_T)_OBJDIR)$$(PSEP)$1_qrc.cpp $$($(_T)_MAKEFILES) \
-		$$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS) $(_T)_sub
+		$$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS) $(_T)_prebuild
 	$$(VCXX)
 	$$(VR)$$(CXX) -c -o$$@ $$(_$(_T)_CXXFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
