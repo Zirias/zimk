@@ -1,3 +1,9 @@
+# preproc.mk -- Generic preprocessing mechanism
+#
+# This is subject to change as it currently only supports one single
+# preprocessor per project, which is currently used by qt.mk for moc support.
+#
+
 define ZIMK__PREPROCRULE
 
 $$($(_T)_OBJDIR)$$(PSEP)$1_$$(PREPROC_$$($(_T)_PREPROC)_suffix).$$(PREPROC_$$($(_T)_PREPROC)_outtype): \

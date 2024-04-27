@@ -1,3 +1,22 @@
+# pkgconfig.mk -- handle pkg-config dependencies and generating own .pc files
+#
+# Configuration variables:
+#
+# PKGCONFIG	Name or full path to the 'pkg-config' tool
+# 		(default: pkg-config, searched in the initial PATH)
+# pkgconfigdir	Where to install own .pc files
+# 		(default: $(prefix)/lib/pkgconfig)
+#
+# Project variables:
+#
+# name_PKGDEPS		Packages to depend on, automatically adding CFLAGS
+# 			and libraries to link
+# name_PKGSTATICDEPS	The same, but used for static builds
+# name_PKGCONFIG	Own .pc file to generate/install, only supported for
+# 			libraries of type "library" (not plugins etc)
+# 			(default: $(pkgconfigdir)/<name>.pc)
+#
+
 FALLBACKTOOLS += PKGCONFIG
 SINGLECONFVARS += pkgconfigdir
 

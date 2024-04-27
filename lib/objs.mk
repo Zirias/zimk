@@ -217,7 +217,7 @@ $(_T)_sharedstatedir ?= $$(sharedstatedir)
 $(_T)_sysconfdir ?= $$(sysconfdir)
 $(_T)_mandir ?= $$(mandir)
 
-$$(ZIMK__USES)
+$(ZIMK__USES)
 
 $$(foreach s,$$($(_T)_MANSECT),$$(eval $(_T)_man$$sdir ?= $$$$(subst \
 	%s%,$$s,$(mansectdir))))

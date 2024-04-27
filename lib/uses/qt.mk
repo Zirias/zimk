@@ -1,3 +1,22 @@
+# qt.mk -- Build with Qt tools and libs
+#
+# Configuration variables:
+#
+# QT_VERSION:	Major version of Qt (5 or 6, default: 6)
+# MOC:		Full path to 'moc' (default: auto-detect)
+# RCC:		Full path to 'rcc' (default: auto-detect)
+#
+# Project variables:
+#
+# name_QT_VERSION:	Major Qt version (default: QT_VERSION)
+# name_USE_QT:		Qt modules to link, always implies "Core"
+#			example: Gui Widgets
+# name_USE_QT5:		Qt modules only for Qt5
+# name_USE_QT6:		Qt modules only for Qt6
+# name_MOCMODULES:	Modules to pre-process with 'moc'
+# name_QRC:		List of resource files to process with 'rcc'
+#
+
 PREPROC_MOC_suffix := moc
 PREPROC_MOC_intype := h
 PREPROC_MOC_outtype := cpp
