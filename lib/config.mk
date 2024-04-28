@@ -8,9 +8,7 @@ FALLBACKTOOLS += AR STRIP OBJCOPY OBJDUMP WINDRES
 HOSTTOOLS += GIT GZIP $(addprefix HOST,$(CROSSTOOLS) $(FALLBACKTOOLS))
 SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 		  sysconfdir sharedstatedir localstatedir runstatedir \
-		  includedir docrootdir mandir mansectdir libdir localedir \
-		  icondir iconsubdir mimeiconsubdir desktopdir \
-		  mimedir sharedmimeinfodir
+		  includedir docrootdir mandir mansectdir libdir localedir
 BOOLCONFVARS_ON := $(call ZIMK__UNIQ,SHAREDLIBS $(BOOLCONFVARS_ON))
 BOOLCONFVARS_OFF := $(call ZIMK__UNIQ,PORTABLE STATIC STATICLIBS HOSTBUILD \
 		    $(BOOLCONFVARS_OFF))
@@ -254,10 +252,6 @@ mandir ?= $(datarootdir)$(PSEP)man
 mansectdir ?= $(mandir)$(PSEP)man%s%
 libdir ?= $(exec_prefix)
 localedir ?= $(datarootdir)
-icondir ?= $(datarootdir)$(PSEP)icons
-desktopdir ?= $(datarootdir)
-mimedir ?= $(datarootdir)$(PSEP)mime
-sharedmimeinfodir ?= $(mimedir)
 else
 prefix ?= $(PSEP)usr$(PSEP)local
 exec_prefix ?= $(prefix)
@@ -275,12 +269,6 @@ mandir ?= $(datarootdir)$(PSEP)man
 mansectdir ?= $(mandir)$(PSEP)man%s%
 libdir ?= $(exec_prefix)$(PSEP)lib
 localedir ?= $(datarootdir)$(PSEP)locale
-icondir ?= $(datarootdir)$(PSEP)icons$(PSEP)hicolor
-iconsubdir ?= apps
-mimeiconsubdir ?= mimetypes
-desktopdir ?= $(datarootdir)$(PSEP)applications
-mimedir ?= $(datarootdir)$(PSEP)mime
-sharedmimeinfodir ?= $(mimedir)$(PSEP)packages
 endif
 $(eval $(ZIMK__USES_DIRS))
 
