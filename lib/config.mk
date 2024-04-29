@@ -5,10 +5,10 @@ $(strip $(eval undefine __ZIMK__UNIQ__SEEN)$(foreach \
 endef
 CROSSTOOLS += CC CXX CPP
 FALLBACKTOOLS += AR STRIP OBJCOPY OBJDUMP WINDRES
-HOSTTOOLS += GIT GZIP $(addprefix HOST,$(CROSSTOOLS) $(FALLBACKTOOLS))
+HOSTTOOLS += GIT $(addprefix HOST,$(CROSSTOOLS) $(FALLBACKTOOLS))
 SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 		  sysconfdir sharedstatedir localstatedir runstatedir \
-		  includedir docrootdir mandir mansectdir libdir localedir
+		  includedir docrootdir libdir localedir
 BOOLCONFVARS_ON := $(call ZIMK__UNIQ,SHAREDLIBS $(BOOLCONFVARS_ON))
 BOOLCONFVARS_OFF := $(call ZIMK__UNIQ,PORTABLE STATIC STATICLIBS HOSTBUILD \
 		    $(BOOLCONFVARS_OFF))
@@ -137,7 +137,6 @@ DEFAULT_OBJCOPY ?= objcopy
 DEFAULT_OBJDUMP ?= objdump
 DEFAULT_WINDRES ?= windres
 DEFAULT_GIT ?= git
-DEFAULT_GZIP ?= gzip
 DEFAULT_SH ?= $(if $(CROSS_COMPILE),$(or $(ZIMK__POSIXSH),/bin/sh),/bin/sh)
 DEFAULT_HOSTSH ?= $(if $(CROSS_COMPILE),,$(SH))
 DEFAULT_DEFGOAL ?= all
@@ -248,8 +247,6 @@ localstatedir ?= $(prefix)
 runstatedir ?= $(localstatedir)
 includedir ?= $(prefix)
 docrootdir ?= $(datarootdir)
-mandir ?= $(datarootdir)$(PSEP)man
-mansectdir ?= $(mandir)$(PSEP)man%s%
 libdir ?= $(exec_prefix)
 localedir ?= $(datarootdir)
 else
@@ -265,8 +262,6 @@ localstatedir ?= $(prefix)$(PSEP)var
 runstatedir ?= $(localstatedir)$(PSEP)run
 includedir ?= $(prefix)$(PSEP)include
 docrootdir ?= $(datarootdir)$(PSEP)doc
-mandir ?= $(datarootdir)$(PSEP)man
-mansectdir ?= $(mandir)$(PSEP)man%s%
 libdir ?= $(exec_prefix)$(PSEP)lib
 localedir ?= $(datarootdir)$(PSEP)locale
 endif

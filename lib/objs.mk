@@ -127,15 +127,6 @@ $(ZIMK__TAB)$$(VINST)
 $(ZIMK__TAB)$$(VR)$$(call instfile,$2,$$(_ZIMK_1),664)
 endef
 
-define ZIMK__MAN_INST_RECIPE_LINE
-
-$(ZIMK__TAB)$$(eval _ZIMK_1 := $$(DESTDIR)$$($(_T)_$1dir))
-$(ZIMK__TAB)$$(eval _ZIMK_0 := $$(_ZIMK_1)$$(PSEP)$$(notdir $2).gz)
-$(ZIMK__TAB)$$(VINST)
-$(ZIMK__TAB)$$(VR)$$(call instfile,$2,$$(_ZIMK_1),664)
-$(ZIMK__TAB)$$(VR)$$(GZIP) -9f $$(basename $$(_ZIMK_0))
-endef
-
 define OBJRULES
 
 ifeq ($$($(_T)_VERSION),)
@@ -169,9 +160,7 @@ endif
 ifneq ($$(strip $$($(_T)_CXXSTD)),)
 _$(_T)_CXXFLAGS += -std=$$($(_T)_CXXSTD)
 endif
-$(_T)_MANSUFX ?= .%s%
 $(_T)_INSTALLDOCSWITH ?= install
-$(_T)_INSTALLMANWITH ?= install
 $(_T)_INSTALLEXTRAWITH ?= install
 
 ifeq ($(PORTABLE),1)
@@ -185,12 +174,8 @@ $(_T)_localstatedir ?= $$(localstatedir)
 $(_T)_runstatedir ?= $$(runstatedir)
 $(_T)_sharedstatedir ?= $$(sharedstatedir)
 $(_T)_sysconfdir ?= $$(sysconfdir)
-$(_T)_mandir ?= $$(mandir)
 
 $(ZIMK__USES)
-
-$$(foreach s,$$($(_T)_MANSECT),$$(eval $(_T)_man$$sdir ?= $$$$(subst \
-	%s%,$$s,$(mansectdir))))
 
 $(_T)_SOURCES += $$(addprefix $$($(_T)_SRCDIR)$$(PSEP), \
 	$$(addsuffix .c,$$($(_T)_MODULES)))
@@ -320,24 +305,6 @@ $$(eval $$(_T)_install_docs: $$(_$$(_T)_DOCS_INSTALL)$$(foreach \
 $$($(_T)_INSTALLDOCSWITH):: $(_T)_install_docs
 endif
 
-$(_T)__ALLMAN := $$(foreach _S,$$($(_T)_MANSECT),$$($(_T)_MAN$$(_S)))
-ifneq ($$(strip $$($(_T)__ALLMAN)),)
-ifeq ($$(GZIP),)
-$(_T)_install_man::
-	$$(eval _ZIMK_0 := gzip not found, not compressing manpages)
-	@$$(VWRN)
-
-endif
-$$(foreach _S,$$($(_T)_MANSECT),$$(if $$(strip \
-	$$($(_T)_MAN$$(_S))),$$(eval $$(_T)_install_man:: $$(foreach \
-	_M,$$(addsuffix $$(subst \
-	%s%,$$(_S),$$($(_T)_MANSUFX)),$$($(_T)_MAN$$(_S))),$$(call \
-	$$(if $$(GZIP),ZIMK__MAN_INST_RECIPE_LINE,ZIMK__INSTEXTRARECIPELINE) \
-	,man$$(_S),$$($$(_T)_SRCDIR)$$(PSEP)$$(_M))))))
-
-$$($(_T)_INSTALLMANWITH):: $(_T)_install_man
-endif
-
 ifneq ($$(strip $$($(_T)_EXTRADIRS)),)
 $$(eval $$(_T)_installextra: $$(foreach \
 	_D,$$($$(_T)_EXTRADIRS),$$(foreach \
@@ -347,7 +314,7 @@ $$(eval $$(_T)_installextra: $$(foreach \
 $$($(_T)_INSTALLEXTRAWITH):: $(_T)_installextra
 endif
 
-.PHONY: $(_T)_prebuild $(_T)_install_docs $(_T)_install_man $(_T)_installextra
+.PHONY: $(_T)_prebuild $(_T)_install_docs $(_T)_installextra
 
 endef
 
