@@ -13,6 +13,10 @@
 #			example: Gui Widgets
 # name_USE_QT5		Qt modules only for Qt5
 # name_USE_QT6		Qt modules only for Qt6
+# name_QT_CFLAGS	Automatically added CFLAGS
+#			(default: -fPIC, empty for static builds)
+# name_QT_CXXFLAGS	Automatically added CXXFLAGS
+#			(default: $(name_QT_CFLAGS) -fno-exceptions -fno-rtti)
 # name_MOCMODULES	Modules to pre-process with 'moc'
 # name_MOCMODE		How to include moc-generated code:
 #			bundle		compile and link all moc-generated
@@ -105,6 +109,13 @@ $(_T)_RCC := $$(or $$(RCC),$$(call findtool,rcc,$$($(_T)_QT_TOOLDIR)),$$(call \
 $(_T)_PKGDEPS += $$(addprefix Qt$$($(_T)_QT_VERSION),Core \
 	$$($(_T)_USE_QT) $$($(_T)_USE_QT$$($(_T)_QT_VERSION)))
 endif
+
+ifneq ($(STATIC),1)
+$(_T)_QT_CFLAGS ?= -fPIC
+endif
+$(_T)_CFLAGS += $$($(_T)_QT_CFLAGS)
+$(_T)_QT_CXXFLAGS ?= $$($(_T)_QT_CFLAGS) -fno-exceptions -fno-rtti
+$(_T)_CXXFLAGS += $$($(_T)_QT_CXXFLAGS)
 
 ifneq ($$($(_T)_MOCMODULES),)
 $(_T)_MOCMODE ?= $$(firstword $$(ZIMK__QT_MOCMODES))
