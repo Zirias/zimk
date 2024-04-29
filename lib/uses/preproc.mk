@@ -72,7 +72,7 @@ $$(eval $$(foreach p,$$($(_T)_$1_MODULES),$$(call \
 	ZIMK__ASM_OBJRULES,$$(call ZIMK__PREPROC_OUTNM,$$p,$1),OBJDIR)))
 endif
 endif
-CLEAN += $$(foreach p,$$($(_T)_$1_MODULES),$$(call \
+CLEAN += $$(foreach p,$$($(_T)_$1_MODULES),$$($(_T)_OBJDIR)$$(PSEP)$$(call \
 	 ZIMK__PREPROC_OUTFILE,$$p,$1))
 $$(eval $$(foreach p,$$($(_T)_$1_MODULES),$$(call ZIMK__PREPROCRULE,$$p,$1)))
 endef
