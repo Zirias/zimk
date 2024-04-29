@@ -250,7 +250,8 @@ endif
 
 _$(_T)_DEPFILES = $$($(_T)_OBJS:.o=.d)
 
-CLEAN += $$($(_T)_OBJS:.o=.Td) $$(_$(_T)_DEPFILES) $$($(_T)_OBJS)
+CLEAN += $$($(_T)_OBJS:.o=.Td) $$(_$(_T)_DEPFILES) \
+	$$($(_T)_OBJS) $$($(_T)_SOBJS) $$($(_T)_ROBJS)
 
 OUTFILES := $$($(_T)_OBJS)
 $(DIRRULES)
