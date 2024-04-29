@@ -14,6 +14,16 @@
 # name_USE_QT5		Qt modules only for Qt5
 # name_USE_QT6		Qt modules only for Qt6
 # name_MOCMODULES	Modules to pre-process with 'moc'
+# name_MOCMODE		How to include moc-generated code:
+#			bundle		compile and link all moc-generated
+#					code in one bundled compilation unit
+#			single		compile and link one compilation unit
+#					per moc module
+#			included	don't add any compilation unit
+#					This requires adding an explicit
+#					#include "moc_<foo>.cpp"
+#					at the bottom of each moc module
+#			(default: bundle)
 # name_QRC		List of resource files to process with 'rcc'
 #
 
@@ -21,6 +31,8 @@ ZIMK__USE_QT_DEPENDS = pkgconfig preproc
 
 SINGLECONFVARS += QT_VERSION MOC RCC
 DEFAULT_QT_VERSION ?= 6
+
+ZIMK__QT_MOCMODES := bundle single included
 
 define ZIMK__QRCRULES
 
@@ -55,6 +67,22 @@ $$($(_T)_OBJDIR)$$(PSEP)$1_qrc_s.o: \
 		$$(CXXFLAGS) $$<
 endef
 
+define ZIMK__QT_MOCBUNDLEINC
+
+$(ZIMK__TAB)$(VR)$(ECHOTO)#include $(ELQT)$1$(ELQT)$(ETOEND) >>$2
+endef
+ZIMK__QT_MOCPATH=$(ZIMK__BASEDIR)$(PSEP)$($1_OBJDIR)$(PSEP)moc_$2.cpp
+define ZIMK__QT_MOCBUNDLERULE
+$$($(_T)_OBJDIR)$$(PSEP)moc_bundle_$(_T).cpp: $$(foreach \
+	m,$$($(_T)_MOCMODULES),$$($(_T)_OBJDIR)$$(PSEP)moc_$$m.cpp) \
+	$$($(_T)_MAKEFILES) $$(ZIMK__CFGCACHE) \
+	| $$($(_T)_OBJDIR) $$($(_T)_DEPS) $(_T)_prebuild
+	$$(VGEN)
+	$$(VR)$$(ECHOTO)// generated moc bundle$$(ETOEND) >$$@$$(foreach \
+		m,$$($(_T)_MOCMODULES),$$(call ZIMK__QT_MOCBUNDLEINC,$$(call \
+		ZIMK__QT_MOCPATH,$(_T),$$m),$$@))
+endef
+
 define ZIMK__USE_QT
 $(_T)_QT_VERSION ?= $(QT_VERSION)
 ifeq ($$(filter 5 6,$$($(_T)_QT_VERSION)),)
@@ -79,17 +107,35 @@ $(_T)_PKGDEPS += $$(addprefix Qt$$($(_T)_QT_VERSION),Core \
 endif
 
 ifneq ($$($(_T)_MOCMODULES),)
+$(_T)_MOCMODE ?= $$(firstword $$(ZIMK__QT_MOCMODES))
+ifeq ($$(filter $$($(_T)_MOCMODE),$$(ZIMK__QT_MOCMODES)),)
+$$(error Invalid MOCMODE for $(_T): $$($(_T)_MOCMODE))
+endif
 $(_T)_MOC := $$(or $$(MOC),$$(call findtool,moc,$$($(_T)_QT_TOOLDIR)),$$(call \
 	findtool,moc-qt$$($(_T)_VERSION)))
 PREPROC_$(_T)_MOC_tool = $$($(_T)_MOC)
-PREPROC_$(_T)_MOC_args = -p. $$2 >$$1
 PREPROC_$(_T)_MOC_prefix = moc_
 PREPROC_$(_T)_MOC_intype = h
 PREPROC_$(_T)_MOC_outtype = cpp
+ifeq ($$($(_T)_MOCMODE),bundle)
+$(_T)_OBJS += $$($(_T)_OBJDIR)$$(PSEP)moc_bundle_$(_T).o
+$$(eval $$(call ZIMK__CXX_OBJRULES,moc_bundle_$(_T),OBJDIR))
+$$(eval $$(ZIMK__QT_MOCBUNDLERULE))
+endif
+ifeq ($$($(_T)_MOCMODE),single)
 PREPROC_$(_T)_MOC_addbuild = 1
+endif
+ifeq ($$($(_T)_MOCMODE),included)
+PREPROC_$(_T)_MOC_args = -i $$2 >$$1
+$(_T)_INCLUDES += -I$$($(_T)_OBJDIR)
+$$(foreach m,$$($(_T)_MOCMODULES),$$(eval \
+	$$($(_T)_OBJDIR)$$(PSEP)$$m.o $$($(_T)_OBJDIR)$$(PSEP)$$m_s.o: \
+	$$($(_T)_OBJDIR)$$(PSEP)moc_$$m.cpp))
+else
+PREPROC_$(_T)_MOC_args = "-p$$(ZIMK__BASEDIR)$$(PSEP)$$($(_T)_SRCDIR)" $$2 >$$1
+endif
 $(_T)_PREPROC += $(_T)_MOC
 $(_T)_$(_T)_MOC_MODULES = $$($(_T)_MOCMODULES)
-$(_T)_INCLUDES += -I$$($(_T)_$(_T)_MOC_SRCDIR)
 $(_T)_CXXMODULES += $$($(_T)_MOCMODULES)
 endif
 
