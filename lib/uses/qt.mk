@@ -17,10 +17,6 @@
 # name_QRC		List of resource files to process with 'rcc'
 #
 
-PREPROC_MOC_suffix := moc
-PREPROC_MOC_intype := h
-PREPROC_MOC_outtype := cpp
-
 ZIMK__USE_QT_DEPENDS = pkgconfig preproc
 
 SINGLECONFVARS += QT_VERSION MOC RCC
@@ -83,14 +79,18 @@ $(_T)_PKGDEPS += $$(addprefix Qt$$($(_T)_QT_VERSION),Core \
 endif
 
 ifneq ($$($(_T)_MOCMODULES),)
-$(_T)_PREPROC = MOC
-$(_T)_PREPROCFLAGS ?= -p.
-$(_T)_INCLUDES += -I$$($(_T)_PPSRCDIR)
-$(_T)_PREPROCMODULES += $$($(_T)_MOCMODULES)
-$(_T)_CXXMODULES += $$($(_T)_MOCMODULES)
 $(_T)_MOC := $$(or $$(MOC),$$(call findtool,moc,$$($(_T)_QT_TOOLDIR)),$$(call \
 	findtool,moc-qt$$($(_T)_VERSION)))
-PREPROC_MOC_preproc := $$($(_T)_MOC)
+PREPROC_$(_T)_MOC_tool = $$($(_T)_MOC)
+PREPROC_$(_T)_MOC_args = -p. $$2 >$$1
+PREPROC_$(_T)_MOC_prefix = moc_
+PREPROC_$(_T)_MOC_intype = h
+PREPROC_$(_T)_MOC_outtype = cpp
+PREPROC_$(_T)_MOC_addbuild = 1
+$(_T)_PREPROC += $(_T)_MOC
+$(_T)_$(_T)_MOC_MODULES = $$($(_T)_MOCMODULES)
+$(_T)_INCLUDES += -I$$($(_T)_$(_T)_MOC_SRCDIR)
+$(_T)_CXXMODULES += $$($(_T)_MOCMODULES)
 endif
 
 ifneq ($$(strip $$($(_T)_QRC)),)
