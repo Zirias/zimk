@@ -155,7 +155,7 @@ INSTDIR := $(MDP)
 MAKE := set "PATH=$(ZIMK__ENVPATH)" & $(MAKE)
 
 define _ZIMK__FINDTOOL
-_ZIMK__TOOL:=$$(shell where "$2;$(ZIMK__ENVPATH):$1" 2>NUL)
+_ZIMK__TOOL:=$$(shell where "$$(subst :,;,$2);$(ZIMK__ENVPATH):$1" 2>NUL)
 ifeq ($$(.SHELLSTATUS),2)
 _ZIMK__TOOL:=$1
 endif

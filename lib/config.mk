@@ -28,6 +28,7 @@ MAKECMDGOALS ?= _zimk__dummy
 undefine ZIMK__EMPTY
 ZIMK__EMPTY :=
 ZIMK__TAB := $(ZIMK__EMPTY)	$(ZIMK__EMPTY)
+ZIMK__SPACE := $(ZIMK__EMPTY) $(ZIMK__EMPTY)
 
 define ZIMK__NORMALIZEBOOLCONFVARS
 ifdef $(_cv)

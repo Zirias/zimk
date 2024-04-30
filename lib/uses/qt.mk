@@ -2,9 +2,10 @@
 #
 # Configuration variables:
 #
-# QT_VERSION	Major version of Qt (5 or 6, default: 6)
-# MOC		Full path to 'moc' (default: auto-detect)
-# RCC		Full path to 'rcc' (default: auto-detect)
+# QT_VERSION		Major version of Qt (5 or 6, default: 6)
+# LRELEASE		Full path to 'lrelease' (default: auto-detect)
+# MOC			Full path to 'moc' (default: auto-detect)
+# RCC			Full path to 'rcc' (default: auto-detect)
 #
 # Project variables:
 #
@@ -29,11 +30,21 @@
 #					at the bottom of each moc module
 #			(default: bundle)
 # name_QRC		List of resource files to process with 'rcc'
-#
+# name_QT_LANGUAGES	List of languages for Qt Linguist translations
+#			(default: empty)
+# name_QT_TRANSLATIONS	Translation modules for Qt Linguist translations
+#			(default: "name")
+# name_translationsdir	If set, build Qt Linguist translations to OBJDIR
+#			and install them here
+#			If unset, build Qt Linguist translations to SRCDIR
+#			(so they can e.g. easily be embedded in resources)
+#			and don't install them
+#			Example: $(name_datadir)/translations
+#			(default: empty)
 
 ZIMK__USE_QT_DEPENDS = pkgconfig preproc
 
-SINGLECONFVARS += QT_VERSION MOC RCC
+SINGLECONFVARS += QT_VERSION LRELEASE MOC RCC
 DEFAULT_QT_VERSION ?= 6
 
 ZIMK__QT_MOCMODES := bundle single included
@@ -71,6 +82,15 @@ $$($(_T)_OBJDIR)$$(PSEP)$1_qrc_s.o: \
 		$$(CXXFLAGS) $$<
 endef
 
+define ZIMK__LRELEASERULE
+
+$$($(_T)_$2DIR)$$(PSEP)$1.qm: $$($(_T)_SRCDIR)$$(PSEP)$1.ts \
+		| $$(_$(_T)_DIRS) $(_T)_prebuild
+	$$(VGEN)
+	$$(VR)$$($(_T)_LRELEASE) -silent $$< -qm $$@
+$$($(_T)_BUILDWITH):: $$($(_T)_$2DIR)$$(PSEP)$1.qm
+endef
+
 define ZIMK__QT_MOCBUNDLEINC
 
 $(ZIMK__TAB)$(VR)$(ECHOTO)#include $(ELQT)$1$(ELQT)$(ETOEND) >>$2
@@ -100,12 +120,17 @@ ifneq ($$($(_T)_PKGSTATUS),0)
 $$(error $$(shell $$(PKGCONFIG) --print-errors --exists $$($(_T)_QT_CORE))\
 Required packages for $(_T) not found)
 endif
-$(_T)_QT_TOOLDIR := $$(shell $$(PKGCONFIG) --variable=libexecdir \
-	$$($(_T)_QT_CORE))
-$(_T)_QT_TOOLDIR := $$(or $$($(_T)_QT_TOOLDIR),$$(shell \
-	$$(PKGCONFIG) --variable=host_bins $$($(_T)_QT_CORE)))
-$(_T)_RCC := $$(or $$(RCC),$$(call findtool,rcc,$$($(_T)_QT_TOOLDIR)),$$(call \
-	findtool,rcc-qt$$($(_T)_VERSION)))
+$(_T)_QT_LIBEXECDIR := $$(shell \
+	$$(PKGCONFIG) --variable=libexecdir $$($(_T)_QT_CORE))
+$(_T)_QT_HOSTBINSDIR := $$(shell \
+	$$(PKGCONFIG) --variable=host_bins $$($(_T)_QT_CORE))
+$(_T)_QT_BINDIR := $$(shell \
+	$$(PKGCONFIG) --variable=bindir $$($(_T)_QT_CORE))
+$(_T)_QT_TOOLPATH := $$(subst $$(ZIMK__SPACE),:,$$(strip \
+	$$($(_T)_QT_LIBEXECDIR) $$($(_T)_QT_HOSTBINSDIR) $$($(_T)_QT_BINDIR)))
+$(_T)_QT_FINDTOOL = $$(or $$($$2),$$(call \
+	findtool,$$1,$$($(_T)_QT_TOOLPATH)),$$(call \
+	findtool,$$1-qt$$($(_T)_QT_VERSION)))
 $(_T)_PKGDEPS += $$(addprefix Qt$$($(_T)_QT_VERSION),Core \
 	$$($(_T)_USE_QT) $$($(_T)_USE_QT$$($(_T)_QT_VERSION)))
 endif
@@ -122,8 +147,12 @@ $(_T)_MOCMODE ?= $$(firstword $$(ZIMK__QT_MOCMODES))
 ifeq ($$(filter $$($(_T)_MOCMODE),$$(ZIMK__QT_MOCMODES)),)
 $$(error Invalid MOCMODE for $(_T): $$($(_T)_MOCMODE))
 endif
-$(_T)_MOC := $$(or $$(MOC),$$(call findtool,moc,$$($(_T)_QT_TOOLDIR)),$$(call \
-	findtool,moc-qt$$($(_T)_VERSION)))
+ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)
+$(_T)_MOC := $$(call $(_T)_QT_FINDTOOL,moc,MOC)
+ifeq ($$($(_T)_MOC),)
+$$(error Required tool 'moc' not found, please give full path in MOC=...)
+endif
+endif
 PREPROC_$(_T)_MOC_tool = $$($(_T)_MOC)
 PREPROC_$(_T)_MOC_prefix = moc_
 PREPROC_$(_T)_MOC_intype = h
@@ -151,15 +180,46 @@ $(_T)_CXXMODULES += $$($(_T)_MOCMODULES)
 endif
 
 ifneq ($$(strip $$($(_T)_QRC)),)
+ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)
+$(_T)_RCC := $$(call $(_T)_QT_FINDTOOL,rcc,RCC)
+ifeq ($$($(_T)_RCC),)
+$$(error Required tool 'rcc' not found, please give full path in RCC=...)
+endif
+endif
 $(_T)_ROBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
 	$$(addsuffix _qrc.o,$$($(_T)_QRC)))
 $(_T)_QRCSOURCE := $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
 	$$(addsuffix _qrc.cpp,$$($(_T)_QRC)))
 CLEAN += $$($(_T)_QRCSOURCE)
+$$(eval $$(foreach q,$$($(_T)_QRC),$$(call ZIMK__QRCRULES,$$q)))
 endif
 
-ifneq ($$(strip $$($(_T)_QRC)),)
-$$(eval $$(foreach q,$$($(_T)_QRC),$$(call ZIMK__QRCRULES,$$q)))
+ifneq ($$(strip $$($(_T)_QT_LANGUAGES)),)
+ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)
+$(_T)_LRELEASE := $$(call $(_T)_QT_FINDTOOL,lrelease,LRELEASE)
+ifeq ($$($(_T)_LRELEASE),)
+$$(error Required tool 'lrelease' not found, please give full path in\
+	LRELEASE=...)
+endif
+endif
+$(_T)_QT_TRANSLATIONS ?= $(_T)
+ifeq ($$($(_T)_translationsdir),)
+$(_T)_QT_TR_BUILDDIR := SRC
+else
+$(_T)_QT_TR_BUILDDIR := OBJ
+$$(eval $$(_T)_installqttranslations: $$(foreach \
+	l,$$($(_T)_QT_LANGUAGES),$$(foreach \
+	t,$$($(_T)_QT_TRANSLATIONS),$$(call \
+	ZIMK__INSTEXTRARECIPELINE,translations,\
+	$$($(_T)_OBJDIR)$$(PSEP)$$t_$$l.qm))))
+$$($(_T)_INSTALLWITH):: $(_T)_installqttranslations
+endif
+CLEAN += $$(foreach l,$$($(_T)_QT_LANGUAGES),$$(addprefix \
+	$$($(_T)_$$($(_T)_QT_TR_BUILDDIR)DIR)$$(PSEP),$$(addsuffix \
+	_$$l.qm,$$($(_T)_QT_TRANSLATIONS))))
+$$(eval $$(foreach l,$$($(_T)_QT_LANGUAGES),$$(foreach \
+	t,$$($(_T)_QT_TRANSLATIONS),$$(call \
+	ZIMK__LRELEASERULE,$$t_$$l,$$($(_T)_QT_TR_BUILDDIR)))))
 endif
 
 endef
