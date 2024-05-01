@@ -4,6 +4,7 @@
 #
 # QT_VERSION		Major version of Qt (5 or 6, default: 6)
 # LRELEASE		Full path to 'lrelease' (default: auto-detect)
+# LUPDATE		Full path to 'lupdate' (default: auto-detect)
 # MOC			Full path to 'moc' (default: auto-detect)
 # RCC			Full path to 'rcc' (default: auto-detect)
 #
@@ -41,10 +42,18 @@
 #			and don't install them
 #			Example: $(name_datadir)/translations
 #			(default: empty)
+# name_TS_UPDATE	List of .ts files to update with lupdate
+#			The update is triggered with
+#			'make update-translations'
+#			(default: first entry of name_QT_TRANSLATIONS)
+# name_TS_tsname_FILES	Scan these files with lupdate for updating
+#			tsname_XX.ts files
+#			(default: all C++ source files)
+#
 
 ZIMK__USE_QT_DEPENDS = pkgconfig preproc
 
-SINGLECONFVARS += QT_VERSION LRELEASE MOC RCC
+SINGLECONFVARS += QT_VERSION LRELEASE LUPDATE MOC RCC
 DEFAULT_QT_VERSION ?= 6
 
 ZIMK__QT_MOCMODES := bundle single included
@@ -89,6 +98,14 @@ $$($(_T)_$2DIR)$$(PSEP)$1.qm: $$($(_T)_SRCDIR)$$(PSEP)$1.ts \
 	$$(VGEN)
 	$$(VR)$$($(_T)_LRELEASE) -silent $$< -qm $$@
 $$($(_T)_BUILDWITH):: $$($(_T)_$2DIR)$$(PSEP)$1.qm
+endef
+
+define ZIMK__LUPDATERULE
+$$($(_T)_SRCDIR)$$(PSEP)$1.ts: $$(addprefix $$($(_T)_SRCDIR)$$(PSEP),$2) \
+		| $(_T)_prebuild
+	$$(VGEN)
+	$$(VR)$$($(_T)_LUPDATE) -silent $$^ -ts $$@
+update-translations: $$($(_T)_SRCDIR)$$(PSEP)$1.ts
 endef
 
 define ZIMK__QT_MOCBUNDLEINC
@@ -203,6 +220,9 @@ $$(error Required tool 'lrelease' not found, please give full path in\
 endif
 endif
 $(_T)_QT_TRANSLATIONS ?= $(_T)
+$(_T)_TS_UPDATE ?= $$(firstword $$($(_T)_QT_TRANSLATIONS))
+$$(foreach t,$$($(_T)_TS_UPDATE),$$(eval \
+	$(_T)_TS_$$t_FILES ?= $$(addsuffix .cpp,$$($(_T)_CXXMODULES))))
 ifeq ($$($(_T)_translationsdir),)
 $(_T)_QT_TR_BUILDDIR := SRC
 else
@@ -220,6 +240,16 @@ CLEAN += $$(foreach l,$$($(_T)_QT_LANGUAGES),$$(addprefix \
 $$(eval $$(foreach l,$$($(_T)_QT_LANGUAGES),$$(foreach \
 	t,$$($(_T)_QT_TRANSLATIONS),$$(call \
 	ZIMK__LRELEASERULE,$$t_$$l,$$($(_T)_QT_TR_BUILDDIR)))))
+ifneq ($(filter update-translations,$(MAKECMDGOALS)),)
+$(_T)_LUPDATE := $$(call $(_T)_QT_FINDTOOL,lupdate,LUPDATE)
+ifeq ($$($(_T)_LUPDATE),)
+$$(error Required tool 'lupdate' not found, please give full path in\
+	LUPDATE=...)
+endif
+$$(eval $$(foreach l,$$($(_T)_QT_LANGUAGES),$$(foreach \
+	t,$$($(_T)_TS_UPDATE),$$(call \
+	ZIMK__LUPDATERULE,$$t_$$l,$$($(_T)_TS_$$t_FILES)))))
+endif
 endif
 
 endef
