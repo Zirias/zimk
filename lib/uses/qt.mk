@@ -85,7 +85,7 @@ endef
 define ZIMK__LRELEASERULE
 
 $$($(_T)_$2DIR)$$(PSEP)$1.qm: $$($(_T)_SRCDIR)$$(PSEP)$1.ts \
-		| $$(_$(_T)_DIRS) $(_T)_prebuild
+		| $$($(_T)_$2DIR) $(_T)_prebuild
 	$$(VGEN)
 	$$(VR)$$($(_T)_LRELEASE) -silent $$< -qm $$@
 $$($(_T)_BUILDWITH):: $$($(_T)_$2DIR)$$(PSEP)$1.qm
