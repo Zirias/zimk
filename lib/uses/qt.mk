@@ -101,6 +101,7 @@ $$($(_T)_BUILDWITH):: $$($(_T)_$2DIR)$$(PSEP)$1.qm
 endef
 
 define ZIMK__LUPDATERULE
+
 $$($(_T)_SRCDIR)$$(PSEP)$1.ts: $$(addprefix $$($(_T)_SRCDIR)$$(PSEP),$2) \
 		| $(_T)_prebuild
 	$$(VGEN)
@@ -253,5 +254,7 @@ endif
 endif
 
 endef
+
+.PHONY: update-translations
 
 # vim: noet:si:ts=8:sts=8:sw=8
