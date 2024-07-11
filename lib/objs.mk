@@ -157,9 +157,11 @@ $(_T)_CXXSTD ?= $$(CXXSTD)
 ifneq ($$(strip $$($(_T)_CSTD)),)
 _$(_T)_CFLAGS += -std=$$($(_T)_CSTD)
 endif
+_$(_T)_CFLAGS += $$($(_T)_PRECFLAGS)
 ifneq ($$(strip $$($(_T)_CXXSTD)),)
 _$(_T)_CXXFLAGS += -std=$$($(_T)_CXXSTD)
 endif
+_$(_T)_CXXFLAGS += $$($(_T)_PRECXXFLAGS)
 $(_T)_INSTALLDOCSWITH ?= install
 $(_T)_INSTALLEXTRAWITH ?= install
 
