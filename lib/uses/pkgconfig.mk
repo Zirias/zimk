@@ -67,6 +67,11 @@ endef
 
 define ZIMK__USE_PKGCONFIG_POST
 
+ifeq ($$(strip $$(PKGCONFIG)),)
+$$(error Required tool 'pkg-config' not found, please install pkg-config\
+	or pkgconf)
+endif
+
 ifneq ($$(strip $$($(_T)_PKGDEPS)),)
 ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)
 $(_T)_PKGSTATUS := $$(shell $$(PKGCONFIG) --exists '$$($(_T)_PKGDEPS)';\
