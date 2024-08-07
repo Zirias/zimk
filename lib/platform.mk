@@ -3,6 +3,24 @@ ZIMK__POSIXSH :=
 ifeq ($(POSIXSHELL),)
 ifeq ($(shell getconf _POSIX_SHELL 2>&1),1)
 ifeq ($(.SHELLSTATUS),0)
+ifdef ZIMK__ISTTY
+override undefine MAKEFLAGS
+ZIMK__CHECKSHELLS := $(addsuffix /sh,$(subst \
+		     :, ,$(shell getconf PATH 2>/dev/null)))
+$(foreach s,$(ZIMK__CHECKSHELLS),$(if $(POSIXSHELL),,$(if \
+	$(shell test -x "$s" && echo 1),$(eval POSIXSHELL:=$s))))
+ZIMK__POSIXSH := $(POSIXSHELL)
+else
+POSIXSHELL := 1
+endif
+endif
+endif
+endif
+ifeq ($(POSIXSHELL),)
+undefine POSIXSHELL
+endif
+
+ifdef POSIXSHELL
 ifndef ZIMK__ISTTY
 ZIMK__RECURSE=$(MAKE) --no-print-directory ZIMK__ISTTY=$1 $(MAKECMDGOALS)
 all $(MAKECMDGOALS):
@@ -10,19 +28,7 @@ all $(MAKECMDGOALS):
 		       else $(call ZIMK__RECURSE,0); fi
 
 .PHONY: all $(MAKECMDGOALS)
-else
-override undefine MAKEFLAGS
-ZIMK__CHECKSHELLS := $(addsuffix /sh,$(subst \
-		     :, ,$(shell getconf PATH 2>/dev/null)))
-$(foreach s,$(ZIMK__CHECKSHELLS),$(if $(POSIXSHELL),,$(if \
-	$(shell test -x "$s" && echo 1),$(eval POSIXSHELL:=$s))))
-ZIMK__POSIXSH := $(POSIXSHELL)
 endif
-endif
-endif
-endif
-ifeq ($(POSIXSHELL),)
-undefine POSIXSHELL
 endif
 
 ifndef ZIMK__RECURSE
