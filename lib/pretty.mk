@@ -2,13 +2,15 @@ ifeq ($(COLORS),1)
 
 ifdef POSIXSHELL
 undefine zimk__tcap
-ZIMK__PRNORM := $(shell tput me 2>/dev/null)
-ifeq ($(.SHELLSTATUS),0)
+ZIMK__PRNORM := $(shell tput me 2>/dev/null || echo " ERR")
+ifneq ($(lastword $(ZIMK__PRNORM)),ERR)
 zimk__tcap = $(shell tput $1 2>/dev/null)
 else
-ZIMK__PRNORM := $(shell tput sgr0 2>/dev/null)
-ifeq ($(.SHELLSTATUS),0)
+ZIMK__PRNORM := $(shell tput sgr0 2>/dev/null || echo " ERR")
+ifneq ($(lastword $(ZIMK__PRNORM)),ERR)
 zimk__tcap = $(shell tput $2 2>/dev/null)
+else
+ZIMK__PRNORM :=
 endif
 endif
 ifdef zimk__tcap

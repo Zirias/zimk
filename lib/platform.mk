@@ -1,8 +1,7 @@
 POSIXSHELL := $(if $(CROSS_COMPILE),$(HOSTSH),$(or $(HOSTSH),$(SH)))
 ZIMK__POSIXSH :=
 ifeq ($(POSIXSHELL),)
-ifeq ($(shell getconf _POSIX_SHELL 2>&1),1)
-ifeq ($(.SHELLSTATUS),0)
+ifeq ($(shell getconf _POSIX_SHELL 2>&1 || echo ERR),1)
 ifdef ZIMK__ISTTY
 override undefine MAKEFLAGS
 ZIMK__CHECKSHELLS := $(addsuffix /sh,$(subst \
@@ -12,7 +11,6 @@ $(foreach s,$(ZIMK__CHECKSHELLS),$(if $(POSIXSHELL),,$(if \
 ZIMK__POSIXSH := $(POSIXSHELL)
 else
 POSIXSHELL := 1
-endif
 endif
 endif
 endif
@@ -85,8 +83,8 @@ ZIMK__ENVPATH:=$(PATH)
 ifdef POSIXSHELL
 SHELL:=$(POSIXSHELL)
 export SHELL
-POSIXPATH:=$(shell getconf PATH 2>/dev/null)
-ifeq ($(.SHELLSTATUS),0)
+POSIXPATH:=$(shell getconf PATH 2>/dev/null || echo " ERR")
+ifneq ($(lastword $(POSIXPATH)),ERR)
 PATH:=$(POSIXPATH)
 else
 POSIXPATH:=
@@ -161,8 +159,10 @@ INSTDIR := $(MDP)
 MAKE := set "PATH=$(ZIMK__ENVPATH)" & $(MAKE)
 
 define _ZIMK__FINDTOOL
-_ZIMK__TOOL:=$$(shell where "$$(subst :,;,$2);$(ZIMK__ENVPATH):$1" 2>NUL)
-ifeq ($$(.SHELLSTATUS),2)
+_ZIMK__TOOL:=$$(shell setlocal enabledelayedexpansion \
+	     & where "$$(subst :,;,$2);$(ZIMK__ENVPATH):$1" 2>NUL\
+	     & if !errorlevel!==2 (echo NOTFOUND))
+ifeq ($$(lastword $$(_ZIMK__TOOL)),NOTFOUND)
 _ZIMK__TOOL:=$1
 endif
 ifneq ($$(_ZIMK__TOOL),)
