@@ -108,7 +108,7 @@ ifeq ($$($(_T)_LIBTYPE),library)
 _$(_T)_LIB_FULL := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).so.$$($(_T)_VERSION)
 _$(_T)_LIB_MAJ := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).so.$$($(_T)_V_MAJ)
 $(_T)_LIB := $$($(_T)_TGTDIR)$$(PSEP)lib$(_T).so
-_$(_T)_STRPSTAMP := $$($(_T)_TGTDIR)$$(PSEP).lib$(_T).so.$$($(_T)_VERSION).stripped
+$(_T)_STRPSTAMP := $$($(_T)_TGTDIR)$$(PSEP).lib$(_T).so.$$($(_T)_VERSION).stripped
 else
 _$(_T)_LIB_FULL := $$($(_T)_TGTDIR)$$(PSEP)$(_T).so
 $(_T)_LIB := $$($(_T)_TGTDIR)$$(PSEP)$(_T).so
