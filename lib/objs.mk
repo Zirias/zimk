@@ -19,7 +19,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.c \
 	$$(VR)$$(ZIMK__DEPFINISH)
 
 $$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.c \
-	$(call ZIMK__DEFPREREQ,$1$3)
+	$(call ZIMK__DEFPREREQ,$1$3_s)
 	$$(VCC)
 	$$(VR)$$(CC) $$(ZIMK__DEPFLAGS) -c -o$$@ $$(_$(_T)_CFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
@@ -48,7 +48,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.cpp \
 	$$(VR)$$(ZIMK__DEPFINISH)
 
 $$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.cpp \
-	$(call ZIMK__DEFPREREQ,$1$3)
+	$(call ZIMK__DEFPREREQ,$1$3_s)
 	$$(VCXX)
 	$$(VR)$$(CXX) $$(ZIMK__DEPFLAGS) -c -o$$@ $$(_$(_T)_CXXFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
@@ -77,7 +77,7 @@ $$($(_T)_OBJDIR)$$(PSEP)$1$3.o: $$($(_T)_$2)$$(PSEP)$1$3.S \
 	$$(VR)$$(ZIMK__DEPFINISH)
 
 $$($(_T)_OBJDIR)$$(PSEP)$1$3_s.o: $$($(_T)_$2)$$(PSEP)$1$3.S \
-	$(call ZIMK__DEFPREREQ,$1$3)
+	$(call ZIMK__DEFPREREQ,$1$3_s)
 	$$(VCAS)
 	$$(VR)$$(CC) $$(ZIMK__DEPFLAGS) -c -o$$@ $$(_$(_T)_CFLAGS) \
 		$$($(_T)_$$(PLATFORM)_DEFINES) $$($(_T)_DEFINES) $$(DEFINES) \
@@ -250,7 +250,7 @@ $(_T)_ROBJS += $$(addprefix $$($(_T)_OBJDIR)$$(PSEP), \
 endif
 endif
 
-_$(_T)_DEPFILES = $$($(_T)_OBJS:.o=.d)
+_$(_T)_DEPFILES = $$($(_T)_OBJS:.o=.d) $$($(_T)_OBJS:.o=_s.d)
 
 CLEAN += $$($(_T)_OBJS:.o=.Td) $$(_$(_T)_DEPFILES) \
 	$$($(_T)_OBJS) $$($(_T)_SOBJS) $$($(_T)_ROBJS)
