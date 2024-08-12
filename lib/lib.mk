@@ -2,7 +2,6 @@ ZIMK__LIBTYPES := library plugin test
 
 define LIBRULES
 $(_T)_MANSECT ?= 3
-$(OBJRULES)
 
 $(_T)_LIBTYPE ?= library
 $(_T)_LIBTYPE := $$(strip $$($(_T)_LIBTYPE))
@@ -69,6 +68,8 @@ $(_T)_STRIPSHAREDWITH :=
 $(_T)_STRIPSTATICWITH :=
 $(_T)_STRIPWITH :=
 endif
+
+$(OBJRULES)
 
 ifeq ($$($(_T)_CXXMODULES),)
 $(_T)_LDC := $$(CC)
