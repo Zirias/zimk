@@ -148,7 +148,7 @@ DEFAULT_CXXSTD ?= c++17
 
 DEFAULT_CFLAGS ?= -Wall -Wextra -Wshadow -pedantic
 DEFAULT_CXXFLAGS ?= -Wall -Wextra -pedantic
-DEFAULT_LDFLAGS ?= -L$(LIBDIR)
+DEFAULT_LDFLAGS ?= #
 
 PLATFORM_win32_CFLAGS ?= -Wno-pedantic-ms-format
 PLATFORM_win32_CXXFLAGS ?= -Wno-pedantic-ms-format
@@ -312,9 +312,9 @@ define ZIMK__UPDATESINGLECFGVARS
 ifeq ($$(strip $$(origin $(_cv))$$($(_cv))),command line)
 override undefine $(_cv)
 endif
-$(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(BUILD_$(BUILDCFG)_$(_cv)))
-$(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(PLATFORM_$(PLATFORM)_$(_cv)))
-$(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(DEFAULT_$(_cv)))
+$(_cv) := $$(or $$($(_cv)),$$(BUILD_$(BUILDCFG)_$(_cv)))
+$(_cv) := $$(or $$($(_cv)),$$(PLATFORM_$(PLATFORM)_$(_cv)))
+$(_cv) := $$(or $$($(_cv)),$$(DEFAULT_$(_cv)))
 endef
 $(foreach _cv,$(BOOLCONFVARS) $(SINGLECONFVARS),$(eval $(ZIMK__UPDATESINGLECFGVARS)))
 
@@ -322,11 +322,12 @@ define ZIMK__UPDATELISTCFGVARS
 ifeq ($$(strip $$(origin $(_cv))$$($(_cv))),command line)
 override undefine $(_cv)
 endif
-$(_cv) := $$(if $$($(_cv)),$$($(_cv)),$$(DEFAULT_$(_cv)))
-$(_cv) := $$(strip $$(BUILD_$(BUILDCFG)_$(_cv)) $$($(_cv)))
-$(_cv) := $$(strip $$(PLATFORM_$(PLATFORM)_$(_cv)) $$($(_cv)))
+override $(_cv) := $$(or $$($(_cv)),$$(DEFAULT_$(_cv)))
+override $(_cv) := $$(strip $$(BUILD_$(BUILDCFG)_$(_cv)) $$($(_cv)))
+override $(_cv) := $$(strip $$(PLATFORM_$(PLATFORM)_$(_cv)) $$($(_cv)))
 endef
 $(foreach _cv,$(LISTCONFVARS),$(eval $(ZIMK__UPDATELISTCFGVARS)))
+override LDFLAGS += -L$(LIBDIR)
 
 ifneq ($(filter showconfig,$(MAKECMDGOALS)),)
 $(foreach _cv,BUILDCFG PLATFORM TARGETARCH BFMT_PLATFORM $(CONFVARS),$(info $(_cv) = $($(_cv))))
