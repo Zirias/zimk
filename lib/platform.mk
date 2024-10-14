@@ -111,6 +111,7 @@ ELQT := \"
 CMDQUIET := >/dev/null 2>&1
 CODNOERR := 2>/dev/null
 CMDNOIN := </dev/null
+CMDOK := >/dev/null 2>&1 && echo ok
 
 INSTALL ?= install
 INSTDIR := $(INSTALL) -d
@@ -152,6 +153,7 @@ ELQT := "
 CMDQUIET := >nul 2>nul & verify >nul
 CMDNOERR := 2>nul & verify >nul
 CMDNOIN := <nul
+CMDOK := >nul 2>nul && echo ok
 
 INSTDIR := $(MDP)
 

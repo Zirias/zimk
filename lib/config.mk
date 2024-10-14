@@ -131,10 +131,12 @@ BUILD_debug_CFLAGS ?= -g3 -O0
 BUILD_debug_CXXFLAGS ?= -g3 -O0
 BUILD_debug_DEFINES ?= -DDEBUG
 
+HAVE_CUSTOM_release_FLAGS:=$(strip \
+$(BUILD_release_CFLAGS)$(BUILD_release_CXXFLAGS)$(BUILD_release_LDFLAGS))
 BUILD_release_DEFGOAL ?= strip
-BUILD_release_CFLAGS ?= -g0 -O2 -ffunction-sections -fdata-sections
-BUILD_release_CXXFLAGS ?= -g0 -O2 -ffunction-sections -fdata-sections
-BUILD_release_LDFLAGS ?= -O2 -Wl,--gc-sections
+BUILD_release_CFLAGS ?= -g0 -O2
+BUILD_release_CXXFLAGS ?= -g0 -O2
+BUILD_release_LDFLAGS ?= -O2
 BUILD_release_DEFINES ?= -DNDEBUG
 
 _ZIMK__TESTHCC:=$(call expandtool,$(or \
@@ -153,6 +155,7 @@ endif
 ifeq ($(HOSTBUILD),1)
 PLATFORM:= $(HOSTPLATFORM)
 EXE:= $(HOSTEXE)
+_ZIMK__TESTCC:=$(_ZIMK__TESTHCC)
 else
 _ZIMK__TESTCC:=$(call expandtool,$(CROSS_COMPILE)$(or \
 	       $(CC),$(DEFAULT_CC),$(BUILD_$(BUILDCFG)_CC)))
@@ -165,6 +168,21 @@ EXE:=
 else
 PLATFORM:= win32
 EXE:=.exe
+endif
+endif
+
+ifeq ($(BUILDCFG),release)
+ifeq ($(HAVE_CUSTOM_release_FLAGS),)
+ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)
+HAVE_GC_SECTIONS:=$(shell $(_ZIMK__TESTCC) -Wl,--gc-sections \
+		  -ozimk_compiletest $(ZIMKPATH)tests/empty.c $(CMDOK))
+ifeq ($(strip $(HAVE_GC_SECTIONS)),ok)
+BUILD_release_CFLAGS+= -ffunction-sections -fdata-sections
+BUILD_release_CXXFLAGS+= -ffunction-sections -fdata-sections
+BUILD_release_LDFLAGS+= -Wl,--gc-sections
+endif
+$(shell $(RMF) zimk_compiletest)
+endif
 endif
 endif
 
