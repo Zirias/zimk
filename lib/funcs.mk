@@ -68,6 +68,8 @@ define tobool
 $(eval $(__F_TOBOOL))$(strip $(_ZIMK__VR))
 endef
 
+expandtool = $(call findtool,$(firstword $1)) $(wordlist 2, 512, $1)
+
 version_nums = $(subst ., ,$1) 0 0 0
 version_maj = $(word 1,$(call version_nums,$1))
 version_min = $(word 2,$(call version_nums,$1))

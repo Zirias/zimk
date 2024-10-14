@@ -164,7 +164,7 @@ BUILD_release_CXXFLAGS ?= -g0 -O2 -ffunction-sections -fdata-sections
 BUILD_release_LDFLAGS ?= -O2 -Wl,--gc-sections
 BUILD_release_DEFINES ?= -DNDEBUG
 
-_ZIMK__TESTHCC:=$(call findtool,$(or \
+_ZIMK__TESTHCC:=$(call expandtool,$(or \
 	       $(HOSTCC),$(DEFAULT_HOSTCC),$(BUILD_$(BUILDCFG)_HOSTCC)))
 ifneq ($(_ZIMK__TESTHCC),)
 ZIMK__HDEFDEFINES:= $(shell $(_ZIMK__TESTHCC) -dM -E - $(CMDNOIN))
@@ -181,7 +181,7 @@ ifeq ($(HOSTBUILD),1)
 PLATFORM:= $(HOSTPLATFORM)
 EXE:= $(HOSTEXE)
 else
-_ZIMK__TESTCC:=$(call findtool,$(CROSS_COMPILE)$(or \
+_ZIMK__TESTCC:=$(call expandtool,$(CROSS_COMPILE)$(or \
 	       $(CC),$(DEFAULT_CC),$(BUILD_$(BUILDCFG)_CC)))
 ifneq ($(_ZIMK__TESTCC),)
 ZIMK__DEFDEFINES:= $(shell $(_ZIMK__TESTCC) -dM -E - $(CMDNOIN))
@@ -279,10 +279,10 @@ endif
 
 _ZIMK__TOCNM:=$(or $(OBJCOPY),$(DEFAULT_OBJCOPY)$(BUILD_$(BUILDCFG)_OBJCOPY))
 _ZIMK__TODNM:=$(or $(OBJDUMP),$(DEFAULT_OBJDUMP)$(BUILD_$(BUILDCFG)_OBJDUMP))
-_ZIMK__TESTOBJCOPY:=$(or $(call findtool,$(CROSS_COMPILE)$(_ZIMK__TOCNM)), \
-		    $(call findtool,$(_ZIMK__TOCNM)))
-_ZIMK__TESTOBJDUMP:=$(or $(call findtool,$(CROSS_COMPILE)$(_ZIMK__TODNM)), \
-		    $(call findtool,$(_ZIMK__TODNM)))
+_ZIMK__TESTOBJCOPY:=$(or $(call expandtool,$(CROSS_COMPILE)$(_ZIMK__TOCNM)), \
+		    $(call expandtool,$(_ZIMK__TOCNM)))
+_ZIMK__TESTOBJDUMP:=$(or $(call expandtool,$(CROSS_COMPILE)$(_ZIMK__TODNM)), \
+		    $(call expandtool,$(_ZIMK__TODNM)))
 ifdef POSIXSHELL
 _ZIMK__TESTOBJ:=$(if $(_ZIMK__TESTOBJCOPY),$(_ZIMK__TESTOBJCOPY)\
 		--info,false) || $(if \
@@ -343,7 +343,7 @@ define ZIMK__UPDATEHOSTTOOL
 ifeq ($$(strip $$(origin $1)),command line)
 override undefine $1
 endif
-$1:=$$(call findtool,$($1))
+$1:=$$(call expandtool,$($1))
 endef
 $(foreach t,$(HOSTTOOLS),$(eval $(call ZIMK__UPDATEHOSTTOOL,$t)))
 
@@ -351,7 +351,7 @@ define ZIMK__UPDATECROSSTOOL
 ifeq ($$(strip $$(origin $1)),command line)
 override undefine $1
 endif
-$1:=$$(call findtool,$(CROSS_COMPILE)$($1))
+$1:=$$(call expandtool,$(CROSS_COMPILE)$($1))
 endef
 $(foreach t,$(CROSSTOOLS),$(eval $(call ZIMK__UPDATECROSSTOOL,$t)))
 
@@ -359,7 +359,7 @@ define ZIMK__UPDATEFALLBACKTOOL
 ifeq ($$(strip $$(origin $1)),command line)
 override undefine $1
 endif
-$1:=$$(or $$(call findtool,$(CROSS_COMPILE)$($1)),$$(call findtool,$($1)))
+$1:=$$(or $$(call expandtool,$(CROSS_COMPILE)$($1)),$$(call expandtool,$($1)))
 endef
 $(foreach t,$(FALLBACKTOOLS),$(eval $(call ZIMK__UPDATEFALLBACKTOOL,$t)))
 
