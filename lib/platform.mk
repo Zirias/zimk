@@ -3,7 +3,6 @@ ZIMK__POSIXSH :=
 ifeq ($(POSIXSHELL),)
 ifeq ($(shell getconf _POSIX_SHELL 2>&1 || echo ERR),1)
 ifdef ZIMK__ISTTY
-override undefine MAKEFLAGS
 ZIMK__CHECKSHELLS := $(addsuffix /sh,$(subst \
 		     :, ,$(shell getconf PATH 2>/dev/null)))
 $(foreach s,$(ZIMK__CHECKSHELLS),$(if $(POSIXSHELL),,$(if \

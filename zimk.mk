@@ -20,13 +20,19 @@ endif
 ifeq ($(origin AR),default)
 undefine AR
 endif
+MAKEOVERRIDES:=	#
 
 -include defaults.mk
 include $(ZIMKPATH)lib/funcs.mk
 include $(ZIMKPATH)lib/platform.mk
-ifndef ZIMK__RECURSE
 include $(ZIMKPATH)lib/uses.mk
+ifdef ZIMK__RECURSE
+include $(ZIMKPATH)lib/confvars.mk
+include $(ZIMKPATH)lib/silent.mk
+zinc:=
+else
 include $(ZIMKPATH)lib/pretty.mk
+include $(ZIMKPATH)lib/confvars.mk
 include $(ZIMKPATH)lib/config.mk
 include $(ZIMKPATH)lib/silent.mk
 include $(ZIMKPATH)lib/objs.mk
@@ -124,8 +130,8 @@ endif
 	install installsharedlibs installstaticlibs clean distclean dist
 .SUFFIXES:
 
-else
-zinc:=
 endif # ZIMK__RECURSE
+
+export MAKEFLAGS
 
 # vim: noet:si:ts=8:sts=8:sw=8

@@ -19,8 +19,7 @@ VRMDR:=
 VWRN:=	@echo $(EQT) *** Warning: $(_ZIMK_0)$(EQT)
 VR:=
 else
-MAKEFLAGS+=--no-print-directory
-export MAKEFLAGS
+override MAKEFLAGS+=--no-print-directory
 ifeq ($(PSEP),\\)
 zimk__pp=$(subst \\,\,$1)
 else
