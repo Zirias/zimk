@@ -1,5 +1,6 @@
 ZIMK__DEPFLAGS=-MT $@ -MMD -MP -MF$(@:.o=.dT)
-ZIMK__DEPFINISH=$(MV) -f $(@:.o=.dT) $(@:.o=.d) $(CMDSEP) $(STAMP) $@
+ZIMK__DEPFINISH=$(MV) $(@:.o=.dT) $(@:.o=.d) $(CMDQUIET) $(CMDSEP) \
+		$(call touch,$@)
 ZIMK__DEFPREREQ=$$($(_T)_OBJDIR)$(PSEP)$1.d $$($(_T)_MAKEFILES) \
 		$$(ZIMK__CFGCACHE) | $$(_$(_T)_DIRS) $(_T)_prebuild
 
