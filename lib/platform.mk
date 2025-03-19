@@ -123,6 +123,7 @@ instfile = $(INSTDIR) $(2) $(CMDSEP) $(INSTALL) -m$(3) $(1) $(2)
 rmfile = $(RMF) $(1)
 rmdir = $(RMFR) $(1)
 geq = $(shell if test $(1) -ge $(2); then echo 1; fi)
+echoesc = $(strip $(1))
 
 touch = touch $(1)
 
@@ -177,6 +178,7 @@ instfile = $(MDP) $(2) $(CMDQUIET) $(CMDSEP) copy $(1) $(2) $(CMDQUIET)
 rmfile = $(RMF) $(1) $(CMDNOERR)
 rmdir = $(RMFR) $(1) $(CMDNOERR)
 geq = $(shell if $(1) geq $(2) echo 1)
+echoesc = $(subst &,^&,$(strip $(1)))
 
 touch = copy /b $(1)+,,$(1) $(CMDQUIET)
 

@@ -36,7 +36,7 @@ ZIMK__CFGCACHE:=.cache_$(BUILDCFG).cfg
 
 define ZIMK__WRITECACHELINE
 
-$(ZIMK__TAB)$$(VR)$$(ECHOTO)C_$(_cv) := $$(strip $($(_cv)))$$(ETOEND) >>$$(ZIMK__CFGCACHE)
+$(ZIMK__TAB)$$(VR)$$(ECHOTO)C_$(_cv) := $$(call echoesc,$($(_cv)))$$(ETOEND) >>$$(ZIMK__CFGCACHE)
 endef
 define ZIMK__WRITECACHE
 $$(ZIMK__CFGCACHE):
@@ -44,7 +44,7 @@ $$(ZIMK__CFGCACHE):
 endef
 define ZIMK__WRITECFGLINE
 
-$(ZIMK__TAB)$$(VR)$$(ECHOTO)$(_cv) ?= $$(strip $($(_cv)))$$(ETOEND) >>$$(USERCONFIG)
+$(ZIMK__TAB)$$(VR)$$(ECHOTO)$(_cv) ?= $$(call echoesc,$($(_cv)))$$(ETOEND) >>$$(USERCONFIG)
 endef
 define ZIMK__WRITECFG
 $(ZIMK__CFGTARGET): $$(USERCONFIG)
