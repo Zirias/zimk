@@ -24,4 +24,10 @@ NOBUILDTARGETS := $(sort clean distclean dist config changeconfig showconfig \
 
 $(foreach _cv,$(CONFVARS),$(if $($(_cv)),$(eval export $(_cv))))
 
+ZIMK__EXPORTVARS := #
+ifndef POSIXSHELL
+$(foreach _cv,$(filter-out SH HOSTSH,$(CONFVARS)),$(if \
+	$($(_cv)),$(eval ZIMK__EXPORTVARS := $(ZIMK__EXPORTVARS) $(_cv))))
+endif
+
 # vim: noet:si:ts=8:sts=8:sw=8

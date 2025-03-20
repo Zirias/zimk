@@ -358,6 +358,8 @@ ifeq ($(HOSTBUILD),1)
 $(foreach t,$(filter HOST%,$(HOSTTOOLS)),$(eval $(subst HOST,,$t):=$$($t)))
 endif
 
+$(foreach _cv,$(ZIMK__EXPORTVARS),$(eval export $(_cv)))
+
 .PHONY: config changeconfig _build_config _build_changeconfig _cfg_message showconfig
 
 # vim: noet:si:ts=8:sts=8:sw=8
