@@ -181,7 +181,7 @@ BUILD_release_CFLAGS+= -ffunction-sections -fdata-sections
 BUILD_release_CXXFLAGS+= -ffunction-sections -fdata-sections
 BUILD_release_LDFLAGS+= -Wl,--gc-sections
 endif
-$(shell $(RMF) zimk_compiletest)
+$(shell $(RMF) zimk_compiletest $(CMDQUIET))
 endif
 endif
 endif
