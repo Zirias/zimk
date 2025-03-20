@@ -51,6 +51,8 @@ OSVER_MAJ := $(firstword $(_ZIMK__OSVER))
 OSVER_MIN := $(word 2, $(_ZIMK__OSVER))
 OSVER_REV := $(word 3, $(_ZIMK__OSVER))
 
+_ZIMK__TOOLPATH := #
+
 else
 ifndef POSIXSHELL
 define ZIMK__POSIXSHMSG
@@ -118,7 +120,21 @@ INSTDIR := $(INSTALL) -d
 
 MAKE := PATH="$(ZIMK__ENVPATH)" $(MAKE)
 
+ifeq ($(OS),Windows_NT)
+define _ZIMK__FINDTOOL
+_ZIMK__TOOL:=$$(shell PATH="$2:$(ZIMK__ENVPATH)" command -v $1 2>/dev/null)
+ifneq ($$(_ZIMK__TOOL),)
+_ZIMK__TOOLDIR:=$$(dir $$(_ZIMK__TOOL))
+ifeq ($$(filter $$(_ZIMK__TOOLDIR),$$(_ZIMK__TOOLPATH)),)
+PATH:=$$(PATH):$$(_ZIMK__TOOLDIR)
+_ZIMK__TOOLPATH:=$$(_ZIMK__TOOLPATH) $$(_ZIMK__TOOLDIR)
+endif
+endif
+endef
+findtool = $(eval $(call _ZIMK__FINDTOOL,$1))$(_ZIMK__TOOL)
+else
 findtool = $(shell PATH="$2:$(ZIMK__ENVPATH)" command -v $1 2>/dev/null)
+endif
 instfile = $(INSTDIR) $(2) $(CMDSEP) $(INSTALL) -m$(3) $(1) $(2)
 rmfile = $(RMF) $(1)
 rmdir = $(RMFR) $(1)
