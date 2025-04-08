@@ -178,6 +178,16 @@ $(_T)_runstatedir ?= $$(runstatedir)
 $(_T)_sharedstatedir ?= $$(sharedstatedir)
 $(_T)_sysconfdir ?= $$(sysconfdir)
 
+$$(foreach p,$$($(_T)_PRECHECK),$$(if $$($$(p)_FUNC),$$(if \
+	$$(call checkfunc,$$($$(p)_HEADERS),$$(or $$($$(p)_RETURN),int),$$(or \
+	$$($$(p)_ARGS),int),$$($$(p)_FUNC),$$(_$(_T)_CFLAGS) $$(CFLAGS)),\
+	$$(eval $$(_T)_HAVE_$$(p) := 1)$$(eval \
+	$$(_T)_DEFINES += -DHAVE_$$(p)), $$(eval \
+	$$(_T)_HAVE_$$(p) := 0)))$$(if $$($$(p)_TYPE),$$(if \
+	$$(call checktype,$$($$(p)_HEADERS),$$($$(p)_TYPE),$$(_$(_T)_CFLAGS) \
+	$$(CFLAGS)),$$(eval $$(_T)_HAVE_$$(p) := 1)$$(eval \
+	$$(_T)_DEFINES += -DHAVE_$$(p)),$$(eval $$(_T)_HAVE_$$(p) := 0))))
+
 $(ZIMK__USES)
 
 $(_T)_SOURCES += $$(addprefix $$($(_T)_SRCDIR)$$(PSEP), \

@@ -75,3 +75,10 @@ version_nums = $(subst ., ,$1) 0 0 0
 version_maj = $(word 1,$(call version_nums,$1))
 version_min = $(word 2,$(call version_nums,$1))
 version_rev = $(word 3,$(call version_nums,$1))
+
+_ZIMK__HDREXPAND = $(foreach h,$1,#include <$h>\\n)
+checkfunc = $(shell printf "$(call _ZIMK__HDREXPAND,$1)$2 (*f)($3) = $4;" | \
+	$(or $(CC),cc) -xc -c $5 -o/dev/null - 2>/dev/null && echo 1)
+checktype = $(shell printf "$(call _ZIMK__HDREXPAND,$1)static $2 *x;" | \
+	$(or $(CC),cc) -xc -c $5 -o/dev/null - 2>/dev/null && echo 1)
+
