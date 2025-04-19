@@ -5,7 +5,7 @@ define DIRRULES
 _$(_T)_DIRS := $$(sort $$(patsubst %$$(PSEP),%,$$(dir $$(OUTFILES))))
 
 _NEWDIRS := $$(foreach _dir,$$(_$(_T)_DIRS), \
-	$$(if $$(findstring $$(_dir),$$(_DIRECTORIES)),,$$(_dir)))
+	$$(if $$(filter $$(_dir),$$(_DIRECTORIES)),,$$(_dir)))
 
 _DIRECTORIES += $$(_NEWDIRS)
 
