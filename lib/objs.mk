@@ -123,9 +123,9 @@ endef
 define ZIMK__INSTEXTRARECIPELINE
 
 $(ZIMK__TAB)$$(eval _ZIMK_1 := $$(DESTDIR)$$($(_T)_$1dir))
-$(ZIMK__TAB)$$(eval _ZIMK_0 := $$(_ZIMK_1)$$(PSEP)$$(notdir $2))
+$(ZIMK__TAB)$$(eval _ZIMK_0 := $$(_ZIMK_1)$$(PSEP)$$(notdir $$(or $3,$2)))
 $(ZIMK__TAB)$$(VINST)
-$(ZIMK__TAB)$$(VR)$$(call instfile,$2,$$(_ZIMK_1),664)
+$(ZIMK__TAB)$$(VR)$$(call instfile,$2,$$(_ZIMK_1),664,$3)
 endef
 
 define OBJRULES
@@ -322,8 +322,10 @@ endif
 ifneq ($$(strip $$($(_T)_EXTRADIRS)),)
 $$(eval $$(_T)_installextra: $$(foreach \
 	_D,$$($$(_T)_EXTRADIRS),$$(foreach \
-	_F,$$($$(_T)_$$(_D)_FILES),$$(call \
-	ZIMK__INSTEXTRARECIPELINE,$$(_D),$$($$(_T)_SRCDIR)$$(PSEP)$$(_F)))))
+	_F,$$($$(_T)_$$(_D)_FILES),$$(if $$(findstring :,$$(_F)),$$(call \
+	ZIMK__INSTEXTRARECIPELINE,$$(_D),$$($$(_T)_SRCDIR)$$(PSEP)$$(call \
+	instsrc,$$(_F)),$$(call insttgt,$$(_F))),$$(call \
+	ZIMK__INSTEXTRARECIPELINE,$$(_D),$$($$(_T)_SRCDIR)$$(PSEP)$$(_F))))))
 
 $$($(_T)_INSTALLEXTRAWITH):: $(_T)_installextra
 endif

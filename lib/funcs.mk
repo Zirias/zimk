@@ -68,6 +68,9 @@ define tobool
 $(eval $(__F_TOBOOL))$(strip $(_ZIMK__VR))
 endef
 
+instsrc = $(lastword $(subst :, ,$1))
+insttgt = $(if $(findstring :,$1),$(firstword $(subst :, ,$1)),$1)
+
 expandtool = $(if $(filter set,$(firstword $1)),$1,$(call \
 	     findtool,$(firstword $1)) $(wordlist 2, 512, $1))
 

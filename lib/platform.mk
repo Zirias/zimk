@@ -135,7 +135,7 @@ findtool = $(eval $(call _ZIMK__FINDTOOL,$1))$(_ZIMK__TOOL)
 else
 findtool = $(shell PATH="$2:$(ZIMK__ENVPATH)" command -v $1 2>/dev/null)
 endif
-instfile = $(INSTDIR) $(2) $(CMDSEP) $(INSTALL) -m$(3) $(1) $(2)
+instfile = $(INSTDIR) $2 $(CMDSEP) $(INSTALL) -m$3 $1 $2$(if $4,/$4)
 rmfile = $(RMF) $(1)
 rmdir = $(RMFR) $(1)
 geq = $(shell if test $(1) -ge $(2); then echo 1; fi)
@@ -190,7 +190,7 @@ _ZIMK__TOOL:=set "PATH=%PATH%;$$(subst ?, ,$$(dir \
 endif
 endef
 findtool = $(eval $(call _ZIMK__FINDTOOL,$1))$(_ZIMK__TOOL)
-instfile = $(MDP) $(2) $(CMDQUIET) $(CMDSEP) copy $(1) $(2) $(CMDQUIET)
+instfile = $(MDP) $2 $(CMDQUIET) $(CMDSEP) copy $1 $2$(if $4,\\$4) $(CMDQUIET)
 rmfile = $(RMF) $(1) $(CMDNOERR)
 rmdir = $(RMFR) $(1) $(CMDNOERR)
 geq = $(shell if $(1) geq $(2) echo 1)
