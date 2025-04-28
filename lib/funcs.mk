@@ -82,7 +82,7 @@ version_rev = $(word 3,$(call version_nums,$1))
 _ZIMK__HDREXPAND = $(foreach h,$1,#include <$h>\n)
 checkfunc = $(shell printf '$(call _ZIMK__HDREXPAND,$1)$2 (*f)($3) = $4;\n' | \
 	$(or $(CC),cc) -Werror -xc -c $5 -o/dev/null - 2>/dev/null && echo 1)
-checktype = $(shell printf '$(call _ZIMK__HDREXPAND,$1)static $2 *x;\n' | \
+checktype = $(shell printf '$(call _ZIMK__HDREXPAND,$1)$2 *x;\n' | \
 	$(or $(CC),cc) -Werror -xc -c $3 -o/dev/null - 2>/dev/null && echo 1)
 checkflag = $(shell printf '$(call _ZIMK__HDREXPAND,$1)int x = $2;\n' | \
 	$(or $(CC),cc) -Werror -xc -c $3 -o/dev/null - 2>/dev/null && echo 1)
