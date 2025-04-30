@@ -191,7 +191,7 @@ $$(foreach p,$$($(_T)_PRECHECK),$$(if $$($$(p)_FUNC),$$(if \
 	$$(call checkflag,$$($$(p)_HEADERS),$$($$(p)_FLAG),$$($$(p)_CFLAGS) \
 	$$(_$(_T)_CFLAGS) $$(CFLAGS)),$$(eval $$(_T)_HAVE_$$(p) := 1)$$(eval \
 	$$(_T)_DEFINES += -DHAVE_$$(p)),$$(eval \
-	$$(_T)_HABE_$$(p) := 0))))
+	$$(_T)_HAVE_$$(p) := 0))))
 
 $(ZIMK__USES)
 
