@@ -41,7 +41,7 @@ endif
 ifneq ($$(strip $$($(_T)_STRIPWITH)),)
 $$($(_T)_STRPSTAMP): $$($(_T)_EXE)
 	$$(VSTRP)
-	$$(VR)$$(STRIP) --strip-all $$<
+	$$(VR)$$(STRIP) --strip-all $$< $(CMDQUIET) || $(STRIP) $$<
 	$$(VR)$$(STAMP) $$@
 
 $$($(_T)_STRIPWITH):: $$($(_T)_STRPSTAMP)

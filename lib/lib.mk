@@ -218,7 +218,7 @@ endif
 
 $$($(_T)_STRPSTAMP): $$($(_T)_LIB)
 	$$(VSTRP)
-	$$(VR)$$(STRIP) --strip-unneeded $$<
+	$$(VR)$$(STRIP) --strip-unneeded $$< $$(CMDQUIET) || $$(STRIP) $$<
 	$$(VR)$$(STAMP) $$@
 
 $$($(_T)_TARGET)_stripshared:: $$($(_T)_STRPSTAMP)
@@ -230,7 +230,7 @@ endif
 
 $$($(_T)_STATICSTRPSTAMP): $$($(_T)_STATICLIB)
 	$$(VSTRP)
-	$$(VR)$$(STRIP) --strip-unneeded $$<
+	$$(VR)$$(STRIP) --strip-unneeded $$< $$(CMDQUIET) || $$(STRIP) $$<
 	$$(VR)$$(STAMP) $$@
 
 $$($(_T)_TARGET)_stripstatic:: $$($(_T)_STATICSTRPSTAMP)
