@@ -115,8 +115,7 @@ CODNOERR := 2>/dev/null
 CMDNOIN := </dev/null
 CMDOK := >/dev/null 2>&1 && echo ok
 
-INSTALL ?= install
-INSTDIR := $(INSTALL) -d
+INSTDIR = $(INSTALL) -d
 
 MAKE := PATH="$(ZIMK__ENVPATH)" $(MAKE)
 

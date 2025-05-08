@@ -5,7 +5,7 @@ $(strip $(eval undefine __ZIMK__UNIQ__SEEN)$(foreach \
 endef
 CROSSTOOLS += CC CXX CPP
 FALLBACKTOOLS += AR STRIP OBJCOPY OBJDUMP WINDRES
-HOSTTOOLS += GIT $(addprefix HOST,$(CROSSTOOLS) $(FALLBACKTOOLS))
+HOSTTOOLS += GIT INSTALL $(addprefix HOST,$(CROSSTOOLS) $(FALLBACKTOOLS))
 SINGLECONFVARS += prefix exec_prefix bindir sbindir libexecdir datarootdir \
 		  sysconfdir sharedstatedir localstatedir runstatedir \
 		  includedir docrootdir libdir localedir

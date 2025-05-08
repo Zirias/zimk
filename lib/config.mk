@@ -106,6 +106,7 @@ DEFAULT_CC ?= cc
 DEFAULT_CXX ?= c++
 DEFAULT_CPP ?= cpp
 DEFAULT_AR ?= ar
+DEFAULT_INSTALL ?= install
 DEFAULT_STRIP ?= strip
 DEFAULT_OBJCOPY ?= objcopy
 DEFAULT_OBJDUMP ?= objdump
