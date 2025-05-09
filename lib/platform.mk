@@ -111,7 +111,7 @@ ETOEND := "
 EQT := "
 ELQT := \"
 CMDQUIET := >/dev/null 2>&1
-CODNOERR := 2>/dev/null
+CMDNOERR := 2>/dev/null
 CMDNOIN := </dev/null
 CMDOK := >/dev/null 2>&1 && echo ok
 
