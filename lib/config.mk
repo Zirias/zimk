@@ -44,7 +44,7 @@ $$(ZIMK__CFGCACHE):
 endef
 define ZIMK__WRITECFGLINE
 
-$(ZIMK__TAB)$$(VR)$$(ECHOTO)$(_cv) ?= $$(call echoesc,$($(_cv)))$$(ETOEND) >>$$(USERCONFIG)
+$(ZIMK__TAB)$$(VR)$$(ECHOTO)export $(_cv) ?= $$(call echoesc,$($(_cv)))$$(ETOEND) >>$$(USERCONFIG)
 endef
 define ZIMK__WRITECFG
 $(ZIMK__CFGTARGET): $$(USERCONFIG)
