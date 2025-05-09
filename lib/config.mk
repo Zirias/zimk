@@ -362,6 +362,21 @@ endif
 
 $(foreach _cv,$(ZIMK__EXPORTVARS),$(eval export $(_cv)))
 
+ifneq ($(filter-out $(NOBUILDTARGETS),$(MAKECMDGOALS)),)
+ifdef POSIXSHELL
+_ZIMK__INSTTYPE=$(shell file $(INSTALL) $(CMDNOERR))
+# We want BSD-style install, so we can probably rule out shell scripts
+ifneq ($(findstring commands text,$(_ZIMK__INSTTYPE))$(findstring \
+	script,$(_ZIMK__INSTTYPE)),)
+INSTALL:=
+endif
+ifeq ($(INSTALL),)
+INSTDIR:=$(MDP)
+INSTALL=$(SHELL) $(ZIMKPATH)scripts/inst.sh
+endif
+endif
+endif
+
 .PHONY: config changeconfig _build_config _build_changeconfig _cfg_message showconfig
 
 # vim: noet:si:ts=8:sts=8:sw=8
