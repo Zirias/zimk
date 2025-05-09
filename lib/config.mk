@@ -142,7 +142,7 @@ BUILD_release_DEFINES ?= -DNDEBUG
 
 _ZIMK__TESTHCC:=$(call expandtool,$(or \
 	       $(HOSTCC),$(DEFAULT_HOSTCC),$(BUILD_$(BUILDCFG)_HOSTCC)))
-ifneq ($(_ZIMK__TESTHCC),)
+ifneq ($(strip $(_ZIMK__TESTHCC)),)
 ZIMK__HDEFDEFINES:= $(shell $(_ZIMK__TESTHCC) -dM -E - $(CMDNOIN))
 endif
 ifeq ($(filter _WIN32,$(ZIMK__HDEFDEFINES)),)
@@ -160,9 +160,10 @@ _ZIMK__TESTCC:=$(_ZIMK__TESTHCC)
 else
 _ZIMK__TESTCC:=$(call expandtool,$(CROSS_COMPILE)$(or \
 	       $(CC),$(DEFAULT_CC),$(BUILD_$(BUILDCFG)_CC)))
-ifneq ($(_ZIMK__TESTCC),)
-ZIMK__DEFDEFINES:= $(shell $(_ZIMK__TESTCC) -dM -E - $(CMDNOIN))
+ifeq ($(strip $(_ZIMK__TESTCC)),)
+$(error No C compiler found, try giving CC=<name>)
 endif
+ZIMK__DEFDEFINES:= $(shell $(_ZIMK__TESTCC) -dM -E - $(CMDNOIN))
 ifeq ($(filter _WIN32,$(ZIMK__DEFDEFINES)),)
 PLATFORM:= posix
 EXE:=
